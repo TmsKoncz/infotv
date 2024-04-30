@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="pragma" content="no-cache">
+<title>SZAG infoTV</title>
+<script>
+/* Egér elrejtése mert az olyan igénytelen hogy nagyon */
+document.body.style.cursor = 'none';
+
+function refreshAt(hours, minutes, seconds) {
+    var now = new Date();
+    var then = new Date();
+
+    if(now.getHours() > hours ||
+        (now.getHours() == hours && now.getMinutes() > minutes) ||
+        now.getHours() == hours && now.getMinutes() == minutes && now.getSeconds() >= seconds) {
+        then.setDate(now.getDate() + 1);
+    }
+    then.setHours(hours);
+    then.setMinutes(minutes);
+    then.setSeconds(seconds);
+
+    var timeout = (then.getTime() - now.getTime());
+    setTimeout(function() { window.location.reload(true); }, timeout);
+}
+
+// Oldal lefrissítése az alábbi időpontokban - új időpontnál figyeljünk, hogy órán legyen, mert szünetben gagyi
+refreshAt(06,25,56);
+refreshAt(06,55,56);
+refreshAt(07,25,56);
+refreshAt(07,55,56);
+refreshAt(08,05,56);
+refreshAt(08,35,56);
+refreshAt(09,05,56);
+refreshAt(09,35,56);
+refreshAt(10,05,56);
+refreshAt(10,35,56);
+refreshAt(11,05,56);
+refreshAt(11,35,56);
+refreshAt(12,05,56);
+refreshAt(12,35,56);
+refreshAt(13,05,56);
+refreshAt(13,35,56);
+refreshAt(14,05,56);
+refreshAt(14,35,56);
+refreshAt(15,05,56);
+refreshAt(15,35,56);
+refreshAt(16,05,56);
+refreshAt(17,05,56);
+refreshAt(18,05,56);
+refreshAt(19,05,56);
+    
+// Autofullscreen
+addEventListener("click", function() {
+    var
+          el = document.documentElement
+        , rfs =
+               el.requestFullScreen
+            || el.webkitRequestFullScreen
+            || el.mozRequestFullScreen
+    ;
+    rfs.call(el);
+});
+    
+// Autofullscreen v2
+function launchFullScreen(element) {
+  if(element.requestFullScreen) {
+    element.requestFullScreen();
+  } else if(element.mozRequestFullScreen) {
+    element.mozRequestFullScreen();
+  } else if(element.webkitRequestFullScreen) {
+    element.webkitRequestFullScreen();
+  }
+}
+
+// Launch fullscreen for browsers that support it!
+launchFullScreen(document.documentElement); // the whole page
+
+    
+// https://jsfiddle.net/zEG4g/1/
+
+</script>
+</html>
