@@ -12,16 +12,21 @@ body {
     padding: 0;
     margin: 0;
 }
+
 .mySlides {
-    display: none;}
+    display: none;
+}
+    
 img {vertical-align: middle;}
-    embed { vertical-align: middle;}
+
+embed { vertical-align: middle;}
+
 
 /* Slideshow container */
 .slideshow-container {
-  max-width: 100%;
-  position: center;
-  margin: 0px;
+    max-width: 100%;
+    position: center;
+    margin: 0px;
 }
 
 </style>
@@ -61,7 +66,7 @@ img {vertical-align: middle;}
   <img src="img/honapverse.png" style="width:100%" style="height:100%">
 </div>
     
-<div class="mySlides">
+<div class="mySlides" id="futar">
     <iframe type="text/html" src="https://futar.sznokarecords.com/?stopID=BKK_F03329" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;margin: 0;"></iframe>
 </div>
 
@@ -195,7 +200,6 @@ function launchFullScreen(element) {
 
 // Launch fullscreen for browsers that support it!
 launchFullScreen(document.documentElement); // the whole page
-launchFullScreen(document.getElementById("videoElement")); // any individual element
 </script>
 
 </body>
