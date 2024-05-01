@@ -3,6 +3,8 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SZAG InfoTV</title>
+<link rel="icon" type="image/x-icon" href="favicon.png">
+
 <style>
 
 body {font-family: Verdana, sans-serif;}
@@ -25,10 +27,14 @@ img {vertical-align: middle;}
 <div class="slideshow-container">
     
 <div class="mySlides">
-<div style="position: relative; width: 100%; height: 0; padding-top: 56.2500%; padding-bottom: 0; margin-top: 0em; margin-bottom: 0em; overflow: hidden; border-radius: 0px; will-change: transform;">
+<div style="position: relative; width: 100%; height: 0; padding-top: 56.2500%;
+ padding-bottom: 0; box-shadow: 0 2px 8px 0 rgba(63,69,81,0.16); margin-top: 0; margin-bottom: 0; overflow: hidden;
+ border-radius: 8px; will-change: transform;">
   <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;margin: 0;"
     src="https:&#x2F;&#x2F;www.canva.com&#x2F;design&#x2F;DAFzhI98FxY&#x2F;ZB_Z3bO34ENHNTBBNbbLZA&#x2F;view?embed" allowfullscreen="allowfullscreen" allow="fullscreen">
   </iframe>
+</div>
+
 </div>
     
 <div class="mySlides">
@@ -44,24 +50,9 @@ img {vertical-align: middle;}
 </div>
     
 <div class="mySlides">
-  <img src="img/e1.png" style="width:100%" style="height:100%">
-</div>
-    
-<div class="mySlides">
-  <img src="img/e2.png" style="width:100%" style="height:100%">
-</div>
-
-<div class="mySlides">
-  <img src="img/e3.png" style="width:100%" style="height:100%">
-</div>
-
-<div class="mySlides">
   <img src="img/e4.png" style="width:100%" style="height:100%">
 </div>
     
-<div class="mySlides">
-  <img src="img/e5.png" style="width:100%" style="height:100%">
-</div>
     
 <div class="mySlides">
     <iframe type="text/html" src="https://futar.sznokarecords.com/?stopID=BKK_F03329" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;margin: 0;"></iframe>
@@ -104,7 +95,7 @@ function showSlides() {
   }
   slides[slideIndex-1].style.display = "block";  
   dots[slideIndex-1].className += " active";
-  setTimeout(showSlides, 30000); // Change image every 30 seconds
+  setTimeout(showSlides, 10000); // Change image every 30 seconds
 }
     
 // Oldal lefrissítése az alábbi időpontokban - új időpontnál figyeljünk, hogy órán legyen, mert szünetben gagyi
