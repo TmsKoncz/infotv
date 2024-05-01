@@ -53,6 +53,13 @@ img {vertical-align: middle;}
   <img src="img/e4.png" style="width:100%" style="height:100%">
 </div>
     
+<div class="mySlides">
+  <img src="img/iromdalom.png" style="width:100%" style="height:100%">
+</div>
+
+<div class="mySlides">
+  <img src="img/honapverse.png" style="width:100%" style="height:100%">
+</div>
     
 <div class="mySlides">
     <iframe type="text/html" src="https://futar.sznokarecords.com/?stopID=BKK_F03329" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;margin: 0;"></iframe>
@@ -78,6 +85,9 @@ img {vertical-align: middle;}
 </div>
     
 <script>
+
+
+//Slide frissítés
 let slideIndex = 0;
 showSlides();
 
@@ -95,7 +105,7 @@ function showSlides() {
   }
   slides[slideIndex-1].style.display = "block";  
   dots[slideIndex-1].className += " active";
-  setTimeout(showSlides, 10000); // Change image every 30 seconds
+  setTimeout(showSlides, 30000); // Lapozás 30 másodpercenként
 }
 
 // Idő lekérdezése az oldal időzített lefrissítéséhez
