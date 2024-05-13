@@ -12,5 +12,64 @@
       <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;margin: 0;"
     src="https:&#x2F;&#x2F;www.canva.com&#x2F;design&#x2F;DAFzhI98FxY&#x2F;ZB_Z3bO34ENHNTBBNbbLZA&#x2F;view?embed" allowfullscreen="allowfullscreen" allow="fullscreen">
   </iframe>
+
+<script>
+// Idő lekérdezése az oldal időzített lefrissítéséhez
+function refreshAt(hours, minutes, seconds) {
+    var now = new Date();
+    var then = new Date();
+
+    if(now.getHours() > hours ||
+        (now.getHours() == hours && now.getMinutes() > minutes) ||
+        now.getHours() == hours && now.getMinutes() == minutes && now.getSeconds() >= seconds) {
+        then.setDate(now.getDate() + 1);
+    }
+    then.setHours(hours);
+    then.setMinutes(minutes);
+    then.setSeconds(seconds);
+
+    var timeout = (then.getTime() - now.getTime());
+    setTimeout(function() { window.location.reload(true); }, timeout);
+}
+
+// Oldal lefrissítése az alábbi időpontokban - új időpontnál figyeljünk, hogy órán legyen, mert szünetben gagyi
+refreshAt(06,25,56);
+refreshAt(06,55,56);
+refreshAt(07,25,56);
+refreshAt(07,40,56);
+refreshAt(07,55,56);
+refreshAt(08,05,56);
+refreshAt(08,20,56);
+refreshAt(08,35,56);
+refreshAt(09,05,56);
+refreshAt(09,20,56);
+refreshAt(09,35,56);
+refreshAt(10,05,56);
+refreshAt(10,20,56);
+refreshAt(10,35,56);
+refreshAt(11,05,56);
+refreshAt(11,20,56);
+refreshAt(11,35,56);
+refreshAt(12,05,56);
+refreshAt(12,20,56);
+refreshAt(12,35,56);
+refreshAt(13,05,56);
+refreshAt(13,20,56);
+refreshAt(13,35,56);
+refreshAt(14,05,56);
+refreshAt(14,20,56);
+refreshAt(14,35,56);
+refreshAt(15,05,56);
+refreshAt(15,20,56);
+refreshAt(15,35,56);
+refreshAt(16,05,56);
+refreshAt(16,20,56);
+refreshAt(17,05,56);
+refreshAt(17,20,56);
+refreshAt(18,05,56);
+refreshAt(18,20,56);
+refreshAt(19,05,56);
+refreshAt(19,20,56);
+</script>
 </body>
 </html>
