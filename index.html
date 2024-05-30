@@ -89,9 +89,17 @@ embed { vertical-align: middle;}
 </div>
 -->
     
-<!-- <div class="mySlides">
+<div class="mySlides">
         <img id="aktualis_image" src="img/cseng.png" style="width:100%" style="height:100%" alt="Aktuális közlemény, inaktív időzítés esetén órarend" onerror="this.onerror=null; this.src='img/404.png'">
-</div> -->
+</div>
+
+<div class="mySlides">
+        <img src="img/szalagavato.png" style="width:100%" style="height:100%" alt="Szalagavató" onerror="this.onerror=null; this.src='img/404.png'">
+</div>
+    
+<div class="mySlides">
+        <img src="img/ballagas1.png" style="width:100%" style="height:100%" alt="Ballagás" onerror="this.onerror=null; this.src='img/404.png'">
+</div>
     
 <div class="mySlides">
     <div style="position: relative; width: 100%; height: 0; padding-top: 56.2500%;
@@ -106,10 +114,6 @@ embed { vertical-align: middle;}
 <!-- <div class="mySlides">
         <img id="lunch_image" src="img/e0000.png" style="width:100%" style="height:100%" alt="Ebéd" onerror="this.onerror=null; this.src='img/404.png'">
 </div> -->
-    
-<div class="mySlides">
-        <img src="img/szia.png" style="width:100%" style="height:100%" alt="Üdvözlet" onerror="this.onerror=null; this.src='img/404.png'">
-</div>
 
 <div class="mySlides">
   <img id="honapverse_image" src="img/404.png" style="width:100%" style="height:100%" alt="A hónap verse" onerror="this.onerror=null; this.src='img/404.png'">
@@ -119,13 +123,6 @@ embed { vertical-align: middle;}
         <img src="img/rangsor.png" style="width:100%" style="height:100%" alt="Rangsor" onerror="this.onerror=null; this.src='img/404.png'">
 </div>
 
-<div class="mySlides">
-        <img src="img/szalagavato.png" style="width:100%" style="height:100%" alt="Szalagavató" onerror="this.onerror=null; this.src='img/404.png'">
-</div>
-    
-<div class="mySlides">
-        <img src="img/ballagas1.png" style="width:100%" style="height:100%" alt="Ballagás" onerror="this.onerror=null; this.src='img/404.png'">
-</div>
     
 <!-- <div class="mySlides" id="futar">
     <iframe type="text/html" src="https://futar.sznokarecords.com/?stopID=BKK_F03329" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;" alt="BKK FUTÁR" onerror="this.onerror=null; this.src='img/404.png'"></iframe>
@@ -291,7 +288,7 @@ let img_aktualis_images = [
   },
     {
     date: "2024-05-30",
-    url: "img/foci1.png"
+    url: "img/szia.png"
   },
     {
     date: "2024-05-31",
@@ -319,43 +316,43 @@ let img_aktualis_images = [
   },
     {
     date: "2024-06-10",
-    url: "img/aktualis.png"
+    url: "img/talalttargy.png"
   },
     {
     date: "2024-06-11",
-    url: "img/aktualis.png"
+    url: "img/talalttargy.png"
   },
     {
     date: "2024-06-12",
-    url: "img/aktualis.png"
+    url: "img/talalttargy.png"
   },
     {
     date: "2024-06-13",
-    url: "img/aktualis.png"
+    url: "img/talalttargy.png"
   },
     {
     date: "2024-06-14",
-    url: "img/aktualis.png"
+    url: "img/talalttargy.png"
   },
     {
     date: "2024-06-17",
-    url: "img/aktualis.png"
+    url: "img/talalttargy.png"
   },
     {
     date: "2024-06-18",
-    url: "img/aktualis.png"
+    url: "img/talalttargy.png"
   },
     {
     date: "2024-06-19",
-    url: "img/aktualis.png"
+    url: "img/talalttargy.png"
   },
     {
     date: "2024-06-20",
-    url: "img/aktualis.png"
+    url: "img/talalttargy.png"
   },
     {
     date: "2024-06-21",
-    url: "img/aktualis.png"
+    url: "img/talalttargy.png"
   }
 ];
 //get today date & format to YYYY-MM-DD
@@ -495,7 +492,7 @@ function showSlides() {
   }
   slides[slideIndex-1].style.display = "block";  
   dots[slideIndex-1].className += " active";
-  setTimeout(showSlides, 30000); // Lapozás 30 másodpercenként
+  setTimeout(showSlides, 20000); // Lapozás 30 másodpercenként
 }
 
 // Idő lekérdezése az oldal időzített lefrissítéséhez
