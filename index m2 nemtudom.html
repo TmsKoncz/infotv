@@ -1,0 +1,4852 @@
+<!doctype html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>SZAG InfoTV</title>
+        <link rel="icon" type="image/x-icon" href="favicon.png" />
+        <!-- Live.js tag hogy lefrissüljön ha belenyúlok a htmlbe-->
+        <script
+            type="text/javascript"
+            src="https://livejs.com/live.js"></script>
+        <!-- Google tag (gtag.js) -->
+        <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-CXT37WPC0Y"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag("js", new Date());
+
+            gtag("config", "G-CXT37WPC0Y");
+        </script>
+
+        <style>
+            body {
+                font-family: Verdana, sans-serif;
+                padding: 0;
+                margin: 0;
+                background-color: black;
+            }
+
+            .mySlides {
+                display: none;
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                border: none;
+                padding: 0;
+                margin: 0;
+                align-content: center;
+            }
+
+            img {
+                vertical-align: middle;
+            }
+
+            embed {
+                vertical-align: middle;
+            }
+
+            /* Slideshow container */
+            .slideshow-container {
+                max-width: 100%;
+                position: center;
+                margin: 0px;
+            }
+
+            #alttextsize {
+                font-size: 40px;
+                font-weight: bold;
+                color: #000;
+            }
+
+            /* Next & previous buttons */
+            .prev,
+            .next {
+                cursor: pointer;
+                position: absolute;
+                top: 50%;
+                width: auto;
+                margin-top: -22px;
+                padding: 16px;
+                color: white;
+                font-weight: bold;
+                font-size: 18px;
+                transition: 0.6s ease;
+                border-radius: 0 3px 3px 0;
+                user-select: none;
+            }
+
+            /* Position the "next button" to the right */
+            .next {
+                right: 0;
+                border-radius: 3px 0 0 3px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="slideshow-container" id="alttextsize">
+            <!--
+            <div class="mySlides">
+                    <img src="img/tuzriado.png" style="width:100%" style="height:100%" alt="TŰZRIADÓ">
+            </div>
+            -->
+            <!-- SLIDE 0 -->
+            <div class="mySlides">
+                <img
+                    id="aktualis_image";
+                    src="";
+                    style="width: 100%";
+                    style="height: 100%";
+                    alt="Aktuális közlemény";
+                    onerror="this.onerror=null; this.src='img/404.png'" />
+            </div>
+            
+            <!-- SLIDE 1 -->
+            <div class="mySlides">
+                <div
+                    style="
+                        position: relative;
+                        width: 100%;
+                        height: 0;
+                        padding-top: 56.25%;
+                        padding-bottom: 0;
+                        margin-top: 0;
+                        margin-bottom: 0;
+                        overflow: hidden;
+                        border-radius: 8px;
+                        will-change: transform;
+                    ">
+                    <iframe
+                        loading="lazy"
+                        style="
+                            position: absolute;
+                            width: 100%;
+                            height: 100%;
+                            top: 0;
+                            left: 0;
+                            border: none;
+                            padding: 0;
+                            margin: 0;"
+                        src="https:&#x2F;&#x2F;www.canva.com&#x2F;design&#x2F;DAFzhI98FxY&#x2F;ZB_Z3bO34ENHNTBBNbbLZA&#x2F;view?embed"
+                        alt="Helyettesítések">
+                    </iframe>
+                </div>
+            </div>
+
+            <!-- SLIDE 2 -->
+            <div class="mySlides">
+                <img
+                    id="lunch_image";
+                    src="";
+                    style="width: 100%";
+                    style="height: 100%";
+                    alt="Ebéd";
+                    onerror="this.onerror=null; this.src='img/404.png'" />
+            </div>
+
+            <!-- SLIDE 3 -->
+            <div class="mySlides">
+                <img
+                    id="honapverse_image";
+                    src="img/nincs-idozites.png";
+                    style="width: 100%";
+                    style="height: 100%";
+                    alt="A hónap verse";
+                    onerror="this.onerror=null; this.src='img/404.png'" />
+            </div>
+
+            <!-- SLIDE 4 -->
+            <div class="mySlides" id="futar">
+                <iframe
+                    type="text/html"
+                    src="https://futar.sznokarecords.com/?stopID=BKK_F03329"
+                    style="
+                        position: absolute;
+                        width: 100%;
+                        height: 100%;
+                        top: 0;
+                        left: 0;
+                        border: none;
+                        padding: 0;
+                    "
+                    alt="BKK FUTÁR"
+                    onerror="this.onerror=null; this.src='img/404.png'"></iframe>
+            </div>
+
+        </div>
+
+        <div style="text-align: center">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script>
+            //IDŐZÍTÉSEK
+            // Aktuális napi időzítés
+            let img_aktualis_images = [
+                {
+                    date: "2024-06-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-30",
+                    url: "nincs-idozites"
+                }
+
+            ];
+            
+            //get today date & format to YYYY-MM-DD
+            var today = new Date();
+            today = today.toISOString().split("T")[0];
+
+            //check today date in ring image array
+            object = img_aktualis_images.find(
+                (o) =>
+                    Object.entries(o).find(
+                        ([k, value]) => k === "date" && value === today
+                    ) !== undefined
+            );
+
+            //if today date in array change image url
+            if (object != null) {
+                $("#aktualis_image").attr("src", object.url);
+            }
+
+            // Ebéd napi időzítés
+            let img_lunch_images = [
+                {
+                    date: "2024-06-22",
+                    url: "img/szag.png"
+                },
+                {
+                    date: "2024-06-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-30",
+                    url: "nincs-idozites"
+                }
+
+            ];
+
+            //get today date & format to YYYY-MM-DD
+            var today = new Date();
+            today = today.toISOString().split("T")[0];
+
+            //check today date in ring image array
+            object = img_lunch_images.find(
+                (o) =>
+                    Object.entries(o).find(
+                        ([k, value]) => k === "date" && value === today
+                    ) !== undefined
+            );
+
+            //if today date in array change image url
+            if (object != null) {
+                $("#lunch_image").attr("src", object.url);
+            }
+            
+            // Hónap verse napi időzítés
+            let img_honapverse_images = [
+                {
+                    date: "2024-06-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-06-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-07-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-08-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-09-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-10-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-11-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2024-12-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-01-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-02-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-03-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-04-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-30",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-05-31",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-01",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-02",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-03",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-04",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-05",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-06",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-07",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-08",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-09",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-10",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-11",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-12",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-13",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-14",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-15",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-16",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-17",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-18",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-19",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-20",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-21",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-22",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-23",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-24",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-25",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-26",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-27",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-28",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-29",
+                    url: "nincs-idozites"
+                },
+                {
+                    date: "2025-06-30",
+                    url: "nincs-idozites"
+                }
+
+            ];
+            
+            //get today date & format to YYYY-MM-DD
+            var today = new Date();
+            today = today.toISOString().split("T")[0];
+
+            //check today date in ring image array
+            object = img_honapverse_images.find(
+                (o) =>
+                    Object.entries(o).find(
+                        ([k, value]) => k === "date" && value === today
+                    ) !== undefined
+            );
+
+            //if today date in array change image url
+            if (object != null) {
+                $("#honapverse_image").attr("src", object.url);
+            }
+
+            //Slide frissítés
+            let slideIndex = 0;
+            showSlides();
+            
+            // Next/previous controls
+            function plusSlides(n) {
+              showSlides(slideIndex += n);
+            }
+
+            // Thumbnail image controls
+            function currentSlide(n) {
+              showSlides(slideIndex = n);
+            }
+
+            function showSlides() {
+                let i;
+                let slides = document.getElementsByClassName("mySlides");
+                let dots = document.getElementsByClassName("dot");
+                for (i = 0; i < slides.length; i++) {
+                    slides[i].style.display = "none";
+                }
+                slideIndex++;
+                if (slideIndex > slides.length) {
+                    slideIndex = 1;
+                }
+                for (i = 0; i < dots.length; i++) {
+                    dots[i].className = dots[i].className.replace(
+                        " active",
+                        ""
+                    );
+                }
+                slides[slideIndex - 1].style.display = "block";
+                dots[slideIndex - 1].className += " active";
+                setTimeout(showSlides, 5000); // Lapozás 30 másodpercenként
+            }
+
+            // Idő lekérdezése az oldal időzített lefrissítéséhez
+            function refreshAt(hours, minutes, seconds) {
+                var now = new Date();
+                var then = new Date();
+
+                if (
+                    now.getHours() > hours ||
+                    (now.getHours() == hours && now.getMinutes() > minutes) ||
+                    (now.getHours() == hours &&
+                        now.getMinutes() == minutes &&
+                        now.getSeconds() >= seconds)
+                ) {
+                    then.setDate(now.getDate() + 1);
+                }
+                then.setHours(hours);
+                then.setMinutes(minutes);
+                then.setSeconds(seconds);
+
+                var timeout = then.getTime() - now.getTime();
+                setTimeout(function () {
+                    window.location.reload(true);
+                }, timeout);
+            }
+
+            // Oldal lefrissítése az alábbi időpontokban - új időpontnál figyeljünk, hogy órán legyen, mert szünetben gagyi
+            refreshAt(06, 25, 56);
+            refreshAt(06, 55, 56);
+            refreshAt(07, 25, 56);
+            refreshAt(07, 40, 56);
+            refreshAt(07, 55, 56);
+            refreshAt(08, 05, 56);
+            refreshAt(08, 20, 56);
+            refreshAt(08, 35, 56);
+            refreshAt(09, 05, 56);
+            refreshAt(09, 20, 56);
+            refreshAt(09, 35, 56);
+            refreshAt(10, 05, 56);
+            refreshAt(10, 20, 56);
+            refreshAt(10, 35, 56);
+            refreshAt(11, 05, 56);
+            refreshAt(11, 20, 56);
+            refreshAt(11, 35, 56);
+            refreshAt(12, 05, 56);
+            refreshAt(12, 20, 56);
+            refreshAt(12, 35, 56);
+            refreshAt(13, 05, 56);
+            refreshAt(13, 20, 56);
+            refreshAt(13, 35, 56);
+            refreshAt(14, 05, 56);
+            refreshAt(14, 20, 56);
+            refreshAt(14, 35, 56);
+            refreshAt(15, 05, 56);
+            refreshAt(15, 20, 56);
+            refreshAt(15, 35, 56);
+            refreshAt(16, 05, 56);
+            refreshAt(16, 20, 56);
+            refreshAt(17, 05, 56);
+            refreshAt(17, 20, 56);
+            refreshAt(18, 05, 56);
+            refreshAt(18, 20, 56);
+            refreshAt(19, 05, 56);
+            refreshAt(19, 20, 56);
+
+            // Autofullscreen
+            addEventListener("click", function () {
+                var el = document.documentElement,
+                    rfs =
+                        el.requestFullScreen ||
+                        el.webkitRequestFullScreen ||
+                        el.mozRequestFullScreen;
+                rfs.call(el);
+            });
+        </script>
+    </body>
+</html>
