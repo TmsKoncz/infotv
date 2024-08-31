@@ -672,7 +672,7 @@ let lastCommitSha = '';
 async function checkForUpdates() {
     const latestCommitSha = await fetchLatestCommit();
     if (lastCommitSha && latestCommitSha !== lastCommitSha) {
-        alert('New update detected, refreshing the page...');
+        console.log('New update detected, refreshing the page...');
         window.location.reload(true);
     }
     lastCommitSha = latestCommitSha;
