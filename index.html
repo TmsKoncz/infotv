@@ -643,12 +643,6 @@ function showSlides() {
   setTimeout(showSlides, 25000); // Lapozás 30 másodpercenként
 }
     
-// Iframe refresh
-    window.setInterval("reloadIFrame();", 300000);
-
-function reloadIFrame() {
- document.frames["frameNameHere"].location.reload();
-}
 
 // Idő lekérdezése az oldal időzített lefrissítéséhez
 function refreshAt(hours, minutes, seconds) {
