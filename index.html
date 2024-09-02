@@ -98,7 +98,7 @@ embed { vertical-align: middle;}
     
 <body>
 
-<div class="slideshow-container" id="alttextsize">
+<div class="slideshow-container">
 
 <!-- TŰZRIADÓ -->
   <div id="overlay">
@@ -107,7 +107,7 @@ embed { vertical-align: middle;}
 
     
 <div class="mySlides">
-        <img id="aktualis_image" src="img/cseng.png" style="width:100%" style="height:100%" alt="Aktuális közlemény, inaktív időzítés esetén órarend" onerror="this.onerror=null; this.src='img/404.png'">
+        <img id="aktualis_image" src="img/cseng.png" style="width:100%; height:100%" alt="Aktuális közlemény, inaktív időzítés esetén órarend" onerror="this.onerror=null; this.src='img/404.png'">
 </div>
 
 <div class="mySlides">
@@ -115,18 +115,18 @@ embed { vertical-align: middle;}
  padding-bottom: 0; margin-top: 0; margin-bottom: 0; overflow: hidden;
  border-radius: 8px; will-change: transform;">
         <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;margin: 0;"
-    src="https:&#x2F;&#x2F;www.canva.com&#x2F;design&#x2F;DAFzhI98FxY&#x2F;ZB_Z3bO34ENHNTBBNbbLZA&#x2F;view?embed" alt="Helyettesítések helye" onerror="this.onerror=null; this.src='img/404.png'">
+    src="https://www.canva.com/design&#x2F;DAFzhI98FxY&#x2F;ZB_Z3bO34ENHNTBBNbbLZA&#x2F;view?embed" onerror="this.onerror=null; this.src='img/404.png'">
         </iframe>
     </div>
 </div>
 
 <div class="mySlides">
-        <img id="lunch_image" src="img/e0000.png" style="width:100%" style="height:100%" alt="Ebéd" onerror="this.onerror=null; this.src='img/404.png'">
+        <img id="lunch_image" src="img/e0000.png" style="width:100%; height:100%" alt="Ebéd" onerror="this.onerror=null; this.src='img/404.png'">
 </div>
 
     
 <div class="mySlides">
-  <img id="honapverse_image" src="img/404.png" style="width:100%" style="height:100%" alt="A hónap verse" onerror="this.onerror=null; this.src='img/404.png'">
+  <img id="honapverse_image" src="img/404.png" style="width:100%; height:100%" alt="A hónap verse" onerror="this.onerror=null; this.src='img/404.png'">
 </div>
     
 <div class="mySlides" id="futar">
@@ -134,7 +134,7 @@ embed { vertical-align: middle;}
 </div>
     
 <div class="mySlides">
-        <img src="img/szag.png" style="width:100%" style="height:100%" alt="TŰZRIADÓ">
+        <img src="img/szag.png" style="width:100%; height:100%" alt="TŰZRIADÓ">
 </div>
 
 </div>
@@ -664,10 +664,10 @@ function refreshAt(hours, minutes, seconds) {
 
 // Oldal lefrissítése az alábbi időpontokban - új időpontnál figyeljünk, hogy órán legyen, mert szünetben gagyi
 refreshAt(00,00,56);
-refreshAt(07:45,56);
-refreshAt(08:45,56);
-refreshAt(09:45,56);
-refreshAt(10;45,56)
+refreshAt(07,45,56);
+refreshAt(08,45,56);
+refreshAt(09,45,56);
+refreshAt(10,45,56)
 
 // Tűzriadó státusz lekérdezés
     function checkStatus() {
