@@ -166,109 +166,16 @@ embed { vertical-align: middle;}
 <script>
 
 // Ebéd napi időzítés
-let img_lunch_images = [
-{
-  "date": "2024-08-31",
-  "url": "img/e0902.png"
-},
-{
-  "date": "2024-09-02",
-  "url": "img/e0902.png"
-},
-{
-  "date": "2024-09-03",
-  "url": "img/e0903.png"
-},
-{
-  "date": "2024-09-04",
-  "url": "img/e0904.png"
-},
-{
-  "date": "2024-09-05",
-  "url": "img/e0905.png"
-},
-{
-  "date": "2024-09-06",
-  "url": "img/e0906.png"
-},
-{
-  "date": "2024-09-09",
-  "url": "img/e0909.png"
-},
-{
-  "date": "2024-09-10",
-  "url": "img/e0910.png"
-},
-{
-  "date": "2024-09-11",
-  "url": "img/e0911.png"
-},
-{
-  "date": "2024-09-12",
-  "url": "img/e0912.png"
-},
-{
-  "date": "2024-09-13",
-  "url": "img/e0913.png"
-},
-{
-  "date": "2024-09-16",
-  "url": "img/e0916.png"
-},
-{
-  "date": "2024-09-17",
-  "url": "img/e0917.png"
-},
-{
-  "date": "2024-09-18",
-  "url": "img/e0918.png"
-},
-{
-  "date": "2024-09-19",
-  "url": "img/e0919.png"
-},
-{
-  "date": "2024-09-20",
-  "url": "img/e0920.png"
-},
-{
-  "date": "2024-09-23",
-  "url": "img/e0923.png"
-},
-{
-  "date": "2024-09-24",
-  "url": "img/e0924.png"
-},
-{
-  "date": "2024-09-25",
-  "url": "img/e0925.png"
-},
-{
-  "date": "2024-09-26",
-  "url": "img/e0926.png"
-},
-{
-  "date": "2024-09-27",
-  "url": "img/e0927.png"
-},
-{
-  "date": "2024-09-30",
-  "url": "img/e0930.png"
-}
-];
-
-//get today date & format to YYYY-MM-DD
-var today = new Date();
-today = today.toISOString().split('T')[0];
-
-//check today date in ring image array
-object = img_lunch_images.find(o => Object.entries(o).find(([k, value]) => k === 'date' && value === today) !== undefined);
-
-//if today date in array change image url
-if(object != null){
-
-  $("#lunch_image").attr("src",object.url);
-}
+        // Get the current date
+        const today = new Date();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const day = String(today.getDate()).padStart(2, '0');
+        
+        // Construct the image filename based on the current date
+        const imagePath = `img/e${month}${day}.png`;
+        
+        // Set the image source
+        document.getElementById('lunch-image').src = imagePath;
 
 // Aktuális napi időzítés
 let img_aktualis_images = [
