@@ -695,6 +695,9 @@ refreshAt(17,00,36);
           } else if (status === 'SCREENSAVER') {
             alertImage.src = 'https://infotv.tmskoncz.hu/img/szag.png';
             overlay.style.display = 'flex';
+          } else if (status === 'ALERT') {
+            alertImage.src = '/img/alerttest.png';
+            overlay.style.display = 'flex';
           } else {
             overlay.style.display = 'none';
           }
