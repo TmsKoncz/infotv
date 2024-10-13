@@ -168,274 +168,218 @@ embed { vertical-align: middle;}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
+//Ebéd napi időzítés
+// Get the current date
+const today = new Date();
+const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+const day = String(today.getDate()).padStart(2, '0');
 
-// Ebéd napi időzítés
-let img_lunch_images = [
-{
-  "date": "2024-08-31",
-  "url": "img/e0902.png"
-},
-{
-  "date": "2024-09-02",
-  "url": "img/e0902.png"
-},
-{
-  "date": "2024-09-03",
-  "url": "img/e0903.png"
-},
-{
-  "date": "2024-09-04",
-  "url": "img/e0904.png"
-},
-{
-  "date": "2024-09-05",
-  "url": "img/e0905.png"
-},
-{
-  "date": "2024-09-06",
-  "url": "img/e0906.png"
-},
-{
-  "date": "2024-09-09",
-  "url": "img/e0909.png"
-},
-{
-  "date": "2024-09-10",
-  "url": "img/e0910.png"
-},
-{
-  "date": "2024-09-11",
-  "url": "img/e0911.png"
-},
-{
-  "date": "2024-09-12",
-  "url": "img/e0912.png"
-},
-{
-  "date": "2024-09-13",
-  "url": "img/e0913.png"
-},
-{
-  "date": "2024-09-16",
-  "url": "img/e0916.png"
-},
-{
-  "date": "2024-09-17",
-  "url": "img/e0917.png"
-},
-{
-  "date": "2024-09-18",
-  "url": "img/e0918.png"
-},
-{
-  "date": "2024-09-19",
-  "url": "img/e0919.png"
-},
-{
-  "date": "2024-09-20",
-  "url": "img/e0920.png"
-},
-{
-  "date": "2024-09-23",
-  "url": "img/e0923.png"
-},
-{
-  "date": "2024-09-24",
-  "url": "img/e0924.png"
-},
-{
-  "date": "2024-09-25",
-  "url": "img/e0925.png"
-},
-{
-  "date": "2024-09-26",
-  "url": "img/e0926.png"
-},
-{
-  "date": "2024-09-27",
-  "url": "img/e0927.png"
-},
-{
-  "date": "2024-09-30",
-  "url": "img/e0930.png"
-}
-];
+// Construct the image filename based on the current date
+const imagePath = `/img/e${month}${day}.png`;
 
-//get today date & format to YYYY-MM-DD
-var today = new Date();
-today = today.toISOString().split('T')[0];
+// Set the image source
+document.getElementById('dailyPhoto').src = imagePath;
 
-//check today date in ring image array
-object = img_lunch_images.find(o => Object.entries(o).find(([k, value]) => k === 'date' && value === today) !== undefined);
-
-//if today date in array change image url
-if(object != null){
-
-  $("#lunch_image").attr("src",object.url);
-}
-
+  
 // Aktuális napi időzítés
 let img_aktualis_images = [
 {
-  "date": "2024-08-22",
-  "url": "img/ujweblap.png"
+  "date": "2024-10-13",
+  "url": "img/halloween.png"
 },
 {
-  "date": "2024-08-23",
-  "url": "img/pg.png"
+  "date": "2024-10-14",
+  "url": "img/halloween.png"
 },
 {
-  "date": "2024-08-24",
-  "url": "img/cseng.png"
+  "date": "2024-10-15",
+  "url": "img/halloween.png"
 },
 {
-  "date": "2024-08-25",
-  "url": "img/cseng.png"
+  "date": "2024-10-16",
+  "url": "img/halloween.png"
 },
 {
-  "date": "2024-08-26",
-  "url": "img/cseng.png"
+  "date": "2024-10-17",
+  "url": "img/halloween.png"
 },
 {
-  "date": "2024-08-27",
-  "url": "img/cseng.png"
+  "date": "2024-10-18",
+  "url": "img/halloween.png"
 },
 {
-  "date": "2024-08-28",
-  "url": "img/cseng.png"
+  "date": "2024-10-19",
+  "url": "img/halloween.png"
 },
 {
-  "date": "2024-08-29",
-  "url": "img/cseng.png"
+  "date": "2024-10-20",
+  "url": "img/halloween.png"
 },
 {
-  "date": "2024-08-30",
-  "url": "img/cseng.png"
+  "date": "2024-10-21",
+  "url": "img/halloween.png"
 },
 {
-  "date": "2024-08-31",
-  "url": "img/pgy.png"
+  "date": "2024-10-22",
+  "url": "img/halloween.png"
 },
 {
-  "date": "2024-09-01",
-  "url": "img/cseng.png"
+  "date": "2024-10-23",
+  "url": "img/halloween.png"
 },
 {
-  "date": "2024-09-02",
-  "url": "img/cseng.png"
+  "date": "2024-10-24",
+  "url": "img/halloween.png"
 },
 {
-  "date": "2024-09-03",
-  "url": "img/pgy.png"
+  "date": "2024-10-25",
+  "url": "img/halloween.png"
 },
 {
-  "date": "2024-09-04",
-  "url": "img/pgy.png"
+  "date": "2024-10-26",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-05",
-  "url": "img/pgy.png"
+  "date": "2024-10-27",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-06",
-  "url": "img/pgy.png"
+  "date": "2024-10-28",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-07",
-  "url": "img/pgy.png"
+  "date": "2024-10-29",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-08",
-  "url": "img/pgy.png"
+  "date": "2024-10-30",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-09",
-  "url": "img/pgy.png"
+  "date": "2024-10-31",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-10",
-  "url": "img/pgy.png"
+  "date": "2024-11-01",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-11",
-  "url": "img/pgy.png"
+  "date": "2024-11-02",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-12",
-  "url": "img/magda.png"
+  "date": "2024-11-03",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-13",
-  "url": "img/magda.png"
+  "date": "2024-11-04",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-14",
-  "url": "img/magda.png"
+  "date": "2024-11-05",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-15",
-  "url": "img/magda.png"
+  "date": "2024-11-06",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-16",
-  "url": "img/magda.png"
+  "date": "2024-11-07",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-17",
-  "url": "img/magda.png"
+  "date": "2024-11-08",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-18",
-  "url": "img/magda.png"
+  "date": "2024-11-09",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-19",
-  "url": "img/magda.png"
+  "date": "2024-11-10",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-20",
-  "url": "img/magda.png"
+  "date": "2024-11-11",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-21",
-  "url": "img/cseng.png"
+  "date": "2024-11-12",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-22",
-  "url": "img/cseng.png"
+  "date": "2024-11-13",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-23",
-  "url": "img/cseng.png"
+  "date": "2024-11-14",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-24",
-  "url": "img/cseng.png"
+  "date": "2024-11-15",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-25",
-  "url": "img/cseng.png"
+  "date": "2024-11-16",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-26",
-  "url": "img/cseng.png"
+  "date": "2024-11-17",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-27",
-  "url": "img/cseng.png"
+  "date": "2024-11-18",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-28",
-  "url": "img/cseng.png"
+  "date": "2024-11-19",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-29",
-  "url": "img/cseng.png"
+  "date": "2024-11-20",
+  "url": "img/next.png"
 },
 {
-  "date": "2024-09-30",
-  "url": "img/cseng.png"
+  "date": "2024-11-21",
+  "url": "img/next.png"
+},
+{
+  "date": "2024-11-22",
+  "url": "img/next.png"
+},
+{
+  "date": "2024-11-23",
+  "url": "img/next.png"
+},
+{
+  "date": "2024-11-24",
+  "url": "img/next.png"
+},
+{
+  "date": "2024-11-25",
+  "url": "img/next.png"
+},
+{
+  "date": "2024-11-26",
+  "url": "img/next.png"
+},
+{
+  "date": "2024-11-27",
+  "url": "img/next.png"
+},
+{
+  "date": "2024-11-28",
+  "url": "img/next.png"
+},
+{
+  "date": "2024-11-29",
+  "url": "img/next.png"
+},
+{
+  "date": "2024-11-30",
+  "url": "img/next.png"
 }
+
 ];
     
 //get today date & format to YYYY-MM-DD
