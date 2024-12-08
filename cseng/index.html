@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Csengetési Rend</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            background-color: #e0f7fa;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        .time-display {
+            position: absolute;
+            top: 100px; /* Az idő elhelyezése a kép felső részén */
+            right: 200px; /* Távolság a jobb széltől */
+            font-size: 3rem;
+            font-family: sans-serif;
+            font-weight: bold;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5); /* Átlátszó fekete háttér az idő jobb láthatóságához */
+            padding: 5px 10px;
+            border-radius: 5px;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="../img/ujcseng.png" alt="Csengetési Rend" class="background-image">
+        <div id="time" class="time-display"></div>
+    </div>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('time').textContent = `${hours}:${minutes}`;
+        }
+
+        // Az idő frissítése az oldal betöltésekor és 1 percenként
+        updateTime();
+        setInterval(updateTime, 60000);
+    </script>
+</body>
+</html>
