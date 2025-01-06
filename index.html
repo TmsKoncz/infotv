@@ -131,7 +131,7 @@ embed { vertical-align: middle;}
         </iframe>
     </div>
 </div>
-
+<!--
 <div class="mySlides">
         <img id="lunch_image" src="img/404.png" style="width:100%" alt="Ebéd">
 </div>
@@ -140,7 +140,7 @@ embed { vertical-align: middle;}
 <div class="mySlides">
   <img id="honapverse_image" src="img/404.png" style="width:100%" alt="A hónap verse" onerror="nextSlide()">
 </div>
-
+-->
   <!--
 <div class="mySlides" id="futar">
     <iframe type="text/html" src="https://futar.sznokarecords.com/?stopID=BKK_F03329" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;" alt="BKK FUTÁR" onerror="this.onerror=null; this.src='img/404.png'" scrolling="no"></iframe>
@@ -168,17 +168,17 @@ embed { vertical-align: middle;}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
-Ebéd napi időzítés
+//Ebéd napi időzítés
 // Get the current date
-const ebednap = new Date();
-const month = String(ebednap.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-const day = String(ebednap.getDate()).padStart(2, '0');
+// const ebednap = new Date();
+// const month = String(ebednap.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+// const day = String(ebednap.getDate()).padStart(2, '0');
 
 // Construct the image filename based on the current date
-const imagePath = `img/e${month}${day}.png`;
+// const imagePath = `img/e${month}${day}.png`;
 
 // Set the image source
-document.getElementById('lunch_image').src = imagePath;
+// document.getElementById('lunch_image').src = imagePath;
 
   
 // Aktuális napi időzítés
