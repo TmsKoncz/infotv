@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfoTV Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Bejelentkezési űrlap -->
+        <div id="login-form" class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-xl font-semibold mb-4">Bejelentkezés</h2>
+            <input type="email" id="email" placeholder="E-mail" class="w-full p-2 border rounded mb-4">
+            <input type="password" id="password" placeholder="Jelszó" class="w-full p-2 border rounded mb-4">
+            <button onclick="login()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Bejelentkezés</button>
+        </div>
+
+        <!-- Admin felület (csak bejelentkezés után látható) -->
+        <div id="admin-content" class="hidden">
+            <h1 class="text-3xl font-bold mb-8">InfoTV Admin</h1>
+            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                <h2 class="text-xl font-semibold mb-4">Új dia hozzáadása</h2>
+                <select id="slide-type" class="w-full p-2 border rounded mb-4">
+                    <option value="image">Kép</option>
+                    <option value="embed">Beágyazott link</option>
+                </select>
+                <input type="text" id="slide-content" placeholder="Kép URL vagy beágyazott link" class="w-full p-2 border rounded mb-4">
+                <input type="date" id="slide-start-date" class="w-full p-2 border rounded mb-4">
+                <input type="date" id="slide-end-date" class="w-full p-2 border rounded mb-4">
+                <textarea id="slide-comment" placeholder="Megjegyzés" class="w-full p-2 border rounded mb-4"></textarea>
+                <button onclick="addSlide()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Dia hozzáadása</button>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Diák listája</h2>
+                <div id="slides-container"></div>
+            </div>
+
+            <!-- Kijelentkezési gomb -->
+            <button onclick="logout()" class="w-full bg-red-500 text-white p-2 rounded hover:bg-red-600 mt-8">Kijelentkezés</button>
+        </div>
+    </div>
+
+    <!-- Firebase és Firestore SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
+        // Firebase konfiguráció
+        const firebaseConfig = {
+            apiKey: "AIzaSyAmlb3HFiXq18IlV--o1GOC5yofXSZjV48",
+            authDomain: "infotv-50232.firebaseapp.com",
+            projectId: "infotv-50232",
+            storageBucket: "infotv-50232.firebasestorage.app",
+            messagingSenderId: "890415866941",
+            appId: "1:890415866941:web:10606b06957eca86d43654",
+            measurementId: "G-2V1HZ0RPJK"
+        };
+
+        // Firebase inicializálása
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Bejelentkezési űrlap és admin tartalom kezelése
+        const loginForm = document.getElementById('login-form');
+        const adminContent = document.getElementById('admin-content');
+
+        // Felhasználó bejelentkezési állapotának figyelése
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Felhasználó bejelentkezett
+                loginForm.style.display = 'none';
+                adminContent.style.display = 'block';
+                renderSlides();
+            } else {
+                // Felhasználó nincs bejelentkezve
+                loginForm.style.display = 'block';
+                adminContent.style.display = 'none';
+            }
+        });
+
+        // Bejelentkezés
+        window.login = async function() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                alert('Sikeres bejelentkezés!');
+            } catch (error) {
+                alert('Hibás e-mail vagy jelszó!');
+            }
+        };
+
+        // Kijelentkezés
+        window.logout = async function() {
+            try {
+                await signOut(auth);
+                alert('Sikeres kijelentkezés!');
+            } catch (error) {
+                alert('Hiba történt a kijelentkezés során!');
+            }
+        };
+
+        // Diák betöltése és megjelenítése
+        async function renderSlides() {
+            if (!auth.currentUser) {
+                alert('Kérlek, jelentkezz be!');
+                return;
+            }
+
+            const container = document.getElementById('slides-container');
+            container.innerHTML = '';
+
+            try {
+                const querySnapshot = await getDocs(collection(db, 'slides'));
+                querySnapshot.forEach((doc) => {
+                    const slide = doc.data();
+                    const slideElement = document.createElement('div');
+                    slideElement.className = `slide-item bg-gray-50 p-4 rounded-lg mb-4 ${slide.active ? 'border-l-4 border-blue-500' : 'border-l-4 border-gray-300'}`;
+                    slideElement.innerHTML = `
+                        <strong>${slide.type === 'image' ? 'Kép' : 'Beágyazott link'}:</strong> ${slide.content}
+                        <br>
+                        <small>${slide.startDate} - ${slide.endDate}</small>
+                        <br>
+                        <small>Megjegyzés: ${slide.comment || 'Nincs megjegyzés'}</small>
+                        <div class="mt-2">
+                            <button onclick="toggleSlide('${doc.id}')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">${slide.active ? 'Kikapcsol' : 'Bekapcsol'}</button>
+                            <button onclick="deleteSlide('${doc.id}')" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Töröl</button>
+                        </div>
+                    `;
+                    container.appendChild(slideElement);
+                });
+            } catch (error) {
+                console.error('Hiba a diák betöltésekor:', error);
+            }
+        }
+
+        // Dia hozzáadása
+        window.addSlide = async function() {
+            if (!auth.currentUser) {
+                alert('Kérlek, jelentkezz be!');
+                return;
+            }
+
+            const type = document.getElementById('slide-type').value;
+            const content = document.getElementById('slide-content').value;
+            const startDate = document.getElementById('slide-start-date').value;
+            const endDate = document.getElementById('slide-end-date').value;
+            const comment = document.getElementById('slide-comment').value;
+
+            if (!type || !content || !startDate || !endDate) {
+                alert('Minden mezőt ki kell tölteni!');
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, 'slides'), {
+                    type,
+                    content,
+                    startDate,
+                    endDate,
+                    comment,
+                    active: true
+                });
+                alert('Dia hozzáadva!');
+                renderSlides();
+            } catch (error) {
+                console.error('Hiba a dia hozzáadásakor:', error);
+                alert('Hiba történt a dia hozzáadásakor. Ellenőrizd a konzolt!');
+            }
+        };
+
+        // Dia állapotának váltása
+        window.toggleSlide = async function(id) {
+            if (!auth.currentUser) {
+                alert('Kérlek, jelentkezz be!');
+                return;
+            }
+
+            const slideRef = doc(db, 'slides', id);
+            const slideDoc = await getDoc(slideRef);
+            await updateDoc(slideRef, { active: !slideDoc.data().active });
+            renderSlides();
+        };
+
+        // Dia törlése
+        window.deleteSlide = async function(id) {
+            if (!auth.currentUser) {
+                alert('Kérlek, jelentkezz be!');
+                return;
+            }
+
+            await deleteDoc(doc(db, 'slides', id));
+            renderSlides();
+        };
+    </script>
+</body>
+</html>
