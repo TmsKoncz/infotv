@@ -27,6 +27,7 @@
                     <option value="embed">Beágyazott link</option>
                 </select>
                 <input type="text" id="slide-content" placeholder="Kép URL vagy beágyazott link" class="w-full p-2 border rounded mb-4">
+                <input type="file" id="slide-file" class="w-full p-2 border rounded mb-4" accept="image/*">
                 <input type="date" id="slide-start-date" class="w-full p-2 border rounded mb-4">
                 <input type="date" id="slide-end-date" class="w-full p-2 border rounded mb-4">
                 <textarea id="slide-comment" placeholder="Megjegyzés" class="w-full p-2 border rounded mb-4"></textarea>
@@ -48,6 +49,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-storage.js";
 
         // Firebase konfiguráció
         const firebaseConfig = {
@@ -64,6 +66,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
+        const storage = getStorage(app);
 
         // Bejelentkezési űrlap és admin tartalom kezelése
         const loginForm = document.getElementById('login-form');
@@ -124,7 +127,8 @@
                     slideElement.className = `slide-item bg-gray-50 p-4 rounded-lg mb-4 ${slide.active ? 'border-l-4 border-blue-500' : 'border-l-4 border-gray-300'}`;
                     slideElement.setAttribute('data-id', slide.id);
                     slideElement.innerHTML = 
-                        `<strong>${slide.type === 'image' ? 'Kép' : 'Beágyazott link'}:</strong> ${slide.content}
+                        `<strong>${slide.type === 'image' ? 'Kép' : 'Beágyazott link'}:</strong> 
+                        ${slide.type === 'image' ? `<img src="${slide.content}" alt="Slide Image" class="w-full h-auto mt-2">` : slide.content}
                         <br>
                         <small>${slide.startDate} - ${slide.endDate}</small>
                         <br>
@@ -153,90 +157,51 @@
             }
         }
 
-                // Szerkesztés funkció
-        window.editSlide = async function(id) {
-            const docRef = doc(db, 'slides', id);
-            const docSnap = await getDoc(docRef);
-            
-            if (docSnap.exists()) {
-                const slide = docSnap.data();
-                document.getElementById('edit-id').value = id;
-                document.getElementById('slide-type').value = slide.type;
-                document.getElementById('slide-content').value = slide.content;
-                document.getElementById('slide-start-date').value = slide.startDate;
-                document.getElementById('slide-end-date').value = slide.endDate;
-                document.getElementById('slide-comment').value = slide.comment || '';
-                document.getElementById('form-title').textContent = 'Dia szerkesztése';
-                document.getElementById('save-button').textContent = 'Frissítés';
-            }
-        };
-
-        // Mentés funkció
-        window.saveSlide = async function() {
-            const id = document.getElementById('edit-id').value;
-            const slideData = {
-                type: document.getElementById('slide-type').value,
-                content: document.getElementById('slide-content').value,
-                startDate: document.getElementById('slide-start-date').value,
-                endDate: document.getElementById('slide-end-date').value,
-                comment: document.getElementById('slide-comment').value
-            };
-
-            try {
-                if (id) {
-                    await updateDoc(doc(db, 'slides', id), slideData);
-                } else {
-                    await addDoc(collection(db, 'slides'), { ...slideData, active: true });
-                }
-                resetForm();
-                renderSlides();
-            } catch (error) {
-                console.error('Hiba a mentés során:', error);
-            }
-        };
-
-        function resetForm() {
-            document.getElementById('edit-id').value = '';
-            document.getElementById('form-title').textContent = 'Új dia hozzáadása';
-            document.getElementById('save-button').textContent = 'Mentés';
-            document.querySelectorAll('input, textarea, select').forEach(element => element.value = '');
-        }
-        
         // Dia hozzáadása
-        window.addSlide = async function() {
-            if (!auth.currentUser) {
-                alert('Kérlek, jelentkezz be!');
-                return;
-            }
+      window.addSlide = async function() {
+    if (!auth.currentUser) {
+        alert('Kérlek, jelentkezz be!');
+        return;
+    }
 
-            const type = document.getElementById('slide-type').value;
-            const content = document.getElementById('slide-content').value;
-            const startDate = document.getElementById('slide-start-date').value;
-            const endDate = document.getElementById('slide-end-date').value;
-            const comment = document.getElementById('slide-comment').value;
+    const type = document.getElementById('slide-type').value;
+    const content = document.getElementById('slide-content').value;
+    const file = document.getElementById('slide-file').files[0];
+    const startDate = document.getElementById('slide-start-date').value;
+    const endDate = document.getElementById('slide-end-date').value;
+    const comment = document.getElementById('slide-comment').value;
 
-            if (!type || !content || !startDate || !endDate) {
-                alert('Minden mezőt ki kell tölteni!');
-                return;
-            }
+    if (!type || !startDate || !endDate) {
+        alert('Minden mezőt ki kell tölteni!');
+        return;
+    }
 
-            try {
-                await addDoc(collection(db, 'slides'), {
-                    type,
-                    content,
-                    startDate,
-                    endDate,
-                    comment,
-                    active: true,
-                    order: (await getDocs(collection(db, 'slides'))).size
-                });
-                alert('Dia hozzáadva!');
-                renderSlides();
-            } catch (error) {
-                console.error('Hiba a dia hozzáadásakor:', error);
-                alert('Hiba történt a dia hozzáadásakor. Ellenőrizd a konzolt!');
-            }
-        };
+    try {
+        let fileUrl = content;
+
+        if (file) {
+            const storageRef = ref(storage, `slides/${file.name}`);
+            await uploadBytes(storageRef, file);
+            fileUrl = await getDownloadURL(storageRef);
+        }
+
+        await addDoc(collection(db, 'slides'), {
+            type,
+            content: fileUrl,
+            startDate,
+            endDate,
+            comment,
+            active: true,
+            order: (await getDocs(collection(db, 'slides'))).size
+        });
+
+        alert('Dia hozzáadva!');
+        renderSlides();
+    } catch (error) {
+        console.error('Hiba a dia hozzáadásakor:', error);
+        alert('Hiba történt a dia hozzáadásakor. Ellenőrizd a konzolt!');
+    }
+};
 
         // Dia állapotának váltása
         window.toggleSlide = async function(id) {
