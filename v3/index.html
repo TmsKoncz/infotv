@@ -34,14 +34,42 @@
             border: none;
             object-fit: contain;
         }
+        /* Overlay stílusok */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* Átlátszó fekete háttér */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Minden tartalom felett */
+        }
+        .overlay-image {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
+    <!-- Overlay HTML -->
+    <div id="overlay" class="overlay hidden">
+        <img id="alertImage" src="" alt="Alert Image" class="overlay-image">
+    </div>
+
+    <!-- Diavetítés tartalma -->
     <div class="slideshow-container" id="slideshow-container"></div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getFirestore, collection, query, where, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, onSnapshot, orderBy, doc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
+        // Firebase konfiguráció
         const firebaseConfig = {
             apiKey: "AIzaSyAmlb3HFiXq18IlV--o1GOC5yofXSZjV48",
             authDomain: "infotv-50232.firebaseapp.com",
@@ -52,11 +80,15 @@
             measurementId: "G-2V1HZ0RPJK"
         };
 
+        // Firebase inicializálása
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
+        // Diavetítés változók
         let slides = [];
         let currentSlideIndex = 0;
 
+        // Dátum formázása
         function formatDate(date) {
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -64,11 +96,12 @@
             return `${year}-${month}-${day}`;
         }
 
+        // Diák betöltése
         function fetchSlides() {
             const slidesRef = collection(db, 'slides');
             const today = formatDate(new Date());
             const q = query(slidesRef, where('active', '==', true), where('startDate', '<=', today), where('endDate', '>=', today), orderBy("order", "asc"));
-            
+
             onSnapshot(q, (querySnapshot) => {
                 slides = [];
                 querySnapshot.forEach((doc) => {
@@ -78,6 +111,7 @@
             }, (error) => console.error('Hiba a diák betöltésekor:', error));
         }
 
+        // Diák megjelenítése
         function renderSlides() {
             const container = document.getElementById('slideshow-container');
             container.innerHTML = '';
@@ -89,6 +123,7 @@
             });
         }
 
+        // Következő dia
         function nextSlide() {
             if (slides.length > 0) {
                 currentSlideIndex = (currentSlideIndex + 1) % slides.length;
@@ -96,9 +131,31 @@
             }
         }
 
-        setInterval(nextSlide, 30000);
-        setInterval(fetchSlides, 60000);
+        // Overlay tartalom betöltése
+        function setupOverlay() {
+            const overlay = document.getElementById('overlay');
+            const alertImage = document.getElementById('alertImage');
+
+            onSnapshot(doc(db, 'overlay', 'current'), (doc) => {
+                const data = doc.data();
+                if (data && data.active) {
+                    if (data.type === 'image') {
+                        alertImage.src = data.content;
+                        overlay.classList.remove('hidden');
+                    } else {
+                        overlay.classList.add('hidden');
+                    }
+                } else {
+                    overlay.classList.add('hidden');
+                }
+            });
+        }
+
+        // Indítás
+        setInterval(nextSlide, 30000); // 30 másodpercenként vált
+        setInterval(fetchSlides, 60000); // 1 percenként frissít
         fetchSlides();
+        setupOverlay();
     </script>
 </body>
 </html>

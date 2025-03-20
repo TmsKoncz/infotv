@@ -6,8 +6,75 @@
     <title>InfoTV Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <style>
+        .slide-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .drag-handle {
+            cursor: grab;
+            opacity: 0.5;
+        }
+        .drag-handle:hover {
+            opacity: 1;
+        }
+        .preview-image {
+            max-height: 100px;
+            width: auto;
+        }
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                bottom: -50px;
+                opacity: 0;
+            }
+            to {
+                bottom: 20px;
+                opacity: 1;
+            }
+        }
+        .notification.hide {
+            animation: slideOut 0.5s ease-in;
+        }
+        @keyframes slideOut {
+            from {
+                bottom: 20px;
+                opacity: 1;
+            }
+            to {
+                bottom: -50px;
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 <body class="bg-gray-100 p-8">
+    <!-- Értesítési sáv -->
+    <div id="notification" class="notification hidden"></div>
+
+    <!-- Megerősítő popup -->
+    <div id="confirm-popup" class="popup hidden">
+        <p id="confirm-message"></p>
+        <div class="mt-4 flex gap-4">
+            <button onclick="confirmAction(true)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Igen</button>
+            <button onclick="confirmAction(false)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Mégse</button>
+        </div>
+    </div>
+    <div id="confirm-overlay" class="popup-overlay hidden"></div>
+
     <div class="max-w-4xl mx-auto">
         <!-- Bejelentkezési űrlap -->
         <div id="login-form" class="bg-white p-6 rounded-lg shadow-md mb-8">
@@ -19,35 +86,49 @@
 
         <!-- Admin felület (csak bejelentkezés után látható) -->
         <div id="admin-content" class="hidden">
-            <h1 class="text-3xl font-bold mb-8">InfoTV Admin</h1>
-            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-                <h2 class="text-xl font-semibold mb-4">Új dia hozzáadása</h2>
-                <select id="slide-type" class="w-full p-2 border rounded mb-4">
-                    <option value="image">Kép</option>
-                    <option value="embed">Beágyazott link</option>
-                </select>
-                <input type="text" id="slide-content" placeholder="Kép URL vagy beágyazott link" class="w-full p-2 border rounded mb-4">
-                <input type="file" id="slide-file" class="w-full p-2 border rounded mb-4" accept="image/*">
-                <input type="date" id="slide-start-date" class="w-full p-2 border rounded mb-4">
-                <input type="date" id="slide-end-date" class="w-full p-2 border rounded mb-4">
-                <textarea id="slide-comment" placeholder="Megjegyzés" class="w-full p-2 border rounded mb-4"></textarea>
-                <button onclick="addSlide()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Dia hozzáadása</button>
+            <!-- Fejléc -->
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold">InfoTV Admin</h1>
+                <div class="flex gap-4">
+                    <a href="https://www.canva.com/design/DAGI4OevAdo/QiptmBWJUsqrn3_MJbQLww/edit" target="_blank" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Sablonok</a>
+                    <a href="https://koncz.link/havaria" target="_blank" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Havária</a>
+                    <a href="https://infotv.tmskoncz.hu" target="_blank" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Live megtekintése</a>
+                    <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Kijelentkezés</button>
+                </div>
             </div>
 
+            <!-- Új dia hozzáadása (becsukható/kinyitható) -->
+            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                <div class="flex justify-between items-center cursor-pointer" onclick="toggleSlideForm()">
+                    <h2 class="text-xl font-semibold">Új dia hozzáadása</h2>
+                    <span id="slide-form-toggle">▼</span>
+                </div>
+                <div id="slide-form" class="mt-4 hidden">
+                    <select id="slide-type" class="w-full p-2 border rounded mb-4">
+                        <option value="image">Kép</option>
+                        <option value="embed">Beágyazott link</option>
+                    </select>
+                    <input type="text" id="slide-content" placeholder="Kép URL vagy beágyazott link" class="w-full p-2 border rounded mb-4">
+                    <input type="file" id="slide-file" class="w-full p-2 border rounded mb-4" accept="image/*">
+                    <input type="date" id="slide-start-date" class="w-full p-2 border rounded mb-4">
+                    <input type="date" id="slide-end-date" class="w-full p-2 border rounded mb-4">
+                    <textarea id="slide-comment" placeholder="Megjegyzés" class="w-full p-2 border rounded mb-4"></textarea>
+                    <button onclick="addSlide()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Dia hozzáadása</button>
+                </div>
+            </div>
+
+            <!-- Diák listája -->
             <div class="bg-white p-6 rounded-lg shadow-md">
                 <h2 class="text-xl font-semibold mb-4">Diák listája</h2>
                 <div id="slides-container" class="sortable-list"></div>
             </div>
-
-            <!-- Kijelentkezési gomb -->
-            <button onclick="logout()" class="w-full bg-red-500 text-white p-2 rounded hover:bg-red-600 mt-8">Kijelentkezés</button>
         </div>
     </div>
 
     <!-- Firebase és Firestore SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-storage.js";
 
@@ -75,12 +156,10 @@
         // Felhasználó bejelentkezési állapotának figyelése
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Felhasználó bejelentkezett
                 loginForm.style.display = 'none';
                 adminContent.style.display = 'block';
                 renderSlides();
             } else {
-                // Felhasználó nincs bejelentkezve
                 loginForm.style.display = 'block';
                 adminContent.style.display = 'none';
             }
@@ -93,9 +172,9 @@
 
             try {
                 await signInWithEmailAndPassword(auth, email, password);
-                alert('Sikeres bejelentkezés!');
+                showNotification('Sikeres bejelentkezés!');
             } catch (error) {
-                alert('Hibás e-mail vagy jelszó!');
+                showNotification('Hibás e-mail vagy jelszó!');
             }
         };
 
@@ -103,11 +182,100 @@
         window.logout = async function() {
             try {
                 await signOut(auth);
-                alert('Sikeres kijelentkezés!');
+                showNotification('Sikeres kijelentkezés!');
             } catch (error) {
-                alert('Hiba történt a kijelentkezés során!');
+                showNotification('Hiba történt a kijelentkezés során!');
             }
         };
+
+        // Új dia űrlap becsukása/kinyitása
+        window.toggleSlideForm = function() {
+            const slideForm = document.getElementById('slide-form');
+            const toggleIcon = document.getElementById('slide-form-toggle');
+            slideForm.classList.toggle('hidden');
+            toggleIcon.textContent = slideForm.classList.contains('hidden') ? '▼' : '▲';
+        };
+
+        // Dia hozzáadása
+        window.addSlide = async function() {
+            if (!auth.currentUser) {
+                showNotification('Kérlek, jelentkezz be!');
+                return;
+            }
+
+            const type = document.getElementById('slide-type').value;
+            const content = document.getElementById('slide-content').value;
+            const file = document.getElementById('slide-file').files[0];
+            const startDate = document.getElementById('slide-start-date').value;
+            const endDate = document.getElementById('slide-end-date').value;
+            const comment = document.getElementById('slide-comment').value;
+
+            if (!type || !startDate || !endDate) {
+                showNotification('Minden mezőt ki kell tölteni!');
+                return;
+            }
+
+            try {
+                let fileUrl = content;
+                if (file) {
+                    const storageRef = ref(storage, `slides/${file.name}`);
+                    await uploadBytes(storageRef, file);
+                    fileUrl = await getDownloadURL(storageRef);
+                }
+
+                await addDoc(collection(db, 'slides'), {
+                    type,
+                    content: fileUrl,
+                    startDate,
+                    endDate,
+                    comment,
+                    active: true,
+                    order: (await getDocs(collection(db, 'slides'))).size
+                });
+                showNotification('Dia hozzáadva!');
+                renderSlides();
+            } catch (error) {
+                console.error('Hiba a dia hozzáadásakor:', error);
+                showNotification('Hiba történt a dia hozzáadásakor. Ellenőrizd a konzolt!');
+            }
+        };
+
+        // Dia törlése
+        window.deleteSlide = async function(id) {
+            showConfirmPopup('Biztosan törlöd ezt a diát?', async () => {
+                await deleteDoc(doc(db, 'slides', id));
+                showNotification('Dia törölve!');
+                renderSlides();
+            });
+        };
+
+        // Értesítés megjelenítése
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.remove('hidden');
+
+            // Értesítés bezárása 10 másodperc után
+            setTimeout(() => {
+                notification.classList.add('hide');
+                setTimeout(() => notification.classList.add('hidden'), 500); // Várakozás az animáció befejezésére
+            }, 10000);
+        }
+
+        // Megerősítő popup megjelenítése
+        function showConfirmPopup(message, callback) {
+            const confirmPopup = document.getElementById('confirm-popup');
+            const confirmOverlay = document.getElementById('confirm-overlay');
+            document.getElementById('confirm-message').textContent = message;
+            confirmPopup.classList.remove('hidden');
+            confirmOverlay.classList.remove('hidden');
+
+            window.confirmAction = function(confirmed) {
+                if (confirmed) callback();
+                confirmPopup.classList.add('hidden');
+                confirmOverlay.classList.add('hidden');
+            };
+        }
 
         // Diák betöltése és megjelenítése
         async function renderSlides() {
@@ -126,22 +294,31 @@
                     const slideElement = document.createElement('div');
                     slideElement.className = `slide-item bg-gray-50 p-4 rounded-lg mb-4 ${slide.active ? 'border-l-4 border-blue-500' : 'border-l-4 border-gray-300'}`;
                     slideElement.setAttribute('data-id', slide.id);
-                    slideElement.innerHTML = 
-                        `<strong>${slide.type === 'image' ? 'Kép' : 'Beágyazott link'}:</strong> 
-                        ${slide.type === 'image' ? `<img src="${slide.content}" alt="Slide Image" class="w-full h-auto mt-2">` : slide.content}
-                        <br>
-                        <small>${slide.startDate} - ${slide.endDate}</small>
-                        <br>
-                        <small>Megjegyzés: ${slide.comment || 'Nincs megjegyzés'}</small>
-                        <div class="mt-2">
+                    slideElement.innerHTML = `
+                        <div class="drag-handle">&#9776;</div>
+                        <div class="flex-1">
+                            <div class="flex gap-4">
+                                ${slide.type === 'image' ? `<img src="${slide.content}" alt="Slide Image" class="preview-image">` : ''}
+                                <div>
+                                    <strong>${slide.type === 'image' ? 'Kép' : 'Beágyazott link'}</strong>
+                                    <br>
+                                    <small>${slide.startDate} - ${slide.endDate}</small>
+                                    <br>
+                                    <small>Megjegyzés: ${slide.comment || 'Nincs megjegyzés'}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
                             <button onclick="toggleSlide('${slide.id}')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">${slide.active ? 'Kikapcsol' : 'Bekapcsol'}</button>
                             <button onclick="deleteSlide('${slide.id}')" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Töröl</button>
-                        </div>`;
+                        </div>
+                    `;
                     container.appendChild(slideElement);
                 });
 
-                // SortableJS inicializálása
+                // SortableJS inicializálása (csak a drag-handle-el működik)
                 Sortable.create(container, {
+                    handle: '.drag-handle',
                     animation: 150,
                     onEnd: async function(evt) {
                         const slides = Array.from(container.children);
@@ -156,76 +333,6 @@
                 console.error('Hiba a diák betöltésekor:', error);
             }
         }
-
-        // Dia hozzáadása
-      window.addSlide = async function() {
-    if (!auth.currentUser) {
-        alert('Kérlek, jelentkezz be!');
-        return;
-    }
-
-    const type = document.getElementById('slide-type').value;
-    const content = document.getElementById('slide-content').value;
-    const file = document.getElementById('slide-file').files[0];
-    const startDate = document.getElementById('slide-start-date').value;
-    const endDate = document.getElementById('slide-end-date').value;
-    const comment = document.getElementById('slide-comment').value;
-
-    if (!type || !startDate || !endDate) {
-        alert('Minden mezőt ki kell tölteni!');
-        return;
-    }
-
-    try {
-        let fileUrl = content;
-
-        if (file) {
-            const storageRef = ref(storage, `slides/${file.name}`);
-            await uploadBytes(storageRef, file);
-            fileUrl = await getDownloadURL(storageRef);
-        }
-
-        await addDoc(collection(db, 'slides'), {
-            type,
-            content: fileUrl,
-            startDate,
-            endDate,
-            comment,
-            active: true,
-            order: (await getDocs(collection(db, 'slides'))).size
-        });
-
-        alert('Dia hozzáadva!');
-        renderSlides();
-    } catch (error) {
-        console.error('Hiba a dia hozzáadásakor:', error);
-        alert('Hiba történt a dia hozzáadásakor. Ellenőrizd a konzolt!');
-    }
-};
-
-        // Dia állapotának váltása
-        window.toggleSlide = async function(id) {
-            if (!auth.currentUser) {
-                alert('Kérlek, jelentkezz be!');
-                return;
-            }
-
-            const slideRef = doc(db, 'slides', id);
-            const slideDoc = await getDoc(slideRef);
-            await updateDoc(slideRef, { active: !slideDoc.data().active });
-            renderSlides();
-        };
-
-        // Dia törlése
-        window.deleteSlide = async function(id) {
-            if (!auth.currentUser) {
-                alert('Kérlek, jelentkezz be!');
-                return;
-            }
-
-            await deleteDoc(doc(db, 'slides', id));
-            renderSlides();
-        };
     </script>
 </body>
 </html>
