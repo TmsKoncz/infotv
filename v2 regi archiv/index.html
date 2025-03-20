@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SZAG InfoTV</title>
+<link rel="icon" type="image/x-icon" href="img/logo.png">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CXT37WPC0Y"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-CXT37WPC0Y');
+</script>
+
+<style>
+body {
+    font-family: Verdana, sans-serif;
+    padding: 0;
+    margin: 0;
+    background-color: black;
+    pointer-events: none;
+}
+
+.mySlides {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border: none;
+    padding: 0;
+    margin: 0;
+    align-content: center;
+}
+    
+img {vertical-align: middle;}
+
+embed { vertical-align: middle;}
+
+
+/* Slideshow container */
+.slideshow-container {
+    max-width: 100%;
+    position: center;
+    margin: 0px;
+}
+
+#alttextsize {
+    font-size: 40px;
+    font-weight: bold;
+    color: #000;
+}
+
+    /* Next & previous buttons */
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  margin-top: -22px;
+  padding: 16px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+    
+    
+/*Tűzriadó */
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      /* background-color: rgba(0,0,0,0.8); */
+      z-index: 10000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+    #overlay img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+    
+    iframe {
+        overflow: hidden;
+    }
+</style>
+</head>
+    
+<body>
+
+<div class="slideshow-container">
+
+<!-- TŰZRIADÓ -->
+  <div id="overlay">
+    <img id="alertImage" src="img/404.png" alt="Tűzriadó">
+  </div>
+	
+<div class="mySlides">
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+=======
+>>>>>>> Stashed changes
+        <img src="img/madar.png" style="width:100%" alt="kultura napja">
+</div>
+	
+<div class="mySlides">
+>>>>>>> Stashed changes
+    <iframe title="csengetesi rend" type="text/html" src="https://infotv.tmskoncz.hu/cseng" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;" scrolling="no"></iframe>
+</div>
+	
+<div class="mySlides">
+    <iframe title="ebéd" type="text/html" src="https://infotv.tmskoncz.hu/ebed" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;" scrolling="no"></iframe>
+</div>
+
+<div class="mySlides">
+        <img src="img/hvmarc25.png" style="width:100%">
+</div>
+<!--
+<div class="mySlides">
+        <img src="img/tttel.png" style="width:100%">
+</div>
+-->
+<div class="mySlides">
+        <img src="img/SZAG infoTV templatek.png" style="width:100%" alt="hidak">
+</div>
+
+<div class="mySlides">
+    <div style="position: relative; width: 100%; height: 0; padding-top: 56.2500%;
+ padding-bottom: 0; margin-top: 0; margin-bottom: 0; overflow: hidden;
+ border-radius: 8px; will-change: transform;">
+        
+        <iframe title="helyettesítés" loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;margin: 0;" src="https:&#x2F;&#x2F;www.canva.com&#x2F;design&#x2F;DAFzhI98FxY&#x2F;ZB_Z3bO34ENHNTBBNbbLZA&#x2F;view?embed" alt="Helyettesítések helye" scrolling="no">
+        </iframe>
+    </div>
+</div>
+<!--
+<div class="mySlides">
+  <img id="honapverse_image" src="img/404.png" style="width:100%" alt="A hónap verse" onerror="nextSlide()">
+</div>
+-->
+  <!--
+<div class="mySlides" id="futar">
+    <iframe type="text/html" src="https://futar.sznokarecords.com/?stopID=BKK_F03329" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;" alt="BKK FUTÁR" onerror="this.onerror=null; this.src='img/404.png'" scrolling="no"></iframe>
+</div>
+-->
+  
+</div>
+
+<div style="text-align:center">
+  <span class="dot"></span> 
+  <span class="dot"></span> 
+  <span class="dot"></span> 
+  <span class="dot"></span> 
+  <span class="dot"></span> 
+  <span class="dot"></span> 
+  <span class="dot"></span> 
+  <span class="dot"></span> 
+  <span class="dot"></span> 
+  <span class="dot"></span> 
+  <span class="dot"></span> 
+  <span class="dot"></span> 
+  <span class="dot"></span> 
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+// Aktuális napi időzítés
+let img_aktualis_images = [
+{
+  "date": "2024-10-13",
+  "url": "img/halloween.png"
+},
+{
+  "date": "2024-10-14",
+  "url": "img/halloween.png"
+},
+{
+  "date": "2024-10-15",
+  "url": "img/halloween.png"
+},
+{
+  "date": "2024-10-16",
+  "url": "img/halloween.png"
+},
+{
+  "date": "2024-10-17",
+  "url": "img/halloween.png"
+},
+{
+  "date": "2024-10-18",
+  "url": "img/halloween.png"
+},
+{
+  "date": "2024-10-19",
+  "url": "img/halloween.png"
+},
+{
+  "date": "2024-10-20",
+  "url": "img/halloween.png"
+},
+{
+  "date": "2024-10-21",
+  "url": "img/halloween.png"
+},
+{
+  "date": "2024-10-22",
+  "url": "img/halloween.png"
+},
+{
+  "date": "2024-10-23",
+  "url": "img/halloween.png"
+},
+{
+  "date": "2024-10-24",
+  "url": "img/halloween.png"
+},
+{
+  "date": "2024-10-25",
+  "url": "img/halloween.png"
+},
+{
+  "date": "2024-10-26",
+  "url": "img/next.png"
+},
+{
+  "date": "2024-10-27",
+  "url": "img/next.png"
+},
+{
+  "date": "2024-10-28",
+  "url": "img/next.png"
+},
+{
+  "date": "2024-10-29",
+  "url": "img/next.png"
+},
+{
+  "date": "2024-10-30",
+  "url": "img/next.png"
+},
+{
+  "date": "2024-10-31",
+  "url": "img/next.png"
+},
+{
+  "date": "2024-11-01",
+  "url": "img/next.png"
+},
+{
+  "date": "2024-11-02",
+  "url": "img/next.png"
+},
+{
+  "date": "2024-11-03",
+  "url": "img/next.png"
+},
+{
+  "date": "2024-11-04",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-05",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-06",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-07",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-08",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-09",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-10",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-11",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-12",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-13",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-14",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-15",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-16",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-17",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-18",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-19",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-20",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-21",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-22",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-23",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-24",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-25",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-26",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-27",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-28",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-29",
+  "url": "img/sakk.png"
+},
+{
+  "date": "2024-11-30",
+  "url": "img/sakk.png"
+}
+
+];
+    
+//get today date & format to YYYY-MM-DD
+var today = new Date();
+today = today.toISOString().split('T')[0];
+
+//check today date in ring image array
+object = img_aktualis_images.find(o => Object.entries(o).find(([k, value]) => k === 'date' && value === today) !== undefined);
+
+//if today date in array change image url
+if(object != null){
+
+  $("#aktualis_image").attr("src",object.url);
+}
+    
+
+
+// Hónap verse napi időzítés
+let img_honapverse_images = [
+{
+  "date": "2024-08-22",
+  "url": "img/ujweblap.png"
+},
+{
+  "date": "2024-08-23",
+  "url": "img/pg.png"
+},
+{
+  "date": "2024-08-24",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-08-25",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-08-26",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-08-27",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-08-28",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-08-29",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-08-30",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-08-31",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-09-01",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-09-02",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-09-03",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-09-04",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-09-05",
+  "url": "img/kondi2425.png"
+},
+{
+  "date": "2024-09-06",
+  "url": "img/kondi2425.png"
+},
+{
+  "date": "2024-09-07",
+  "url": "img/kondi2425.png"
+},
+{
+  "date": "2024-09-08",
+  "url": "img/kondi2425.png"
+},
+{
+  "date": "2024-09-09",
+  "url": "img/kondi2425.png"
+},
+{
+  "date": "2024-09-10",
+  "url": "img/kondi2425.png"
+},
+{
+  "date": "2024-09-11",
+  "url": "img/kondi2425.png"
+},
+{
+  "date": "2024-09-12",
+  "url": "img/kondi2425.png"
+},
+{
+  "date": "2024-09-13",
+  "url": "img/kondi2425.png"
+},
+{
+  "date": "2024-09-14",
+  "url": "img/kondi2425.png"
+},
+{
+  "date": "2024-09-15",
+  "url": "img/kondi2425.png"
+},
+{
+  "date": "2024-09-16",
+  "url": "img/kondi2425.png"
+},
+{
+  "date": "2024-09-17",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-09-18",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-09-19",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-09-20",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-09-21",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-09-22",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-09-23",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-09-24",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-09-25",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-09-26",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-09-27",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-09-28",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-09-29",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-09-30",
+  "url": "img/cseng.png"
+},
+{
+  "date": "2024-11-11",
+  "url": "img/hvszav11.png"
+},
+{
+  "date": "2024-11-12",
+  "url": "img/hvszav11.png"
+},
+{
+  "date": "2024-11-13",
+  "url": "img/hvszav11.png"
+},
+{
+  "date": "2024-11-14",
+  "url": "img/hvszav11.png"
+},
+{
+  "date": "2024-11-15",
+  "url": "img/hvszav11.png"
+},
+{
+  "date": "2024-11-20",
+  "url": "img/hvnov24.png"
+},
+{
+  "date": "2024-11-21",
+  "url": "img/hvnov24.png"
+},
+{
+  "date": "2024-11-22",
+  "url": "img/hvnov24.png"
+},
+{
+  "date": "2024-11-25",
+  "url": "img/hvnov24.png"
+},
+{
+  "date": "2024-11-26",
+  "url": "img/hvnov24.png"
+},
+{
+  "date": "2024-11-27",
+  "url": "img/hvnov24.png"
+},
+{
+  "date": "2024-11-28",
+  "url": "img/hvnov24.png"
+},
+{
+  "date": "2024-11-29",
+  "url": "img/hvnov24.png"
+},
+{
+  "date": "2024-12-12",
+  "url": "img/hvszavdec.png"
+},
+{
+  "date": "2024-12-13",
+  "url": "img/hvszavdec.png"
+},
+{
+  "date": "2024-12-16",
+  "url": "img/hvszavdec.png"
+},
+{
+  "date": "2024-12-17",
+  "url": "img/hvdec.png"
+},
+{
+  "date": "2024-12-18",
+  "url": "img/hvdec.png"
+},
+{
+  "date": "2024-12-19",
+  "url": "img/hvdec.png"
+},
+{
+  "date": "2024-12-20",
+  "url": "img/hvdec.png"
+},
+];
+    
+//get today date & format to YYYY-MM-DD
+var today = new Date();
+today = today.toISOString().split('T')[0];
+
+//check today date in ring image array
+object = img_honapverse_images.find(o => Object.entries(o).find(([k, value]) => k === 'date' && value === today) !== undefined);
+
+//if today date in array change image url
+if(object != null){
+
+  $("#honapverse_image").attr("src",object.url);
+}
+
+//Slide frissítés
+let slideIndex = 0;
+showSlides();
+
+function showSlides() {
+  let i;
+  let slides = document.getElementsByClassName("mySlides");
+  let dots = document.getElementsByClassName("dot");
+  for (i = 0; i < slides.length; i++) {
+    slides[i].style.display = "none";  
+  }
+  slideIndex++;
+  if (slideIndex > slides.length) {slideIndex = 1}    
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" active", "");
+  }
+  slides[slideIndex-1].style.display = "block";  
+  dots[slideIndex-1].className += " active";
+  setTimeout(showSlides, 25000); // Lapozás 30 másodpercenként
+}
+// Idő lekérdezése az oldal időzített lefrissítéséhez
+function refreshAt(hours, minutes, seconds) {
+    var now = new Date();
+    var then = new Date();
+
+    if(now.getHours() > hours ||
+        (now.getHours() == hours && now.getMinutes() > minutes) ||
+        now.getHours() == hours && now.getMinutes() == minutes && now.getSeconds() >= seconds) {
+        then.setDate(now.getDate() + 1);
+    }
+    then.setHours(hours);
+    then.setMinutes(minutes);
+    then.setSeconds(seconds);
+
+    var timeout = (then.getTime() - now.getTime());
+    setTimeout(function() { window.location.reload(true); }, timeout);
+}
+
+// Oldal lefrissítése az alábbi időpontokban - új időpontnál figyeljünk, hogy órán legyen, mert szünetben gagyi
+refreshAt(06,00,56);
+refreshAt(07,25,56);
+refreshAt(07,55,56);
+refreshAt(08,25,56);
+refreshAt(08,55,56);
+refreshAt(09,25,56);
+refreshAt(09,55,56);
+refreshAt(10,25,56);
+refreshAt(10,55,56);
+refreshAt(11,25,56);
+refreshAt(11,55,56);
+refreshAt(12,25,56);
+refreshAt(12,55,56);
+refreshAt(13,25,56);
+refreshAt(13,55,56);
+refreshAt(16,00,56);
+
+
+// Tűzriadó státusz lekérdezés
+    function checkStatus() {
+      var apiKey = 'AIzaSyA_TI50_1jgH6EmFYJy_HyCKRPPgQHKR3s';
+      var sheetId = '1xMIn4rjhTDbRBktbyGtYwFe1cH8QO51RewvkRjjS8Cw';
+      var range = 'A:C';
+      var url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          var lastRow = data.values[data.values.length - 1];
+          var status = lastRow[1];
+
+          var overlay = document.getElementById('overlay');
+          var alertImage = document.getElementById('alertImage');
+
+          if (status === 'BE') {
+            alertImage.src = 'https://infotv.tmskoncz.hu/img/tuzriado.png';
+            overlay.style.display = 'flex';
+          } else if (status === 'TESZT') {
+            alertImage.src = 'https://infotv.tmskoncz.hu/img/teszt-tuzriado.png';
+            overlay.style.display = 'flex';
+          } else if (status === 'SCREENSAVER') {
+            alertImage.src = 'https://infotv.tmskoncz.hu/img/szag.png';
+            overlay.style.display = 'flex';
+          } else if (status === 'ALERT') {
+            alertImage.src = 'https://infotv.tmskoncz.hu/img/talalttargycsik2.png';
+            overlay.style.display = 'flex';
+          } else if (status === 'HAZA3') {
+            alertImage.src = 'https://infotv.tmskoncz.hu/img/haza3.png';
+            overlay.style.display = 'flex';
+          } else if (status === 'HAZA4') {
+            alertImage.src = 'https://infotv.tmskoncz.hu/img/haza4.png';
+            overlay.style.display = 'flex';
+          } else if (status === 'HAZA5') {
+            alertImage.src = 'https://infotv.tmskoncz.hu/img/haza5.png';
+            overlay.style.display = 'flex';
+          } else if (status === 'HAZAMOST') {
+            alertImage.src = 'https://infotv.tmskoncz.hu/img/hazamost.png';
+            overlay.style.display = 'flex';
+          } else {
+            overlay.style.display = 'none';
+          }
+        })
+        .catch(error => console.error('Error fetching data:', error));
+    }
+
+    setInterval(checkStatus, 5000);
+    
+// Github API alapján refresh
+const repoOwner = 'TmsKoncz';
+const repoName = 'infotv';
+const branch = 'main'; // or whatever branch you are tracking
+
+async function fetchLatestCommit() {
+    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/commits/${branch}`);
+    const data = await response.json();
+    return data.sha;
+}
+
+let lastCommitSha = '';
+
+async function checkForUpdates() {
+    const latestCommitSha = await fetchLatestCommit();
+    if (lastCommitSha && latestCommitSha !== lastCommitSha) {
+        window.location.reload(true);
+    }
+    lastCommitSha = latestCommitSha;
+}
+
+// Check for updates every 5 minutes
+setInterval(checkForUpdates, 1 * 60 * 1000);
+
+// Run the check on page load
+checkForUpdates();  
+    
+// Next/previous controls
+function plusSlides(n) {
+  showSlides(slideIndex += n);
+}
+    
+// Swipe to scroll
+    var start = null;
+ window.addEventListener("touchstart",function(event){
+   if(event.touches.length === 1){
+      //just one finger touched
+      start = event.touches.item(0).clientX;
+    }else{
+      //a second finger hit the screen, abort the touch
+      start = null;
+    }
+  });
+
+ window.addEventListener("touchend",function(event){
+    var offset = 100;//at least 100px are a swipe
+    if(start){
+      //the only finger that hit the screen left it
+      var end = event.changedTouches.item(0).clientX;
+
+      if(end > start + offset){
+        plusSlides(0);
+          setTimeout(showSlides, 25000);
+      }
+      if(end < start - offset ){
+       plusSlides(1);
+          setTimeout(showSlides, 25000);
+      }
+    }
+  });
+    
+</script>
+
+</body>
+</html>
