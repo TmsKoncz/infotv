@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InfoTV Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 </head>
 <body class="bg-gray-100 p-8">
     <div class="max-w-4xl mx-auto">
@@ -34,7 +35,7 @@
 
             <div class="bg-white p-6 rounded-lg shadow-md">
                 <h2 class="text-xl font-semibold mb-4">Diák listája</h2>
-                <div id="slides-container"></div>
+                <div id="slides-container" class="sortable-list"></div>
             </div>
 
             <!-- Kijelentkezési gomb -->
@@ -45,7 +46,7 @@
     <!-- Firebase és Firestore SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
         // Firebase konfiguráció
@@ -53,7 +54,7 @@
             apiKey: "AIzaSyAmlb3HFiXq18IlV--o1GOC5yofXSZjV48",
             authDomain: "infotv-50232.firebaseapp.com",
             projectId: "infotv-50232",
-            storageBucket: "infotv-50232.firebasestorage.app",
+            storageBucket: "infotv-50232.appspot.com",
             messagingSenderId: "890415866941",
             appId: "1:890415866941:web:10606b06957eca86d43654",
             measurementId: "G-2V1HZ0RPJK"
@@ -107,38 +108,100 @@
 
         // Diák betöltése és megjelenítése
         async function renderSlides() {
-            if (!auth.currentUser) {
-                alert('Kérlek, jelentkezz be!');
-                return;
-            }
-
             const container = document.getElementById('slides-container');
             container.innerHTML = '';
 
             try {
                 const querySnapshot = await getDocs(collection(db, 'slides'));
+                const slidesArray = [];
                 querySnapshot.forEach((doc) => {
-                    const slide = doc.data();
+                    slidesArray.push({ id: doc.id, ...doc.data() });
+                });
+                slidesArray.sort((a, b) => a.order - b.order);
+
+                slidesArray.forEach((slide) => {
                     const slideElement = document.createElement('div');
                     slideElement.className = `slide-item bg-gray-50 p-4 rounded-lg mb-4 ${slide.active ? 'border-l-4 border-blue-500' : 'border-l-4 border-gray-300'}`;
-                    slideElement.innerHTML = `
-                        <strong>${slide.type === 'image' ? 'Kép' : 'Beágyazott link'}:</strong> ${slide.content}
+                    slideElement.setAttribute('data-id', slide.id);
+                    slideElement.innerHTML = 
+                        `<strong>${slide.type === 'image' ? 'Kép' : 'Beágyazott link'}:</strong> ${slide.content}
                         <br>
                         <small>${slide.startDate} - ${slide.endDate}</small>
                         <br>
                         <small>Megjegyzés: ${slide.comment || 'Nincs megjegyzés'}</small>
                         <div class="mt-2">
-                            <button onclick="toggleSlide('${doc.id}')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">${slide.active ? 'Kikapcsol' : 'Bekapcsol'}</button>
-                            <button onclick="deleteSlide('${doc.id}')" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Töröl</button>
-                        </div>
-                    `;
+                            <button onclick="toggleSlide('${slide.id}')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">${slide.active ? 'Kikapcsol' : 'Bekapcsol'}</button>
+                            <button onclick="deleteSlide('${slide.id}')" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Töröl</button>
+                        </div>`;
                     container.appendChild(slideElement);
+                });
+
+                // SortableJS inicializálása
+                Sortable.create(container, {
+                    animation: 150,
+                    onEnd: async function(evt) {
+                        const slides = Array.from(container.children);
+                        const updates = slides.map((slide, index) => {
+                            const slideId = slide.getAttribute('data-id');
+                            return updateDoc(doc(db, 'slides', slideId), { order: index });
+                        });
+                        await Promise.all(updates);
+                    }
                 });
             } catch (error) {
                 console.error('Hiba a diák betöltésekor:', error);
             }
         }
 
+                // Szerkesztés funkció
+        window.editSlide = async function(id) {
+            const docRef = doc(db, 'slides', id);
+            const docSnap = await getDoc(docRef);
+            
+            if (docSnap.exists()) {
+                const slide = docSnap.data();
+                document.getElementById('edit-id').value = id;
+                document.getElementById('slide-type').value = slide.type;
+                document.getElementById('slide-content').value = slide.content;
+                document.getElementById('slide-start-date').value = slide.startDate;
+                document.getElementById('slide-end-date').value = slide.endDate;
+                document.getElementById('slide-comment').value = slide.comment || '';
+                document.getElementById('form-title').textContent = 'Dia szerkesztése';
+                document.getElementById('save-button').textContent = 'Frissítés';
+            }
+        };
+
+        // Mentés funkció
+        window.saveSlide = async function() {
+            const id = document.getElementById('edit-id').value;
+            const slideData = {
+                type: document.getElementById('slide-type').value,
+                content: document.getElementById('slide-content').value,
+                startDate: document.getElementById('slide-start-date').value,
+                endDate: document.getElementById('slide-end-date').value,
+                comment: document.getElementById('slide-comment').value
+            };
+
+            try {
+                if (id) {
+                    await updateDoc(doc(db, 'slides', id), slideData);
+                } else {
+                    await addDoc(collection(db, 'slides'), { ...slideData, active: true });
+                }
+                resetForm();
+                renderSlides();
+            } catch (error) {
+                console.error('Hiba a mentés során:', error);
+            }
+        };
+
+        function resetForm() {
+            document.getElementById('edit-id').value = '';
+            document.getElementById('form-title').textContent = 'Új dia hozzáadása';
+            document.getElementById('save-button').textContent = 'Mentés';
+            document.querySelectorAll('input, textarea, select').forEach(element => element.value = '');
+        }
+        
         // Dia hozzáadása
         window.addSlide = async function() {
             if (!auth.currentUser) {
@@ -164,7 +227,8 @@
                     startDate,
                     endDate,
                     comment,
-                    active: true
+                    active: true,
+                    order: (await getDocs(collection(db, 'slides'))).size
                 });
                 alert('Dia hozzáadva!');
                 renderSlides();
