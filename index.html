@@ -42,7 +42,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getFirestore, collection, query, where, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, collection, query, where, onSnapshot, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
         // Firebase konfiguráció
         const firebaseConfig = {
@@ -58,6 +58,27 @@
         // Firebase inicializálása
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
+        // Kivetítő azonosítója
+        const urlParams = new URLSearchParams(window.location.search);
+        const deviceId = urlParams.get('id') || 'unknown';
+
+        // Szívverés küldése
+        async function sendHeartbeat() {
+            try {
+                await setDoc(doc(db, 'devices', deviceId), {
+                    lastHeartbeat: serverTimestamp(),
+                    status: 'online'
+                }, { merge: true });
+                console.log('Szívverés sikeresen elküldve:', deviceId);
+            } catch (error) {
+                console.error('Hiba a szívverés küldésekor:', error);
+            }
+        }
+
+        // Szívverés küldése 10 másodpercenként
+        setInterval(sendHeartbeat, 10000);
+        sendHeartbeat(); // Azonnali küldés
 
         // Diavetítés változók
         let slides = [];
@@ -91,7 +112,9 @@
                     currentSlideIndex = 0; // Visszaállítjuk az első diára
                     renderSlides();
                 }
-            }, (error) => console.error('Hiba a diák betöltésekor:', error));
+            }, (error) => {
+                console.error('Hiba a diák betöltésekor:', error);
+            });
         }
 
         // Diák megjelenítése

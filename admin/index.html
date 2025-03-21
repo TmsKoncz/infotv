@@ -126,6 +126,26 @@
                 </div>
             </div>
 
+            <!-- Nyomonkövetés -->
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold mb-6">Eszközök állapota</h1>
+
+                <!-- Kártyák -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Online eszközök száma -->
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h2 class="text-xl font-semibold mb-4">Online eszközök</h2>
+                        <p class="text-4xl font-bold text-green-600" id="online-count">0</p>
+                    </div>
+
+                    <!-- Eszközök listája -->
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h2 class="text-xl font-semibold mb-4">Eszközök listája</h2>
+                        <div id="devices-list" class="overflow-y-auto max-h-48"></div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Új dia hozzáadása (becsukható/kinyitható) -->
             <div class="bg-white p-6 rounded-lg shadow-md mb-8">
                 <div class="flex justify-between items-center cursor-pointer" onclick="toggleSlideForm()">
@@ -158,7 +178,7 @@
     <!-- Firebase és Firestore SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
         // Firebase konfiguráció
@@ -187,6 +207,7 @@
                 loginForm.style.display = 'none';
                 adminContent.style.display = 'block';
                 renderSlides();
+                monitorDevices(); // Eszközök állapotának nyomon követése
             } else {
                 loginForm.style.display = 'block';
                 adminContent.style.display = 'none';
@@ -373,6 +394,38 @@
                 confirmPopup.classList.add('hidden');
                 confirmOverlay.classList.add('hidden');
             };
+        }
+
+        // Eszközök állapotának nyomon követése
+        function monitorDevices() {
+            const devicesRef = collection(db, 'devices');
+            onSnapshot(devicesRef, (snapshot) => {
+                const onlineCountElement = document.getElementById('online-count');
+                const devicesListElement = document.getElementById('devices-list');
+                let onlineCount = 0;
+
+                devicesListElement.innerHTML = ''; // Töröljük a korábbi tartalmat
+
+                snapshot.forEach((doc) => {
+                    const device = doc.data();
+                    const deviceId = doc.id;
+                    const lastHeartbeat = device.lastHeartbeat?.toDate();
+                    const isOnline = lastHeartbeat && (new Date() - lastHeartbeat) < 20000; // 20 másodpercnél régebbi szívverés offline
+
+                    if (isOnline) onlineCount++;
+
+                    const deviceElement = document.createElement('div');
+                    deviceElement.className = `p-3 mb-2 rounded flex justify-between items-center ${isOnline ? 'bg-green-100' : 'bg-red-100'}`;
+                    deviceElement.innerHTML = `
+                        <span>${deviceId}</span>
+                        <span class="font-semibold ${isOnline ? 'text-green-600' : 'text-red-600'}">${isOnline ? 'Online' : 'Offline'}</span>
+                    `;
+                    devicesListElement.appendChild(deviceElement);
+                });
+
+                // Online eszközök száma
+                onlineCountElement.textContent = onlineCount;
+            });
         }
     </script>
 </body>
