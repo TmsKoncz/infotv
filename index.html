@@ -99,7 +99,6 @@
                     lastHeartbeat: serverTimestamp(),
                     status: 'online'
                 }, { merge: true });
-                console.log('Szívverés sikeresen elküldve:', deviceId);
             } catch (error) {
                 console.error('Hiba a szívverés küldésekor:', error);
             }
@@ -113,14 +112,10 @@
         let slides = [];
         let emergencySlides = [];
         let currentSlideIndex = 0;
-        let previousSlideCount = 0; // Az előző diák számának nyomon követése
 
         // Dátum formázása
         function formatDate(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
+            return date.toISOString().split('T')[0]; // ISO formátum (pl. "2025-03-21")
         }
 
         // Diák betöltése
@@ -136,14 +131,8 @@
                 querySnapshot.forEach((doc) => {
                     newSlides.push({ id: doc.id, ...doc.data() });
                 });
-
-                // Csak akkor frissítjük a diák listáját, ha változás történt
-                if (newSlides.length !== previousSlideCount) {
-                    slides = newSlides;
-                    previousSlideCount = slides.length;
-                    currentSlideIndex = 0; // Visszaállítjuk az első diára
-                    renderSlides();
-                }
+                slides = newSlides;
+                renderSlides();
             }, (error) => {
                 console.error('Hiba a diák betöltésekor:', error);
             });
@@ -155,10 +144,8 @@
                 querySnapshot.forEach((doc) => {
                     newEmergencySlides.push({ id: doc.id, ...doc.data() });
                 });
-
-                console.log('Aktív haváriák:', newEmergencySlides); // Diagnosztikai üzenet
                 emergencySlides = newEmergencySlides;
-                renderEmergencyOverlay(); // Havária overlay frissítése
+                renderEmergencyOverlay();
             }, (error) => {
                 console.error('Hiba a haváriák betöltésekor:', error);
             });
@@ -171,8 +158,11 @@
 
             if (emergencySlides.length > 0) {
                 const emergencySlide = emergencySlides[0]; // Csak egy aktív havária lehet
-                console.log('Aktív havária tartalom:', emergencySlide); // Diagnosztikai üzenet
-                content.innerHTML = emergencySlide.type === 'image' ? `<img src="${emergencySlide.content}" alt="Havária">` : `<iframe src="${emergencySlide.content}"></iframe>`;
+                if (emergencySlide.type === 'image') {
+                    content.innerHTML = `<img src="${emergencySlide.content}" alt="Havária">`;
+                } else if (emergencySlide.type === 'embed') {
+                    content.innerHTML = `<iframe src="${emergencySlide.content}"></iframe>`;
+                }
                 overlay.classList.add('active'); // Overlay láthatóvá tétele
             } else {
                 overlay.classList.remove('active'); // Overlay elrejtése
@@ -184,11 +174,14 @@
             const container = document.getElementById('slideshow-container');
             container.innerHTML = '';
 
-            // Normál hirdetések megjelenítése
             slides.forEach((slide, index) => {
                 const slideElement = document.createElement('div');
                 slideElement.className = `slide ${index === currentSlideIndex ? 'active' : ''}`;
-                slideElement.innerHTML = slide.type === 'image' ? `<img src="${slide.content}" alt="Slide">` : `<iframe src="${slide.content}"></iframe>`;
+                if (slide.type === 'image') {
+                    slideElement.innerHTML = `<img src="${slide.content}" alt="Slide">`;
+                } else if (slide.type === 'embed') {
+                    slideElement.innerHTML = `<iframe src="${slide.content}"></iframe>`;
+                }
                 container.appendChild(slideElement);
             });
         }
