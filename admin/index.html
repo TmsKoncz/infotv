@@ -146,6 +146,33 @@
                 </div>
             </div>
 
+            <!-- Új havária hozzáadása -->
+            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                <div class="flex justify-between items-center cursor-pointer" onclick="toggleEmergencyForm()">
+                    <h2 class="text-xl font-semibold">Új havária hozzáadása</h2>
+                    <span id="emergency-form-toggle">▼</span>
+                </div>
+                <div id="emergency-slide-form" class="mt-4 hidden">
+                    <select id="emergency-slide-type" class="w-full p-2 border rounded mb-4">
+                        <option value="image">Kép</option>
+                        <option value="embed">Beágyazott link</option>
+                    </select>
+                    <input type="text" id="emergency-slide-content" placeholder="Kép URL vagy beágyazott link" class="w-full p-2 border rounded mb-4">
+                    <div class="date-range">
+                        <input type="date" id="emergency-slide-start-date" class="w-full p-2 border rounded mb-4">
+                        <input type="date" id="emergency-slide-end-date" class="w-full p-2 border rounded mb-4">
+                    </div>
+                    <textarea id="emergency-slide-comment" placeholder="Megjegyzés" class="w-full p-2 border rounded mb-4"></textarea>
+                    <button onclick="addEmergencySlide()" class="w-full bg-red-500 text-white p-2 rounded hover:bg-red-600">Havária hozzáadása</button>
+                </div>
+            </div>
+
+            <!-- Haváriák listája -->
+            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                <h2 class="text-xl font-semibold mb-4">Haváriák listája</h2>
+                <div id="emergency-slides-container" class="sortable-list"></div>
+            </div>
+
             <!-- Új dia hozzáadása (becsukható/kinyitható) -->
             <div class="bg-white p-6 rounded-lg shadow-md mb-8">
                 <div class="flex justify-between items-center cursor-pointer" onclick="toggleSlideForm()">
@@ -207,6 +234,7 @@
                 loginForm.style.display = 'none';
                 adminContent.style.display = 'block';
                 renderSlides();
+                renderEmergencySlides();
                 monitorDevices(); // Eszközök állapotának nyomon követése
             } else {
                 loginForm.style.display = 'block';
@@ -245,6 +273,14 @@
             toggleIcon.textContent = slideForm.classList.contains('hidden') ? '▼' : '▲';
         };
 
+        // Új havária űrlap becsukása/kinyitása
+        window.toggleEmergencyForm = function() {
+            const emergencyForm = document.getElementById('emergency-slide-form');
+            const toggleIcon = document.getElementById('emergency-form-toggle');
+            emergencyForm.classList.toggle('hidden');
+            toggleIcon.textContent = emergencyForm.classList.contains('hidden') ? '▼' : '▲';
+        };
+
         // Dia hozzáadása
         window.addSlide = async function() {
             if (!auth.currentUser) {
@@ -278,6 +314,53 @@
             } catch (error) {
                 console.error('Hiba a hirdetés hozzáadásakor:', error);
                 showNotification('Hiba történt a hirdetés hozzáadásakor. Ellenőrizd a konzolt!');
+            }
+        };
+
+        // Havária hozzáadása
+        window.addEmergencySlide = async function() {
+            if (!auth.currentUser) {
+                showNotification('Kérlek, jelentkezz be!');
+                return;
+            }
+
+            const type = document.getElementById('emergency-slide-type').value;
+            const content = document.getElementById('emergency-slide-content').value;
+            const startDate = document.getElementById('emergency-slide-start-date').value;
+            const endDate = document.getElementById('emergency-slide-end-date').value;
+            const comment = document.getElementById('emergency-slide-comment').value;
+
+            if (!type || !startDate || !endDate) {
+                showNotification('Minden mezőt ki kell tölteni!');
+                return;
+            }
+
+            try {
+                // Deaktiváljuk az összes korábbi haváriát
+                const emergencies = await getDocs(collection(db, 'emergency_slides'));
+                const deactivationPromises = [];
+                emergencies.forEach(doc => {
+                    deactivationPromises.push(updateDoc(doc.ref, { active: false }));
+                });
+                await Promise.all(deactivationPromises);
+
+                // Új havária hozzáadása aktívként
+                await addDoc(collection(db, 'emergency_slides'), {
+                    type,
+                    content,
+                    startDate,
+                    endDate,
+                    comment,
+                    active: true,
+                    order: 0, // Csak egy aktív lehet
+                    emergency: true // Megkülönböztető jelző
+                });
+
+                showNotification('Havária hozzáadva!');
+                renderEmergencySlides();
+            } catch (error) {
+                console.error('Hiba a havária hozzáadásakor:', error);
+                showNotification('Hiba történt a havária hozzáadásakor!');
             }
         };
 
@@ -339,6 +422,47 @@
             }
         }
 
+        // Haváriák betöltése és megjelenítése
+        async function renderEmergencySlides() {
+            const container = document.getElementById('emergency-slides-container');
+            container.innerHTML = '';
+
+            try {
+                const querySnapshot = await getDocs(collection(db, 'emergency_slides'));
+                const slidesArray = [];
+                querySnapshot.forEach((doc) => {
+                    slidesArray.push({ id: doc.id, ...doc.data() });
+                });
+
+                slidesArray.forEach((slide) => {
+                    const slideElement = document.createElement('div');
+                    slideElement.className = `slide-item bg-red-50 p-4 rounded-lg mb-4 ${slide.active ? 'border-l-4 border-red-500' : 'border-l-4 border-gray-300'}`;
+                    slideElement.setAttribute('data-id', slide.id);
+                    slideElement.innerHTML = `
+                        <div class="flex-1">
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                ${slide.type === 'image' ? `<img src="${slide.content}" alt="Havária kép" class="preview-image">` : ''}
+                                <div>
+                                    <strong>HAVÁRIA - ${slide.type === 'image' ? 'Kép' : 'Beágyazott link'}</strong>
+                                    <br>
+                                    <small>${slide.startDate} - ${slide.endDate}</small>
+                                    <br>
+                                    <small>Megjegyzés: ${slide.comment || 'Nincs megjegyzés'}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="toggleEmergency('${slide.id}')" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">${slide.active ? 'Deaktiválás' : 'Aktiválás'}</button>
+                            <button onclick="deleteEmergency('${slide.id}')" class="bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-600">Törlés</button>
+                        </div>
+                    `;
+                    container.appendChild(slideElement);
+                });
+            } catch (error) {
+                console.error('Hiba a haváriák betöltésekor:', error);
+            }
+        }
+
         // Dia állapotának váltása (Elrejtés/Megjelenítés)
         window.toggleSlide = async function(id) {
             if (!auth.currentUser) {
@@ -359,12 +483,55 @@
             }
         };
 
+        // Havária állapotának váltása (Aktiválás/Deaktiválás)
+        window.toggleEmergency = async function(id) {
+            if (!auth.currentUser) {
+                showNotification('Kérlek, jelentkezz be!');
+                return;
+            }
+
+            try {
+                const slideRef = doc(db, 'emergency_slides', id);
+                const slideDoc = await getDoc(slideRef);
+                const currentActiveStatus = slideDoc.data().active;
+
+                if (currentActiveStatus) {
+                    // Deaktiváljuk a haváriát
+                    await updateDoc(slideRef, { active: false });
+                } else {
+                    // Deaktiváljuk az összes többit, majd aktiváljuk ezt
+                    const emergencies = await getDocs(collection(db, 'emergency_slides'));
+                    const deactivationPromises = [];
+                    emergencies.forEach(doc => {
+                        deactivationPromises.push(updateDoc(doc.ref, { active: false }));
+                    });
+                    await Promise.all(deactivationPromises);
+                    await updateDoc(slideRef, { active: true });
+                }
+
+                showNotification(`Havária ${currentActiveStatus ? 'deaktiválva' : 'aktiválva'}!`);
+                renderEmergencySlides();
+            } catch (error) {
+                console.error('Hiba a havária állapotának váltásakor:', error);
+                showNotification('Hiba történt a havária állapotának váltásakor. Ellenőrizd a konzolt!');
+            }
+        };
+
         // Dia törlése
         window.deleteSlide = async function(id) {
             showConfirmPopup('Biztosan törlöd ezt a hirdetést?', async () => {
                 await deleteDoc(doc(db, 'slides', id));
                 showNotification('Hirdetés törölve!');
                 renderSlides();
+            });
+        };
+
+        // Havária törlése
+        window.deleteEmergency = async function(id) {
+            showConfirmPopup('Biztosan törlöd ezt a haváriát?', async () => {
+                await deleteDoc(doc(db, 'emergency_slides', id));
+                showNotification('Havária törölve!');
+                renderEmergencySlides();
             });
         };
 
@@ -396,7 +563,7 @@
             };
         }
 
-        // Eszközök állapotának nyomon követése
+        // Eszközök listájának frissítése
         function monitorDevices() {
             const devicesRef = collection(db, 'devices');
             onSnapshot(devicesRef, (snapshot) => {
@@ -415,10 +582,18 @@
                     if (isOnline) onlineCount++;
 
                     const deviceElement = document.createElement('div');
-                    deviceElement.className = `p-3 mb-2 rounded flex justify-between items-center ${isOnline ? 'bg-green-100' : 'bg-red-100'}`;
+                    deviceElement.className = `p-3 mb-2 rounded flex flex-col ${isOnline ? 'bg-green-100' : 'bg-red-100'}`;
                     deviceElement.innerHTML = `
-                        <span>${deviceId}</span>
-                        <span class="font-semibold ${isOnline ? 'text-green-600' : 'text-red-600'}">${isOnline ? 'Online' : 'Offline'}</span>
+                        <div class="flex justify-between items-center">
+                            <span>${deviceId}</span>
+                            <span class="font-semibold ${isOnline ? 'text-green-600' : 'text-red-600'}">${isOnline ? 'Online' : 'Offline'}</span>
+                            <button onclick="toggleDetails('${deviceId}')" class="text-blue-500 hover:text-blue-700">Részletek</button>
+                        </div>
+                        <div id="details-${deviceId}" class="hidden mt-2">
+                            <p><strong>Operációs rendszer:</strong> ${device.os || 'Ismeretlen'}</p>
+                            <p><strong>Böngésző:</strong> ${device.browser || 'Ismeretlen'}</p>
+                            <p><strong>Felbontás:</strong> ${device.resolution || 'Ismeretlen'}</p>
+                        </div>
                     `;
                     devicesListElement.appendChild(deviceElement);
                 });
@@ -427,6 +602,12 @@
                 onlineCountElement.textContent = onlineCount;
             });
         }
+
+        // Részletek lenyitása/bezárása
+        window.toggleDetails = function(deviceId) {
+            const detailsElement = document.getElementById(`details-${deviceId}`);
+            detailsElement.classList.toggle('hidden');
+        };
     </script>
 </body>
 </html>
