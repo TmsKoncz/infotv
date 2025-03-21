@@ -120,13 +120,12 @@
                 <h1 class="text-2xl sm:text-3xl font-bold">InfoTV Admin</h1>
                 <div class="flex flex-wrap gap-2 sm:gap-4">
                     <a href="https://www.canva.com/design/DAGI4OevAdo/QiptmBWJUsqrn3_MJbQLww/edit" target="_blank" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Sablonok</a>
-                    <a href="https://koncz.link/havaria" target="_blank" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Havária</a>
                     <a href="https://infotv.tmskoncz.hu" target="_blank" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Élő oldal</a>
                     <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Kijelentkezés</button>
                 </div>
             </div>
 
-            <!-- Nyomonkövetés -->
+           <!-- Nyomonkövetés -->
             <div class="mb-8">
                 <h1 class="text-2xl font-bold mb-6">Eszközök állapota</h1>
 
@@ -146,61 +145,93 @@
                 </div>
             </div>
 
-            <!-- Új havária hozzáadása -->
-            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-                <div class="flex justify-between items-center cursor-pointer" onclick="toggleEmergencyForm()">
-                    <h2 class="text-xl font-semibold">Új havária hozzáadása</h2>
-                    <span id="emergency-form-toggle">▼</span>
-                </div>
-                <div id="emergency-slide-form" class="mt-4 hidden">
-                    <select id="emergency-slide-type" class="w-full p-2 border rounded mb-4">
-                        <option value="image">Kép</option>
-                        <option value="embed">Beágyazott link</option>
-                    </select>
-                    <input type="text" id="emergency-slide-content" placeholder="Kép URL vagy beágyazott link" class="w-full p-2 border rounded mb-4">
-                    <div class="date-range">
-                        <input type="date" id="emergency-slide-start-date" class="w-full p-2 border rounded mb-4">
-                        <input type="date" id="emergency-slide-end-date" class="w-full p-2 border rounded mb-4">
+            <!-- Hirdetéskezelés -->
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold mb-6">Hirdetéskezelés</h1>
+                <!-- Új dia hozzáadása (becsukható/kinyitható) -->
+                <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                    <div class="flex justify-between items-center cursor-pointer" onclick="toggleSlideForm()">
+                        <h2 class="text-xl font-semibold">Új hirdetés hozzáadása</h2>
+                        <span id="slide-form-toggle">▼</span>
                     </div>
-                    <textarea id="emergency-slide-comment" placeholder="Megjegyzés" class="w-full p-2 border rounded mb-4"></textarea>
-                    <button onclick="addEmergencySlide()" class="w-full bg-red-500 text-white p-2 rounded hover:bg-red-600">Havária hozzáadása</button>
-                </div>
-            </div>
-
-            <!-- Haváriák listája -->
-            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-                <h2 class="text-xl font-semibold mb-4">Haváriák listája</h2>
-                <div id="emergency-slides-container" class="sortable-list"></div>
-            </div>
-
-            <!-- Új dia hozzáadása (becsukható/kinyitható) -->
-            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-                <div class="flex justify-between items-center cursor-pointer" onclick="toggleSlideForm()">
-                    <h2 class="text-xl font-semibold">Új hirdetés hozzáadása</h2>
-                    <span id="slide-form-toggle">▼</span>
-                </div>
-                <div id="slide-form" class="mt-4 hidden">
-                    <select id="slide-type" class="w-full p-2 border rounded mb-4">
-                        <option value="image">Kép</option>
-                        <option value="embed">Beágyazott link</option>
-                    </select>
-                    <input type="text" id="slide-content" placeholder="Kép URL vagy beágyazott link" class="w-full p-2 border rounded mb-4">
-                    <div class="date-range">
-                        <input type="date" id="slide-start-date" class="w-full p-2 border rounded mb-4">
-                        <input type="date" id="slide-end-date" class="w-full p-2 border rounded mb-4">
+                    <div id="slide-form" class="mt-4 hidden">
+                        <select id="slide-type" class="w-full p-2 border rounded mb-4">
+                            <option value="image">Kép</option>
+                            <option value="embed">Beágyazott link</option>
+                        </select>
+                        <input type="text" id="slide-content" placeholder="Kép URL vagy beágyazott link" class="w-full p-2 border rounded mb-4">
+                        <div class="date-range">
+                            <input type="date" id="slide-start-date" class="w-full p-2 border rounded mb-4">
+                            <input type="date" id="slide-end-date" class="w-full p-2 border rounded mb-4">
+                        </div>
+                        <textarea id="slide-comment" placeholder="Megjegyzés" class="w-full p-2 border rounded mb-4"></textarea>
+                        <button onclick="addSlide()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Hirdetés hozzáadása</button>
                     </div>
-                    <textarea id="slide-comment" placeholder="Megjegyzés" class="w-full p-2 border rounded mb-4"></textarea>
-                    <button onclick="addSlide()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Hirdetés hozzáadása</button>
+                </div>
+
+                <!-- Diák listája -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4">Hirdetések listája</h2>
+                    <div id="slides-container" class="sortable-list"></div>
                 </div>
             </div>
 
-            <!-- Diák listája -->
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-xl font-semibold mb-4">Hirdetések listája</h2>
-                <div id="slides-container" class="sortable-list"></div>
+            <!-- Havária mód -->
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold mb-6">Havária</h1>
+                <!-- Új havária hozzáadása -->
+                <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                    <div class="flex justify-between items-center cursor-pointer" onclick="toggleEmergencyForm()">
+                        <h2 class="text-xl font-semibold">Új havária hozzáadása</h2>
+                        <span id="emergency-form-toggle">▼</span>
+                    </div>
+                    <div id="emergency-slide-form" class="mt-4 hidden">
+                        <select id="emergency-slide-type" class="w-full p-2 border rounded mb-4">
+                            <option value="image">Kép</option>
+                            <option value="embed">Beágyazott link</option>
+                        </select>
+                        <input type="text" id="emergency-slide-content" placeholder="Kép URL vagy beágyazott link" class="w-full p-2 border rounded mb-4">
+                        <div class="date-range">
+                            <input type="date" id="emergency-slide-start-date" class="w-full p-2 border rounded mb-4">
+                            <input type="date" id="emergency-slide-end-date" class="w-full p-2 border rounded mb-4">
+                        </div>
+                        <textarea id="emergency-slide-comment" placeholder="Megjegyzés" class="w-full p-2 border rounded mb-4"></textarea>
+                        <button onclick="addEmergencySlide()" class="w-full bg-red-500 text-white p-2 rounded hover:bg-red-600">Havária hozzáadása</button>
+                    </div>
+                </div>
+
+                <!-- Haváriák listája -->
+                <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                    <h2 class="text-xl font-semibold mb-4">Haváriák listája</h2>
+                    <div id="emergency-slides-container" class="sortable-list"></div>
+                </div>
+            </div>
+
+            <!-- Hibaelhárítás -->
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold mb-6">Hibaelhárítás</h1>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4">Hibaelhárítási eszközök</h2>
+                    <div class="space-y-4">
+                        <!-- Távoli oldal frissítése -->
+                        <button onclick="refreshAllDevices()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+                            Összes eszköz oldalának frissítése
+                        </button>
+
+                        <!-- Eszközök újraindítása -->
+                        <button onclick="restartAllDevices()" class="w-full bg-yellow-500 text-white p-2 rounded hover:bg-yellow-600">
+                            Összes eszköz újraindítása
+                        </button>
+
+                        <!-- Naplók megtekintése -->
+                        <button onclick="viewLogs()" class="w-full bg-gray-500 text-white p-2 rounded hover:bg-gray-600">
+                            Naplók megtekintése
+                        </button>
+        </div>
             </div>
         </div>
     </div>
+    
 
     <!-- Firebase és Firestore SDK -->
     <script type="module">
@@ -608,6 +639,47 @@
             const detailsElement = document.getElementById(`details-${deviceId}`);
             detailsElement.classList.toggle('hidden');
         };
+        
+                // Távoli oldal frissítése
+        window.refreshAllDevices = async function() {
+            try {
+                const devicesRef = collection(db, 'devices');
+                const devicesSnapshot = await getDocs(devicesRef);
+                const updates = [];
+                devicesSnapshot.forEach((doc) => {
+                    updates.push(updateDoc(doc.ref, { refresh: true }));
+                });
+                await Promise.all(updates);
+                showNotification('Összes eszköz oldala frissítve!');
+            } catch (error) {
+                console.error('Hiba az eszközök frissítésekor:', error);
+                showNotification('Hiba történt az eszközök frissítésekor!');
+            }
+        };
+
+        // Eszközök újraindítása
+        window.restartAllDevices = async function() {
+            try {
+                const devicesRef = collection(db, 'devices');
+                const devicesSnapshot = await getDocs(devicesRef);
+                const updates = [];
+                devicesSnapshot.forEach((doc) => {
+                    updates.push(updateDoc(doc.ref, { restart: true }));
+                });
+                await Promise.all(updates);
+                showNotification('Összes eszköz újraindítva!');
+            } catch (error) {
+                console.error('Hiba az eszközök újraindításakor:', error);
+                showNotification('Hiba történt az eszközök újraindításakor!');
+            }
+        };
+
+        // Naplók megtekintése
+        window.viewLogs = function() {
+            // Ide jön a naplók megjelenítésének implementációja
+            showNotification('Naplók megtekintése még nincs implementálva.');
+        };
+
     </script>
 </body>
 </html>
