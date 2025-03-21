@@ -23,6 +23,15 @@
             max-height: 100px;
             width: auto;
         }
+        .date-range {
+            display: flex;
+            gap: 8px;
+        }
+        .sortable-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
         .notification {
             position: fixed;
             bottom: 20px;
@@ -129,9 +138,10 @@
                         <option value="embed">Beágyazott link</option>
                     </select>
                     <input type="text" id="slide-content" placeholder="Kép URL vagy beágyazott link" class="w-full p-2 border rounded mb-4">
-                    <input type="file" id="slide-file" class="w-full p-2 border rounded mb-4" accept="image/*">
-                    <input type="date" id="slide-start-date" class="w-full p-2 border rounded mb-4">
-                    <input type="date" id="slide-end-date" class="w-full p-2 border rounded mb-4">
+                    <div class="date-range">
+                        <input type="date" id="slide-start-date" class="w-full p-2 border rounded mb-4">
+                        <input type="date" id="slide-end-date" class="w-full p-2 border rounded mb-4">
+                    </div>
                     <textarea id="slide-comment" placeholder="Megjegyzés" class="w-full p-2 border rounded mb-4"></textarea>
                     <button onclick="addSlide()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Hirdetés hozzáadása</button>
                 </div>
@@ -150,7 +160,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-storage.js";
 
         // Firebase konfiguráció
         const firebaseConfig = {
@@ -167,7 +176,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const storage = getStorage(app);
 
         // Bejelentkezési űrlap és admin tartalom kezelése
         const loginForm = document.getElementById('login-form');
@@ -225,7 +233,6 @@
 
             const type = document.getElementById('slide-type').value;
             const content = document.getElementById('slide-content').value;
-            const file = document.getElementById('slide-file').files[0];
             const startDate = document.getElementById('slide-start-date').value;
             const endDate = document.getElementById('slide-end-date').value;
             const comment = document.getElementById('slide-comment').value;
@@ -236,80 +243,22 @@
             }
 
             try {
-                let fileUrl = content;
-                if (file) {
-                    const storageRef = ref(storage, `slides/${file.name}`);
-                    await uploadBytes(storageRef, file);
-                    fileUrl = await getDownloadURL(storageRef);
-                }
-
                 await addDoc(collection(db, 'slides'), {
                     type,
-                    content: fileUrl,
+                    content,
                     startDate,
                     endDate,
                     comment,
                     active: true,
                     order: (await getDocs(collection(db, 'slides'))).size
                 });
-                showNotification('Dia hozzáadva!');
+                showNotification('Hirdetés hozzáadva!');
                 renderSlides();
             } catch (error) {
-                console.error('Hiba a dia hozzáadásakor:', error);
-                showNotification('Hiba történt a dia hozzáadásakor. Ellenőrizd a konzolt!');
+                console.error('Hiba a hirdetés hozzáadásakor:', error);
+                showNotification('Hiba történt a hirdetés hozzáadásakor. Ellenőrizd a konzolt!');
             }
         };
-
-        // Dia állapotának váltása (Kikapcsol/Bekapcsol)
-        window.toggleSlide = async function(id) {
-            if (!auth.currentUser) {
-                showNotification('Kérlek, jelentkezz be!');
-                return;
-            }
-
-            const slideRef = doc(db, 'slides', id);
-            const slideDoc = await getDoc(slideRef);
-            await updateDoc(slideRef, { active: !slideDoc.data().active });
-            showNotification(`Dia ${slideDoc.data().active ? 'kikapcsolva' : 'bekapcsolva'}!`);
-            renderSlides();
-        };
-
-        // Dia törlése
-        window.deleteSlide = async function(id) {
-            showConfirmPopup('Biztosan törlöd ezt a diát?', async () => {
-                await deleteDoc(doc(db, 'slides', id));
-                showNotification('Dia törölve!');
-                renderSlides();
-            });
-        };
-
-        // Értesítés megjelenítése
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.classList.remove('hidden');
-
-            // Értesítés bezárása 10 másodperc után
-            setTimeout(() => {
-                notification.classList.add('hide');
-                setTimeout(() => notification.classList.add('hidden'), 500); // Várakozás az animáció befejezésére
-            }, 10000);
-        }
-
-        // Megerősítő popup megjelenítése
-        function showConfirmPopup(message, callback) {
-            const confirmPopup = document.getElementById('confirm-popup');
-            const confirmOverlay = document.getElementById('confirm-overlay');
-            document.getElementById('confirm-message').textContent = message;
-            confirmPopup.classList.remove('hidden');
-            confirmOverlay.classList.remove('hidden');
-
-            window.confirmAction = function(confirmed) {
-                if (confirmed) callback();
-                confirmPopup.classList.add('hidden');
-                confirmOverlay.classList.add('hidden');
-            };
-        }
 
         // Diák betöltése és megjelenítése
         async function renderSlides() {
@@ -350,10 +299,11 @@
                     container.appendChild(slideElement);
                 });
 
-                // SortableJS inicializálása (csak a drag-handle-el működik)
+                // SortableJS inicializálása (csak függőlegesen mozog)
                 Sortable.create(container, {
                     handle: '.drag-handle',
                     animation: 150,
+                    direction: 'vertical', // Csak függőlegesen mozog
                     onEnd: async function(evt) {
                         const slides = Array.from(container.children);
                         const updates = slides.map((slide, index) => {
@@ -364,8 +314,65 @@
                     }
                 });
             } catch (error) {
-                console.error('Hiba a diák betöltésekor:', error);
+                console.error('Hiba a hirdetések betöltésekor:', error);
             }
+        }
+
+        // Dia állapotának váltása (Elrejtés/Megjelenítés)
+        window.toggleSlide = async function(id) {
+            if (!auth.currentUser) {
+                showNotification('Kérlek, jelentkezz be!');
+                return;
+            }
+
+            try {
+                const slideRef = doc(db, 'slides', id);
+                const slideDoc = await getDoc(slideRef);
+                const currentActiveStatus = slideDoc.data().active;
+                await updateDoc(slideRef, { active: !currentActiveStatus });
+                showNotification(`Hirdetés ${currentActiveStatus ? 'elrejtve' : 'megjelenítve'}!`);
+                renderSlides();
+            } catch (error) {
+                console.error('Hiba a dia állapotának váltásakor:', error);
+                showNotification('Hiba történt a dia állapotának váltásakor. Ellenőrizd a konzolt!');
+            }
+        };
+
+        // Dia törlése
+        window.deleteSlide = async function(id) {
+            showConfirmPopup('Biztosan törlöd ezt a hirdetést?', async () => {
+                await deleteDoc(doc(db, 'slides', id));
+                showNotification('Hirdetés törölve!');
+                renderSlides();
+            });
+        };
+
+        // Értesítés megjelenítése
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.remove('hidden');
+
+            // Értesítés bezárása 10 másodperc után
+            setTimeout(() => {
+                notification.classList.add('hide');
+                setTimeout(() => notification.classList.add('hidden'), 500); // Várakozás az animáció befejezésére
+            }, 10000);
+        }
+
+        // Megerősítő popup megjelenítése
+        function showConfirmPopup(message, callback) {
+            const confirmPopup = document.getElementById('confirm-popup');
+            const confirmOverlay = document.getElementById('confirm-overlay');
+            document.getElementById('confirm-message').textContent = message;
+            confirmPopup.classList.remove('hidden');
+            confirmOverlay.classList.remove('hidden');
+
+            window.confirmAction = function(confirmed) {
+                if (confirmed) callback();
+                confirmPopup.classList.add('hidden');
+                confirmOverlay.classList.add('hidden');
+            };
         }
     </script>
 </body>
