@@ -156,6 +156,7 @@
                     newEmergencySlides.push({ id: doc.id, ...doc.data() });
                 });
 
+                console.log('Aktív haváriák:', newEmergencySlides); // Diagnosztikai üzenet
                 emergencySlides = newEmergencySlides;
                 renderEmergencyOverlay(); // Havária overlay frissítése
             }, (error) => {
@@ -170,6 +171,7 @@
 
             if (emergencySlides.length > 0) {
                 const emergencySlide = emergencySlides[0]; // Csak egy aktív havária lehet
+                console.log('Aktív havária tartalom:', emergencySlide); // Diagnosztikai üzenet
                 content.innerHTML = emergencySlide.type === 'image' ? `<img src="${emergencySlide.content}" alt="Havária">` : `<iframe src="${emergencySlide.content}"></iframe>`;
                 overlay.classList.add('active'); // Overlay láthatóvá tétele
             } else {
