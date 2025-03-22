@@ -63,23 +63,30 @@
         const deviceId = urlParams.get('id') || 'unknown';
 
         // Eszköz információk összegyűjtése
-        function getDeviceInfo() {
-            const userAgent = navigator.userAgent;
-            const os = userAgent.includes('Windows') ? 'Windows' :
-                       userAgent.includes('Mac') ? 'Mac' :
-                       userAgent.includes('Linux') ? 'Linux' :
-                       userAgent.includes('Android') ? 'Android' :
-                       userAgent.includes('iOS') ? 'iOS' : 'Ismeretlen';
+function getDeviceInfo() {
+    const userAgent = navigator.userAgent;
 
-            const browser = userAgent.includes('Chrome') ? 'Chrome' :
-                            userAgent.includes('Firefox') ? 'Firefox' :
-                            userAgent.includes('Safari') ? 'Safari' :
-                            userAgent.includes('Edge') ? 'Edge' : 'Ismeretlen';
+    // Operációs rendszer felismerése
+    const os = userAgent.includes('Windows') ? 'Windows' :
+               userAgent.includes('Mac') ? 'Mac' :
+               userAgent.includes('Linux') ? 'Linux' :
+               userAgent.includes('Android') ? 'Android' :
+               userAgent.includes('iOS') ? 'iOS' :
+               userAgent.includes('SmartTV') ? 'Smart TV' : 'Ismeretlen';
 
-            const resolution = `${window.screen.width}x${window.screen.height}`;
+    // Böngésző felismerése
+    const browser = userAgent.includes('FullyKiosk') ? 'Fully Kiosk Browser' :
+                    userAgent.includes('SamsungBrowser') ? 'Samsung Smart TV böngésző' :
+                    userAgent.includes('Chrome') ? 'Chrome' :
+                    userAgent.includes('Firefox') ? 'Firefox' :
+                    userAgent.includes('Safari') ? 'Safari' :
+                    userAgent.includes('Edge') ? 'Edge' : 'Ismeretlen';
 
-            return { os, browser, resolution };
-        }
+    // Kijelző felbontása
+    const resolution = `${window.screen.width}x${window.screen.height}`;
+
+    return { os, browser, resolution };
+}
 
         // Eszköz információk küldése a Firestore-ba
         async function sendDeviceInfo() {
