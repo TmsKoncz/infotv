@@ -34,16 +34,15 @@
             border: none;
             object-fit: contain;
         }
-        /* Havária overlay stílus */
         #emergency-overlay {
-            display: none;
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.8);
             z-index: 1000;
+            display: none;
         }
         #emergency-overlay.active {
             display: block;
@@ -160,56 +159,50 @@
         }
 
         // Diák betöltése
-// Diák betöltése
-function fetchSlides() {
-    const slidesRef = collection(db, 'slides');
-    const emergencyRef = collection(db, 'emergency_slides');
-    const today = formatDate(new Date());
+        function fetchSlides() {
+            const slidesRef = collection(db, 'slides');
+            const emergencyRef = collection(db, 'emergency_slides');
+            const today = formatDate(new Date());
 
-    // Normál hirdetések betöltése
-    const q = query(slidesRef, where('active', '==', true), where('startDate', '<=', today), where('endDate', '>=', today), orderBy("order", "asc"));
-    onSnapshot(q, async (querySnapshot) => {
-        const newSlides = [];
-        querySnapshot.forEach((doc) => {
-            newSlides.push({ id: doc.id, ...doc.data() });
-        });
+            // Normál hirdetések betöltése
+            const q = query(slidesRef, where('active', '==', true), where('startDate', '<=', today), where('endDate', '>=', today), orderBy("order", "asc"));
+            onSnapshot(q, async (querySnapshot) => {
+                const newSlides = [];
+                querySnapshot.forEach((doc) => {
+                    newSlides.push({ id: doc.id, ...doc.data() });
+                });
 
-        // Rögzített dia ellenőrzése
-        try {
-            const deviceDoc = await getDoc(deviceRef);
-            if (deviceDoc.exists() && deviceDoc.data().pinnedSlideId) {
-                const pinnedSlideId = deviceDoc.data().pinnedSlideId;
-                const pinnedSlide = newSlides.find(slide => slide.id === pinnedSlideId);
-                if (pinnedSlide) {
-                    slides = [pinnedSlide]; // Csak a rögzített dia jelenjen meg
-                    console.log('Rögzített dia betöltve:', pinnedSlide); // Hibakeresés
+                // Rögzített dia ellenőrzése
+                const deviceDoc = await getDoc(deviceRef);
+                if (deviceDoc.exists() && deviceDoc.data().pinnedSlideId) {
+                    const pinnedSlideId = deviceDoc.data().pinnedSlideId;
+                    const pinnedSlide = newSlides.find(slide => slide.id === pinnedSlideId);
+                    if (pinnedSlide) {
+                        slides = [pinnedSlide]; // Csak a rögzített dia jelenjen meg
+                    } else {
+                        slides = newSlides; // Ha nincs rögzített dia, akkor az összes dia
+                    }
                 } else {
                     slides = newSlides; // Ha nincs rögzített dia, akkor az összes dia
                 }
-            } else {
-                slides = newSlides; // Ha nincs rögzített dia, akkor az összes dia
-            }
-            renderSlides();
-        } catch (error) {
-            console.error('Hiba a rögzített dia betöltésekor:', error);
-        }
-    }, (error) => {
-        console.error('Hiba a diák betöltésekor:', error);
-    });
+                renderSlides();
+            }, (error) => {
+                console.error('Hiba a diák betöltésekor:', error);
+            });
 
-    // Haváriák betöltése
-    const emergencyQ = query(emergencyRef, where('active', '==', true), where('startDate', '<=', today), where('endDate', '>=', today));
-    onSnapshot(emergencyQ, (querySnapshot) => {
-        const newEmergencySlides = [];
-        querySnapshot.forEach((doc) => {
-            newEmergencySlides.push({ id: doc.id, ...doc.data() });
-        });
-        emergencySlides = newEmergencySlides;
-        renderEmergencyOverlay();
-    }, (error) => {
-        console.error('Hiba a haváriák betöltésekor:', error);
-    });
-}
+            // Haváriák betöltése
+            const emergencyQ = query(emergencyRef, where('active', '==', true), where('startDate', '<=', today), where('endDate', '>=', today));
+            onSnapshot(emergencyQ, (querySnapshot) => {
+                const newEmergencySlides = [];
+                querySnapshot.forEach((doc) => {
+                    newEmergencySlides.push({ id: doc.id, ...doc.data() });
+                });
+                emergencySlides = newEmergencySlides;
+                renderEmergencyOverlay();
+            }, (error) => {
+                console.error('Hiba a haváriák betöltésekor:', error);
+            });
+        }
 
         // Havária overlay megjelenítése
         function renderEmergencyOverlay() {
@@ -252,38 +245,28 @@ function fetchSlides() {
             });
         }
 
-// Következő dia
-// Következő dia
-async function nextSlide() {
-    const pinnedSlideId = await getPinnedSlideId();
+        // Következő dia
+        function nextSlide() {
+            // Ha van rögzített dia, ne lapozzon
+            if (slides.length === 1 && slides[0].id === getPinnedSlideId()) {
+                return;
+            }
 
-    // Ha van rögzített dia, és a slides tömb tartalmazza, akkor ne lapozzon
-    if (pinnedSlideId && slides.some(slide => slide.id === pinnedSlideId)) {
-        console.log('Rögzített dia aktív, nem lapozunk tovább.');
-        return;
-    }
-
-    // Normál váltogatás
-    if (slides.length > 0) {
-        currentSlideIndex = (currentSlideIndex + 1) % slides.length;
-        renderSlides();
-    }
-}
+            // Normál váltogatás
+            if (slides.length > 0) {
+                currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+                renderSlides();
+            }
+        }
 
         // Rögzített dia azonosítójának lekérése
-// Rögzített dia azonosítójának lekérése
-async function getPinnedSlideId() {
-    try {
-        const deviceDoc = await getDoc(deviceRef);
-        if (deviceDoc.exists() && deviceDoc.data().pinnedSlideId) {
-            return deviceDoc.data().pinnedSlideId;
+        async function getPinnedSlideId() {
+            const deviceDoc = await getDoc(deviceRef);
+            if (deviceDoc.exists() && deviceDoc.data().pinnedSlideId) {
+                return deviceDoc.data().pinnedSlideId;
+            }
+            return null;
         }
-        return null;
-    } catch (error) {
-        console.error('Hiba a rögzített dia azonosítójának lekérésekor:', error);
-        return null;
-    }
-}
 
         // Indítás
         setInterval(nextSlide, 30000); // 30 másodpercenként vált

@@ -88,15 +88,6 @@
             background: rgba(0, 0, 0, 0.5);
             z-index: 999;
         }
-        .pinned-slide-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 12px;
-            background-color: #f9fafb;
-            border-radius: 8px;
-            margin-bottom: 8px;
-        }
     </style>
 </head>
 <body class="bg-gray-100 p-4 sm:p-8">
@@ -184,6 +175,7 @@
                     <div id="slides-container" class="sortable-list"></div>
                 </div>
             </div>
+
             <div class="mb-8">
                 <h1 class="text-2xl font-bold mb-6">Rögzített diák</h1>
             <!-- Rögzített dia kártya -->
@@ -206,6 +198,7 @@
                 <div id="pinned-slides-list" class="sortable-list"></div>
             </div>
             </div>
+
             <!-- Havária mód -->
             <div class="mb-8">
                 <h1 class="text-2xl font-bold mb-6">Havária</h1>
@@ -296,9 +289,6 @@
                 adminContent.style.display = 'block';
                 renderSlides();
                 renderEmergencySlides();
-                renderPinnedSlides(); // Rögzített diákok betöltése
-                fetchDevices(); // Eszközök betöltése
-                fetchSlides(); // Diák betöltése
                 monitorDevices(); // Eszközök állapotának nyomon követése
                 fetchLogs(); // Naplók betöltése
             } else {
@@ -354,144 +344,6 @@
             document.getElementById('log-entries').innerHTML = logEntries.join('');
         }
 
-        // Eszközök betöltése
-        async function fetchDevices() {
-            const devicesRef = collection(db, 'devices');
-            const querySnapshot = await getDocs(devicesRef);
-            const deviceSelect = document.getElementById('device-select');
-            deviceSelect.innerHTML = '<option value="">Válassz eszközt</option>';
-
-            querySnapshot.forEach((doc) => {
-                const deviceId = doc.id;
-                deviceSelect.innerHTML += `<option value="${deviceId}">${deviceId}</option>`;
-            });
-        }
-
-        // Diák betöltése
-        async function fetchSlides() {
-            const slidesRef = collection(db, 'slides');
-            const querySnapshot = await getDocs(slidesRef);
-            const slideSelect = document.getElementById('pinned-slide-select');
-            slideSelect.innerHTML = '<option value="">Válassz diát</option>';
-
-            querySnapshot.forEach((doc) => {
-                const slideData = doc.data();
-                slideSelect.innerHTML += `<option value="${doc.id}">${slideData.comment || 'Névtelen dia'}</option>`;
-            });
-        }
-
-        // Rögzített diákok betöltése és megjelenítése
-async function renderPinnedSlides() {
-    const container = document.getElementById('pinned-slides-list');
-    container.innerHTML = '';
-
-    try {
-        const querySnapshot = await getDocs(collection(db, 'pinned_slides'));
-        const pinnedSlidesArray = [];
-        querySnapshot.forEach((doc) => {
-            pinnedSlidesArray.push({ id: doc.id, ...doc.data() });
-        });
-
-        pinnedSlidesArray.forEach(async (slide) => {
-            const slideElement = document.createElement('div');
-            slideElement.className = `slide-item bg-gray-50 p-4 rounded-lg mb-4 ${slide.active ? 'border-l-4 border-blue-500' : 'border-l-4 border-gray-300'}`;
-            slideElement.setAttribute('data-id', slide.id);
-
-            // Eszköznév lekérése
-            let deviceName = 'Nincs eszköz';
-            if (slide.deviceId) {
-                const deviceDoc = await getDoc(doc(db, 'devices', slide.deviceId));
-                if (deviceDoc.exists()) {
-                    deviceName = deviceDoc.id; // Az eszköz azonosítója (vagy más adat, ha van)
-                }
-            }
-
-            slideElement.innerHTML = `
-                <div class="flex-1">
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        ${slide.type === 'image' ? `<img src="${slide.content}" alt="Pinned Slide Image" class="preview-image">` : ''}
-                        <div>
-                            <strong>${slide.type === 'image' ? 'Kép' : 'Beágyazott link'}</strong>
-                            <br>
-                            <small>${slide.startDate} - ${slide.endDate}</small>
-                            <br>
-                            <small>Megjegyzés: ${slide.comment || 'Nincs megjegyzés'}</small>
-                            <br>
-                            <small>Eszköz: ${deviceName}</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="togglePinnedSlide('${slide.id}')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">${slide.active ? 'Elrejtés' : 'Megjelenítés'}</button>
-                    <button onclick="deletePinnedSlide('${slide.id}')" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Törlés</button>
-                </div>
-            `;
-            container.appendChild(slideElement);
-        });
-    } catch (error) {
-        console.error('Hiba a rögzített diákok betöltésekor:', error);
-    }
-}
-
-        // Rögzített dia törlése
-        window.deletePinnedSlide = async function(id) {
-            showConfirmPopup('Biztosan törlöd ezt a rögzített diát?', async () => {
-                await deleteDoc(doc(db, 'pinned_slides', id));
-                showNotification('Rögzített dia törölve!');
-                renderPinnedSlides();
-            });
-        };
-
-window.togglePinnedSlide = async function(id) {
-    if (!auth.currentUser) {
-        showNotification('Kérlek, jelentkezz be!');
-        return;
-    }
-
-    try {
-        const slideRef = doc(db, 'pinned_slides', id);
-        const slideDoc = await getDoc(slideRef);
-        const currentActiveStatus = slideDoc.data().active;
-        await updateDoc(slideRef, { active: !currentActiveStatus });
-        showNotification(`Rögzített dia ${currentActiveStatus ? 'deaktiválva' : 'aktiválva'}!`);
-        renderPinnedSlides(); // Frissíti a rögzített diák listáját
-    } catch (error) {
-        console.error('Hiba a rögzített dia állapotának váltásakor:', error);
-        showNotification('Hiba történt a rögzített dia állapotának váltásakor!');
-    }
-};
-        
-// Rögzített dia hozzárendelése
-window.pinSlideToDevice = async function() {
-    const deviceId = document.getElementById('device-select').value;
-    const slideId = document.getElementById('pinned-slide-select').value;
-
-    if (!deviceId || !slideId) {
-        showNotification('Válassz eszközt és diát!');
-        return;
-    }
-
-    try {
-        // Rögzített dia hozzáadása a pinned_slides gyűjteményhez
-        await addDoc(collection(db, 'pinned_slides'), {
-            deviceId: deviceId,
-            slideId: slideId,
-            pinnedAt: serverTimestamp(),
-            active: true
-        });
-
-        // Eszköz frissítése a rögzített dia azonosítójával
-        await updateDoc(doc(db, 'devices', deviceId), {
-            pinnedSlideId: slideId
-        });
-
-        showNotification('Rögzített dia hozzárendelve!');
-        console.log('Rögzített dia hozzárendelve:', { deviceId, slideId }); // Hibakeresés
-    } catch (error) {
-        console.error('Hiba a rögzített dia hozzárendelésekor:', error);
-        showNotification('Hiba történt a rögzített dia hozzárendelésekor!');
-    }
-};
         // További függvények (addSlide, addEmergencySlide, renderSlides, renderEmergencySlides stb.)...
 
         // Dia hozzáadása
@@ -576,64 +428,73 @@ window.pinSlideToDevice = async function() {
                 showNotification('Hiba történt a havária hozzáadásakor!');
             }
         };
-
+        
+let slidesRendered = false;
         // Diák betöltése és megjelenítése
-        async function renderSlides() {
-            const container = document.getElementById('slides-container');
-            container.innerHTML = '';
+async function renderSlides() {
+    if (slidesRendered) return; // Ha már futott, ne fusson újra
+    slidesRendered = true;
+    const container = document.getElementById('slides-container');
+    if (!container) {
+        console.error('Hiba: A slides-container elem nem található.');
+        return;
+    }
+    container.innerHTML = ''; // Töröljük a korábbi tartalmat
 
-            try {
-                const querySnapshot = await getDocs(collection(db, 'slides'));
-                const slidesArray = [];
-                querySnapshot.forEach((doc) => {
-                    slidesArray.push({ id: doc.id, ...doc.data() });
-                });
-                slidesArray.sort((a, b) => a.order - b.order);
+    try {
+        const querySnapshot = await getDocs(collection(db, 'slides'));
+        const slidesArray = [];
+        querySnapshot.forEach((doc) => {
+            slidesArray.push({ id: doc.id, ...doc.data() });
+        });
+        slidesArray.sort((a, b) => a.order - b.order); // Rendezzük a diákat az order mező szerint
 
-                slidesArray.forEach((slide) => {
-                    const slideElement = document.createElement('div');
-                    slideElement.className = `slide-item bg-gray-50 p-4 rounded-lg mb-4 ${slide.active ? 'border-l-4 border-blue-500' : 'border-l-4 border-gray-300'}`;
-                    slideElement.setAttribute('data-id', slide.id);
-                    slideElement.innerHTML = `
-                        <div class="drag-handle">&#9776;</div>
-                        <div class="flex-1">
-                            <div class="flex flex-col sm:flex-row gap-4">
-                                ${slide.type === 'image' ? `<img src="${slide.content}" alt="Slide Image" class="preview-image">` : ''}
-                                <div>
-                                    <strong>${slide.type === 'image' ? 'Kép' : 'Beágyazott link'}</strong>
-                                    <br>
-                                    <small>${slide.startDate} - ${slide.endDate}</small>
-                                    <br>
-                                    <small>Megjegyzés: ${slide.comment || 'Nincs megjegyzés'}</small>
-                                </div>
-                            </div>
+        slidesArray.forEach((slide) => {
+            const slideElement = document.createElement('div');
+            slideElement.className = `slide-item bg-gray-50 p-4 rounded-lg mb-4 ${slide.active ? 'border-l-4 border-blue-500' : 'border-l-4 border-gray-300'}`;
+            slideElement.setAttribute('data-id', slide.id);
+            slideElement.innerHTML = `
+                <div class="drag-handle">&#9776;</div>
+                <div class="flex-1">
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        ${slide.type === 'image' ? `<img src="${slide.content}" alt="Slide Image" class="preview-image">` : ''}
+                        <div>
+                            <strong>${slide.type === 'image' ? 'Kép' : 'Beágyazott link'}</strong>
+                            <br>
+                            <small>${slide.startDate} - ${slide.endDate}</small>
+                            <br>
+                            <small>Megjegyzés: ${slide.comment || 'Nincs megjegyzés'}</small>
                         </div>
-                        <div class="flex gap-2">
-                            <button onclick="toggleSlide('${slide.id}')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">${slide.active ? 'Elrejtés' : 'Megjelenítés'}</button>
-                            <button onclick="deleteSlide('${slide.id}')" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Törlés</button>
-                        </div>
-                    `;
-                    container.appendChild(slideElement);
-                });
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="toggleSlide('${slide.id}')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">${slide.active ? 'Elrejtés' : 'Megjelenítés'}</button>
+                    <button onclick="deleteSlide('${slide.id}')" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Törlés</button>
+                </div>
+            `;
+            container.appendChild(slideElement);
+        });
 
-                // SortableJS inicializálása (csak függőlegesen mozog)
-                Sortable.create(container, {
-                    handle: '.drag-handle',
-                    animation: 150,
-                    direction: 'vertical', // Csak függőlegesen mozog
-                    onEnd: async function(evt) {
-                        const slides = Array.from(container.children);
-                        const updates = slides.map((slide, index) => {
-                            const slideId = slide.getAttribute('data-id');
-                            return updateDoc(doc(db, 'slides', slideId), { order: index });
-                        });
-                        await Promise.all(updates);
-                    }
+        // Sortable inicializálása
+        Sortable.create(container, {
+            handle: '.drag-handle',
+            animation: 150,
+            onEnd: async function(evt) {
+                const slides = Array.from(container.children);
+                const updates = slides.map((slide, index) => {
+                    const slideId = slide.getAttribute('data-id');
+                    return updateDoc(doc(db, 'slides', slideId), { order: index });
                 });
-            } catch (error) {
-                console.error('Hiba a hirdetések betöltésekor:', error);
+                await Promise.all(updates);
+                showNotification('Diák sorrendje frissítve!');
             }
-        }
+        });
+    } catch (error) {
+        console.error('Hiba a diák betöltésekor:', error);
+        showNotification('Hiba történt a diák betöltésekor. Ellenőrizd a konzolt!');
+    }
+}
+
 
         // Haváriák betöltése és megjelenítése
         async function renderEmergencySlides() {
@@ -677,25 +538,173 @@ window.pinSlideToDevice = async function() {
         }
 
         // Dia állapotának váltása (Elrejtés/Megjelenítés)
-        window.toggleSlide = async function(id) {
-            if (!auth.currentUser) {
-                showNotification('Kérlek, jelentkezz be!');
-                return;
-            }
+window.toggleSlide = async function(id) {
+    if (!auth.currentUser) {
+        showNotification('Kérlek, jelentkezz be!');
+        return;
+    }
 
-            try {
-                const slideRef = doc(db, 'slides', id);
-                const slideDoc = await getDoc(slideRef);
-                const currentActiveStatus = slideDoc.data().active;
-                await updateDoc(slideRef, { active: !currentActiveStatus });
-                showNotification(`Hirdetés ${currentActiveStatus ? 'elrejtve' : 'megjelenítve'}!`);
-                renderSlides();
-            } catch (error) {
-                console.error('Hiba a dia állapotának váltásakor:', error);
-                showNotification('Hiba történt a dia állapotának váltásakor. Ellenőrizd a konzolt!');
-            }
-        };
+    try {
+        const slideRef = doc(db, 'slides', id);
+        const slideDoc = await getDoc(slideRef);
+        const currentActiveStatus = slideDoc.data().active;
+        await updateDoc(slideRef, { active: !currentActiveStatus });
+        showNotification(`Hirdetés ${currentActiveStatus ? 'elrejtve' : 'megjelenítve'}!`);
+        renderSlides(); // Frissítsd a felhasználói felületet
+    } catch (error) {
+        console.error('Hiba a dia állapotának váltásakor:', error);
+        showNotification('Hiba történt a dia állapotának váltásakor. Ellenőrizd a konzolt!');
+    }
+};
 
+        // Rögzített diák
+        window.pinSlideToDevice = async function() {
+    const deviceId = document.getElementById('device-select').value;
+    const slideId = document.getElementById('pinned-slide-select').value;
+
+    if (!deviceId || !slideId) {
+        showNotification('Válassz eszközt és diát!');
+        return;
+    }
+
+    try {
+        const deviceRef = doc(db, 'devices', deviceId);
+        await updateDoc(deviceRef, { pinnedSlideId: slideId });
+        showNotification('Rögzített dia hozzáadva!');
+        renderPinnedSlides(); // Rögzített diák listájának frissítése
+    } catch (error) {
+        console.error('Hiba a rögzített dia hozzáadásakor:', error);
+        showNotification('Hiba történt a rögzített dia hozzáadásakor!');
+    }
+};
+        
+        async function renderPinnedSlides() {
+    const container = document.getElementById('pinned-slides-list');
+    container.innerHTML = '';
+
+    try {
+        const devicesRef = collection(db, 'devices');
+        const devicesSnapshot = await getDocs(devicesRef);
+        const slidesRef = collection(db, 'slides');
+        const slidesSnapshot = await getDocs(slidesRef);
+
+        devicesSnapshot.forEach((deviceDoc) => {
+            const deviceData = deviceDoc.data();
+            const pinnedSlideId = deviceData.pinnedSlideId;
+
+            if (pinnedSlideId) {
+                const slideDoc = slidesSnapshot.docs.find(doc => doc.id === pinnedSlideId);
+                if (slideDoc) {
+                    const slideData = slideDoc.data();
+                    const slideElement = document.createElement('div');
+                    slideElement.className = 'bg-white p-4 rounded-lg shadow-md mb-4';
+                    slideElement.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <strong>Eszköz:</strong> ${deviceDoc.id}
+                                <br>
+                                <strong>Dia:</strong> ${slideData.comment || 'Nincs megjegyzés'}
+                            </div>
+                            <button onclick="unpinSlide('${deviceDoc.id}')" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Rögzítés törlése</button>
+                        </div>
+                    `;
+                    container.appendChild(slideElement);
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Hiba a rögzített diák betöltésekor:', error);
+    }
+}
+        
+        window.unpinSlide = async function(deviceId) {
+    try {
+        const deviceRef = doc(db, 'devices', deviceId);
+        await updateDoc(deviceRef, { pinnedSlideId: null });
+        showNotification('Rögzített dia törölve!');
+        renderPinnedSlides(); // Rögzített diák listájának frissítése
+    } catch (error) {
+        console.error('Hiba a rögzített dia törlésekor:', error);
+        showNotification('Hiba történt a rögzített dia törlésekor!');
+    }
+};
+        
+        window.toggleSlideForm = function() {
+    const form = document.getElementById('slide-form');
+    const toggleIcon = document.getElementById('slide-form-toggle');
+    if (form.classList.contains('hidden')) {
+        form.classList.remove('hidden');
+        toggleIcon.textContent = '▲';
+    } else {
+        form.classList.add('hidden');
+        toggleIcon.textContent = '▼';
+    }
+};
+        
+        window.toggleEmergencyForm = function() {
+    const form = document.getElementById('emergency-slide-form');
+    const toggleIcon = document.getElementById('emergency-form-toggle');
+    if (form.classList.contains('hidden')) {
+        form.classList.remove('hidden');
+        toggleIcon.textContent = '▲';
+    } else {
+        form.classList.add('hidden');
+        toggleIcon.textContent = '▼';
+    }
+};
+        
+        async function loadDevices() {
+    const deviceSelect = document.getElementById('device-select');
+    deviceSelect.innerHTML = '<option value="">Válassz eszközt</option>';
+
+    try {
+        const devicesRef = collection(db, 'devices');
+        const devicesSnapshot = await getDocs(devicesRef);
+        devicesSnapshot.forEach((doc) => {
+            const option = document.createElement('option');
+            option.value = doc.id;
+            option.textContent = doc.id;
+            deviceSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Hiba az eszközök betöltésekor:', error);
+    }
+}
+        
+    async function loadSlides() {
+    const slideSelect = document.getElementById('pinned-slide-select');
+    slideSelect.innerHTML = '<option value="">Válassz diát</option>';
+
+    try {
+        const slidesRef = collection(db, 'slides');
+        const slidesSnapshot = await getDocs(slidesRef);
+        slidesSnapshot.forEach((doc) => {
+            const option = document.createElement('option');
+            option.value = doc.id;
+            option.textContent = doc.data().comment || `Dia (${doc.id})`;
+            slideSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Hiba a diák betöltésekor:', error);
+    }
+}
+        
+        onAuthStateChanged(auth, (user) => {
+    if (user) {
+        loginForm.style.display = 'none';
+        adminContent.style.display = 'block';
+        renderSlides();
+        renderEmergencySlides();
+        monitorDevices();
+        fetchLogs();
+        loadDevices(); // Eszközök betöltése
+        loadSlides(); // Diák betöltése
+        renderPinnedSlides(); // Rögzített diák betöltése
+    } else {
+        loginForm.style.display = 'block';
+        adminContent.style.display = 'none';
+    }
+});
         // Havária állapotának váltása (Aktiválás/Deaktiválás)
         window.toggleEmergency = async function(id) {
             if (!auth.currentUser) {
@@ -776,54 +785,54 @@ window.pinSlideToDevice = async function() {
             };
         }
 
-        // Eszközök listájának frissítése
-        function monitorDevices() {
-            const devicesRef = collection(db, 'devices');
-            onSnapshot(devicesRef, (snapshot) => {
-                const onlineCountElement = document.getElementById('online-count');
-                const devicesListElement = document.getElementById('devices-list');
-                let onlineCount = 0;
+// Eszközök listájának frissítése
+function monitorDevices() {
+    const devicesRef = collection(db, 'devices');
+    onSnapshot(devicesRef, (snapshot) => {
+        const onlineCountElement = document.getElementById('online-count');
+        const devicesListElement = document.getElementById('devices-list');
+        let onlineCount = 0;
 
-                devicesListElement.innerHTML = ''; // Töröljük a korábbi tartalmat
+        devicesListElement.innerHTML = ''; // Töröljük a korábbi tartalmat
 
-                snapshot.forEach((doc) => {
-                    const device = doc.data();
-                    const deviceId = doc.id;
-                    const lastHeartbeat = device.lastHeartbeat?.toDate();
-                    const isOnline = lastHeartbeat && (new Date() - lastHeartbeat) < 20000; // 20 másodpercnél régebbi szívverés offline
+        snapshot.forEach((doc) => {
+            const device = doc.data();
+            const deviceId = doc.id;
+            const lastHeartbeat = device.lastHeartbeat?.toDate();
+            const isOnline = lastHeartbeat && (new Date() - lastHeartbeat) < 20000; // 20 másodpercnél régebbi szívverés offline
 
-                    if (isOnline) onlineCount++;
+            if (isOnline) onlineCount++;
 
-                    const deviceElement = document.createElement('div');
-                    deviceElement.className = `p-3 mb-2 rounded flex flex-col ${isOnline ? 'bg-green-100' : 'bg-red-100'}`;
-                    deviceElement.innerHTML = `
-                        <div class="flex justify-between items-center">
-                            <span>${deviceId}</span>
-                            <span class="font-semibold ${isOnline ? 'text-green-600' : 'text-red-600'}">${isOnline ? 'Online' : 'Offline'}</span>
-                            <button onclick="toggleDetails('${deviceId}')" class="text-blue-500 hover:text-blue-700">Részletek</button>
-                        </div>
-                        <div id="details-${deviceId}" class="hidden mt-2">
-                            <p><strong>Operációs rendszer:</strong> ${device.os || 'Ismeretlen'}</p>
-                            <p><strong>Böngésző:</strong> ${device.browser || 'Ismeretlen'}</p>
-                            <p><strong>Felbontás:</strong> ${device.resolution || 'Ismeretlen'}</p>
-                            <p><strong>Utolsó ping:</strong> <span id="last-ping-${deviceId}">${lastHeartbeat ? lastHeartbeat.toLocaleString() : 'Ismeretlen'}</span></p>
-                            <button onclick="refreshDevice('${deviceId}')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 mt-2">Oldal frissítése</button>
-                        </div>
-                    `;
-                    devicesListElement.appendChild(deviceElement);
+            const deviceElement = document.createElement('div');
+            deviceElement.className = `p-3 mb-2 rounded flex flex-col ${isOnline ? 'bg-green-100' : 'bg-red-100'}`;
+            deviceElement.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <span>${deviceId}</span>
+                    <span class="font-semibold ${isOnline ? 'text-green-600' : 'text-red-600'}">${isOnline ? 'Online' : 'Offline'}</span>
+                    <button onclick="toggleDetails('${deviceId}')" class="text-blue-500 hover:text-blue-700">Részletek</button>
+                </div>
+                <div id="details-${deviceId}" class="hidden mt-2">
+                    <p><strong>Operációs rendszer:</strong> ${device.os || 'Ismeretlen'}</p>
+                    <p><strong>Böngésző:</strong> ${device.browser || 'Ismeretlen'}</p>
+                    <p><strong>Felbontás:</strong> ${device.resolution || 'Ismeretlen'}</p>
+                    <p><strong>Utolsó ping:</strong> <span id="last-ping-${deviceId}">${lastHeartbeat ? lastHeartbeat.toLocaleString() : 'Ismeretlen'}</span></p>
+                    <button onclick="refreshDevice('${deviceId}')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 mt-2">Oldal frissítése</button>
+                </div>
+            `;
+            devicesListElement.appendChild(deviceElement);
 
-                    // Ha a részletek nyitva vannak, frissítsük az időpontot
-                    const detailsElement = document.getElementById(`details-${deviceId}`);
-                    if (!detailsElement.classList.contains('hidden')) {
-                        const lastPingElement = document.getElementById(`last-ping-${deviceId}`);
-                        lastPingElement.textContent = lastHeartbeat ? lastHeartbeat.toLocaleString() : 'Ismeretlen';
-                    }
-                });
+            // Ha a részletek nyitva vannak, frissítsük az időpontot
+            const detailsElement = document.getElementById(`details-${deviceId}`);
+            if (!detailsElement.classList.contains('hidden')) {
+                const lastPingElement = document.getElementById(`last-ping-${deviceId}`);
+                lastPingElement.textContent = lastHeartbeat ? lastHeartbeat.toLocaleString() : 'Ismeretlen';
+            }
+        });
 
-                // Online eszközök száma
-                onlineCountElement.textContent = onlineCount;
-            });
-        }
+        // Online eszközök száma
+        onlineCountElement.textContent = onlineCount;
+    });
+}
 
         // Részletek lenyitása/bezárása
         window.toggleDetails = function(deviceId) {
@@ -848,17 +857,18 @@ window.pinSlideToDevice = async function() {
             }
         };
 
+        
         // Egy adott eszköz oldalának frissítése
-        window.refreshDevice = async function(deviceId) {
-            try {
-                const deviceRef = doc(db, 'devices', deviceId);
-                await updateDoc(deviceRef, { refresh: true });
-                showNotification(`Eszköz (${deviceId}) oldala frissítve!`);
-            } catch (error) {
-                console.error('Hiba az eszköz frissítésekor:', error);
-                showNotification('Hiba történt az eszköz frissítésekor!');
-            }
-        };
+window.refreshDevice = async function(deviceId) {
+    try {
+        const deviceRef = doc(db, 'devices', deviceId);
+        await updateDoc(deviceRef, { refresh: true });
+        showNotification(`Eszköz (${deviceId}) oldala frissítve!`);
+    } catch (error) {
+        console.error('Hiba az eszköz frissítésekor:', error);
+        showNotification('Hiba történt az eszköz frissítésekor!');
+    }
+};
         
         // Eszközök újraindítása
         window.restartAllDevices = async function() {
@@ -882,6 +892,7 @@ window.pinSlideToDevice = async function() {
             // Ide jön a naplók megjelenítésének implementációja
             showNotification('Naplók megtekintése még nincs implementálva.');
         };
+
     </script>
 </body>
 </html>
