@@ -34,14 +34,36 @@
             border: none;
             object-fit: contain;
         }
+        /* Havária overlay stílus */
+        #emergency-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+        #emergency-overlay.active {
+            display: block;
+        }
+        #emergency-content {
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
 <body>
     <div class="slideshow-container" id="slideshow-container"></div>
+    <!-- Havária overlay -->
+    <div id="emergency-overlay">
+        <div id="emergency-content"></div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, collection, query, where, onSnapshot, orderBy, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, collection, query, where, onSnapshot, orderBy, serverTimestamp, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
         // Firebase konfiguráció
         const firebaseConfig = {
@@ -63,30 +85,30 @@
         const deviceId = urlParams.get('id') || 'unknown';
 
         // Eszköz információk összegyűjtése
-function getDeviceInfo() {
-    const userAgent = navigator.userAgent;
+        function getDeviceInfo() {
+            const userAgent = navigator.userAgent;
 
-    // Operációs rendszer felismerése
-    const os = userAgent.includes('Windows') ? 'Windows' :
-               userAgent.includes('Mac') ? 'Mac' :
-               userAgent.includes('Linux') ? 'Linux' :
-               userAgent.includes('Android') ? 'Android' :
-               userAgent.includes('iOS') ? 'iOS' :
-               userAgent.includes('SmartTV') ? 'Smart TV' : 'Ismeretlen';
+            // Operációs rendszer felismerése
+            const os = userAgent.includes('Windows') ? 'Windows' :
+                       userAgent.includes('Mac') ? 'Mac' :
+                       userAgent.includes('Linux') ? 'Linux' :
+                       userAgent.includes('Android') ? 'Android' :
+                       userAgent.includes('iOS') ? 'iOS' :
+                       userAgent.includes('SmartTV') ? 'Smart TV' : 'Ismeretlen';
 
-    // Böngésző felismerése
-    const browser = userAgent.includes('FullyKiosk') ? 'Fully Kiosk Browser' :
-                    userAgent.includes('SamsungBrowser') ? 'Samsung Smart TV böngésző' :
-                    userAgent.includes('Chrome') ? 'Chrome' :
-                    userAgent.includes('Firefox') ? 'Firefox' :
-                    userAgent.includes('Safari') ? 'Safari' :
-                    userAgent.includes('Edge') ? 'Edge' : 'Ismeretlen';
+            // Böngésző felismerése
+            const browser = userAgent.includes('FullyKiosk') ? 'Fully Kiosk Browser' :
+                            userAgent.includes('SamsungBrowser') ? 'Samsung Smart TV böngésző' :
+                            userAgent.includes('Chrome') ? 'Chrome' :
+                            userAgent.includes('Firefox') ? 'Firefox' :
+                            userAgent.includes('Safari') ? 'Safari' :
+                            userAgent.includes('Edge') ? 'Edge' : 'Ismeretlen';
 
-    // Kijelző felbontása
-    const resolution = `${window.screen.width}x${window.screen.height}`;
+            // Kijelző felbontása
+            const resolution = `${window.screen.width}x${window.screen.height}`;
 
-    return { os, browser, resolution };
-}
+            return { os, browser, resolution };
+        }
 
         // Eszköz információk küldése a Firestore-ba
         async function sendDeviceInfo() {
@@ -138,42 +160,66 @@ function getDeviceInfo() {
         }
 
         // Diák betöltése
-        function fetchSlides() {
-            const slidesRef = collection(db, 'slides');
-            const emergencyRef = collection(db, 'emergency_slides');
-            const today = formatDate(new Date());
+// Diák betöltése
+function fetchSlides() {
+    const slidesRef = collection(db, 'slides');
+    const emergencyRef = collection(db, 'emergency_slides');
+    const today = formatDate(new Date());
 
-            // Normál hirdetések betöltése
-            const q = query(slidesRef, where('active', '==', true), where('startDate', '<=', today), where('endDate', '>=', today), orderBy("order", "asc"));
-            onSnapshot(q, (querySnapshot) => {
-                const newSlides = [];
-                querySnapshot.forEach((doc) => {
-                    newSlides.push({ id: doc.id, ...doc.data() });
-                });
-                slides = newSlides;
-                renderSlides();
-            }, (error) => {
-                console.error('Hiba a diák betöltésekor:', error);
-            });
+    // Normál hirdetések betöltése
+    const q = query(slidesRef, where('active', '==', true), where('startDate', '<=', today), where('endDate', '>=', today), orderBy("order", "asc"));
+    onSnapshot(q, async (querySnapshot) => {
+        const newSlides = [];
+        querySnapshot.forEach((doc) => {
+            newSlides.push({ id: doc.id, ...doc.data() });
+        });
 
-            // Haváriák betöltése
-            const emergencyQ = query(emergencyRef, where('active', '==', true), where('startDate', '<=', today), where('endDate', '>=', today));
-            onSnapshot(emergencyQ, (querySnapshot) => {
-                const newEmergencySlides = [];
-                querySnapshot.forEach((doc) => {
-                    newEmergencySlides.push({ id: doc.id, ...doc.data() });
-                });
-                emergencySlides = newEmergencySlides;
-                renderEmergencyOverlay();
-            }, (error) => {
-                console.error('Hiba a haváriák betöltésekor:', error);
-            });
+        // Rögzített dia ellenőrzése
+        try {
+            const deviceDoc = await getDoc(deviceRef);
+            if (deviceDoc.exists() && deviceDoc.data().pinnedSlideId) {
+                const pinnedSlideId = deviceDoc.data().pinnedSlideId;
+                const pinnedSlide = newSlides.find(slide => slide.id === pinnedSlideId);
+                if (pinnedSlide) {
+                    slides = [pinnedSlide]; // Csak a rögzített dia jelenjen meg
+                    console.log('Rögzített dia betöltve:', pinnedSlide); // Hibakeresés
+                } else {
+                    slides = newSlides; // Ha nincs rögzített dia, akkor az összes dia
+                }
+            } else {
+                slides = newSlides; // Ha nincs rögzített dia, akkor az összes dia
+            }
+            renderSlides();
+        } catch (error) {
+            console.error('Hiba a rögzített dia betöltésekor:', error);
         }
+    }, (error) => {
+        console.error('Hiba a diák betöltésekor:', error);
+    });
+
+    // Haváriák betöltése
+    const emergencyQ = query(emergencyRef, where('active', '==', true), where('startDate', '<=', today), where('endDate', '>=', today));
+    onSnapshot(emergencyQ, (querySnapshot) => {
+        const newEmergencySlides = [];
+        querySnapshot.forEach((doc) => {
+            newEmergencySlides.push({ id: doc.id, ...doc.data() });
+        });
+        emergencySlides = newEmergencySlides;
+        renderEmergencyOverlay();
+    }, (error) => {
+        console.error('Hiba a haváriák betöltésekor:', error);
+    });
+}
 
         // Havária overlay megjelenítése
         function renderEmergencyOverlay() {
             const overlay = document.getElementById('emergency-overlay');
             const content = document.getElementById('emergency-content');
+
+            if (!overlay || !content) {
+                console.error('Hiba: Az emergency-overlay vagy emergency-content elem nem található.');
+                return;
+            }
 
             if (emergencySlides.length > 0) {
                 const emergencySlide = emergencySlides[0]; // Csak egy aktív havária lehet
@@ -206,13 +252,38 @@ function getDeviceInfo() {
             });
         }
 
-        // Következő dia
-        function nextSlide() {
-            if (slides.length > 0) {
-                currentSlideIndex = (currentSlideIndex + 1) % slides.length;
-                renderSlides();
-            }
+// Következő dia
+// Következő dia
+async function nextSlide() {
+    const pinnedSlideId = await getPinnedSlideId();
+
+    // Ha van rögzített dia, és a slides tömb tartalmazza, akkor ne lapozzon
+    if (pinnedSlideId && slides.some(slide => slide.id === pinnedSlideId)) {
+        console.log('Rögzített dia aktív, nem lapozunk tovább.');
+        return;
+    }
+
+    // Normál váltogatás
+    if (slides.length > 0) {
+        currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+        renderSlides();
+    }
+}
+
+        // Rögzített dia azonosítójának lekérése
+// Rögzített dia azonosítójának lekérése
+async function getPinnedSlideId() {
+    try {
+        const deviceDoc = await getDoc(deviceRef);
+        if (deviceDoc.exists() && deviceDoc.data().pinnedSlideId) {
+            return deviceDoc.data().pinnedSlideId;
         }
+        return null;
+    } catch (error) {
+        console.error('Hiba a rögzített dia azonosítójának lekérésekor:', error);
+        return null;
+    }
+}
 
         // Indítás
         setInterval(nextSlide, 30000); // 30 másodpercenként vált
