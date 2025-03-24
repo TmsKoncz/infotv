@@ -799,7 +799,7 @@ function monitorDevices() {
             const device = doc.data();
             const deviceId = doc.id;
             const lastHeartbeat = device.lastHeartbeat?.toDate();
-            const isOnline = lastHeartbeat && (new Date() - lastHeartbeat) < 20000; // 20 másodpercnél régebbi szívverés offline
+            const isOnline = lastHeartbeat && (new Date() - lastHeartbeat) < 120000; // 2 percnél régebbi szívverés offline
 
             if (isOnline) onlineCount++;
 

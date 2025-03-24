@@ -123,8 +123,8 @@
             }
         }
 
-        // Szívverés küldése 10 másodpercenként
-        setInterval(sendDeviceInfo, 10000);
+        // Szívverés küldése percenként
+        setInterval(sendDeviceInfo, 60000);
         sendDeviceInfo(); // Azonnali küldés
 
         // Figyeljük a Firestore változásait
