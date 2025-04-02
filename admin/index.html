@@ -383,7 +383,11 @@
             <input type="date" id="edit-end-date" class="edit-form-input">
         </div>
         <div id="edit-text-content-group" class="edit-form-group hidden">
-            <label class="edit-form-label">Szöveg (max 120 karakter):</label>
+            <label class="edit-form-label">Első sor (max 20 karakter):</label>
+            <div id="edit-first-line" contenteditable="true" class="edit-form-input" oninput="editUpdateFirstLineCounter()"></div>
+            <div id="edit-first-line-counter" class="char-counter">0/20 karakter</div>
+            
+            <label class="edit-form-label mt-4">Szöveg (max 100 karakter):</label>
             <div class="rich-text-toolbar">
                 <button type="button" onclick="editFormatText('bold')"><b>B</b></button>
                 <button type="button" onclick="editFormatText('italic')"><i>I</i></button>
@@ -391,7 +395,7 @@
                 <button type="button" onclick="editFormatText('insertLineBreak')">↵</button>
             </div>
             <div id="edit-text-content" contenteditable="true" class="rich-text-content" oninput="editUpdateCharCounter()"></div>
-            <div id="edit-char-counter" class="char-counter">0/120 karakter</div>
+            <div id="edit-char-counter" class="char-counter">0/100 karakter</div>
         </div>
         <div class="edit-form-group">
             <label class="edit-form-label">Megjegyzés</label>
@@ -462,7 +466,11 @@
                         <input type="hidden" id="aktualis-preset-link" value="https://i.ibb.co/Hfkcjrct/aktu-lis-sablon-1.png">
                         
                         <div class="mb-4">
-                            <label class="block mb-2">Szöveg (max 120 karakter):</label>
+                            <label class="block mb-2">Címsor (max 20 karakter):</label>
+                            <div id="first-line" contenteditable="true" class="w-full p-2 border rounded mb-1" oninput="updateFirstLineCounter()"></div>
+                            <div id="first-line-counter" class="char-counter">0/20 karakter</div>
+                            
+                            <label class="block mb-2 mt-4">Törzsszöveg (max 100 karakter):</label>
                             <div class="rich-text-toolbar">
                                 <button type="button" onclick="formatText('bold')"><b>B</b></button>
                                 <button type="button" onclick="formatText('italic')"><i>I</i></button>
@@ -471,7 +479,7 @@
                             </div>
                             <div id="slide-text-content" contenteditable="true" class="rich-text-content" 
                                  oninput="updateCharCounter()"></div>
-                            <div id="char-counter" class="char-counter">0/120 karakter</div>
+                            <div id="char-counter" class="char-counter">0/100 karakter</div>
                         </div>
                         <div class="date-range">
                             <input type="date" id="aktualis-start-date" class="w-full p-2 border rounded mb-4">
@@ -760,6 +768,40 @@
             editUpdateCharCounter();
         };
 
+        // Character counter for first line
+        window.updateFirstLineCounter = function() {
+            const firstLine = document.getElementById('first-line');
+            const counter = document.getElementById('first-line-counter');
+            const text = firstLine.innerText;
+            const charCount = text.length;
+            
+            counter.textContent = `${charCount}/20 karakter`;
+            counter.className = 'char-counter';
+            
+            if (charCount > 15 && charCount <= 20) {
+                counter.classList.add('warning');
+            } else if (charCount > 20) {
+                counter.classList.add('error');
+            }
+        };
+
+        // Character counter for first line in edit popup
+        window.editUpdateFirstLineCounter = function() {
+            const firstLine = document.getElementById('edit-first-line');
+            const counter = document.getElementById('edit-first-line-counter');
+            const text = firstLine.innerText;
+            const charCount = text.length;
+            
+            counter.textContent = `${charCount}/20 karakter`;
+            counter.className = 'char-counter';
+            
+            if (charCount > 15 && charCount <= 20) {
+                counter.classList.add('warning');
+            } else if (charCount > 20) {
+                counter.classList.add('error');
+            }
+        };
+
         // Character counter for Aktuális slides
         window.updateCharCounter = function() {
             const textContent = document.getElementById('slide-text-content');
@@ -767,12 +809,12 @@
             const text = textContent.innerText;
             const charCount = text.length;
             
-            counter.textContent = `${charCount}/120 karakter`;
+            counter.textContent = `${charCount}/100 karakter`;
             counter.className = 'char-counter';
             
-            if (charCount > 100 && charCount <= 120) {
+            if (charCount > 80 && charCount <= 100) {
                 counter.classList.add('warning');
-            } else if (charCount > 120) {
+            } else if (charCount > 100) {
                 counter.classList.add('error');
             }
         };
@@ -784,12 +826,12 @@
             const text = textContent.innerText;
             const charCount = text.length;
             
-            counter.textContent = `${charCount}/120 karakter`;
+            counter.textContent = `${charCount}/100 karakter`;
             counter.className = 'char-counter';
             
-            if (charCount > 100 && charCount <= 120) {
+            if (charCount > 80 && charCount <= 100) {
                 counter.classList.add('warning');
-            } else if (charCount > 120) {
+            } else if (charCount > 100) {
                 counter.classList.add('error');
             }
         };
@@ -805,14 +847,22 @@
             let content, startDate, endDate, comment;
 
             if (type === 'aktuális') {
+                const firstLine = document.getElementById('first-line').innerText;
                 const textContent = document.getElementById('slide-text-content').innerText;
-                if (textContent.length > 120) {
-                    showNotification('Az aktuális dia szövege maximum 120 karakter lehet!');
+                
+                if (firstLine.length > 20) {
+                    showNotification('Az aktuális dia első sora maximum 20 karakter lehet!');
+                    return;
+                }
+                
+                if (textContent.length > 100) {
+                    showNotification('Az aktuális dia szövege maximum 100 karakter lehet!');
                     return;
                 }
                 
                 content = {
                     presetLink: document.getElementById('aktualis-preset-link').value,
+                    firstLine: document.getElementById('first-line').innerHTML,
                     text: document.getElementById('slide-text-content').innerHTML,
                     style: {
                         fontFamily: "'Jost', sans-serif",
@@ -867,10 +917,12 @@
                 
                 // Reset form fields
                 if (type === 'aktuális') {
+                    document.getElementById('first-line').innerHTML = '';
                     document.getElementById('slide-text-content').innerHTML = '';
                     document.getElementById('aktualis-comment').value = '';
                     document.getElementById('aktualis-start-date').value = '';
                     document.getElementById('aktualis-end-date').value = '';
+                    updateFirstLineCounter();
                     updateCharCounter();
                 } else {
                     document.getElementById('slide-content').value = '';
@@ -962,6 +1014,7 @@
                             contentPreview = `
                                 <div class="slide-preview-container">
                                     <div class="text-gray-500">Aktuális dia</div>
+                                    <div class="font-bold">${contentObj.firstLine ? contentObj.firstLine.substring(0, 20) : ''}</div>
                                     <div class="slide-preview-text">
                                         ${contentObj.text ? contentObj.text.substring(0, 50) + (contentObj.text.length > 50 ? '...' : '') : 'Nincs szöveg'}
                                     </div>
@@ -1078,19 +1131,26 @@
                     
                     // Handle Aktuális slide text content
                     const textContentGroup = document.getElementById('edit-text-content-group');
+                    const firstLine = document.getElementById('edit-first-line');
                     const textContent = document.getElementById('edit-text-content');
+                    const firstLineCounter = document.getElementById('edit-first-line-counter');
                     const charCounter = document.getElementById('edit-char-counter');
                     
                     if (slideData.type === 'aktuális') {
                         try {
                             const contentObj = JSON.parse(slideData.content);
+                            firstLine.innerHTML = contentObj.firstLine || '';
                             textContent.innerHTML = contentObj.text || '';
+                            const firstLineCount = firstLine.innerText.length;
                             const charCount = textContent.innerText.length;
-                            charCounter.textContent = `${charCount}/120 karakter`;
+                            firstLineCounter.textContent = `${firstLineCount}/20 karakter`;
+                            charCounter.textContent = `${charCount}/100 karakter`;
                             textContentGroup.classList.remove('hidden');
                         } catch (e) {
+                            firstLine.innerHTML = '';
                             textContent.innerHTML = '';
-                            charCounter.textContent = '0/120 karakter';
+                            firstLineCounter.textContent = '0/20 karakter';
+                            charCounter.textContent = '0/100 karakter';
                             textContentGroup.classList.remove('hidden');
                         }
                     } else {
@@ -1180,16 +1240,23 @@
                     
                     // Handle Aktuális slide text content update
                     if (currentEditingSlideType === 'aktuális') {
+                        const firstLine = document.getElementById('edit-first-line').innerText;
                         const textContent = document.getElementById('edit-text-content').innerHTML;
                         const textContentText = document.getElementById('edit-text-content').innerText;
                         
-                        if (textContentText.length > 120) {
-                            showNotification('Az aktuális dia szövege maximum 120 karakter lehet!');
+                        if (firstLine.length > 20) {
+                            showNotification('Az aktuális dia első sora maximum 20 karakter lehet!');
+                            return;
+                        }
+                        
+                        if (textContentText.length > 100) {
+                            showNotification('Az aktuális dia szövege maximum 100 karakter lehet!');
                             return;
                         }
                         
                         const contentObj = {
                             presetLink: "https://i.ibb.co/Hfkcjrct/aktu-lis-sablon-1.png",
+                            firstLine: document.getElementById('edit-first-line').innerHTML,
                             text: textContent,
                             style: {
                                 fontFamily: "'Jost', sans-serif",
