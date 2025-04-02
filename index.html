@@ -51,7 +51,7 @@
             width: 100%;
             height: 100%;
         }
-        /* Aktuális slide styles */
+        /* Aktuális slide styles with LARGE BLACK TEXT */
         .aktualis-slide {
             position: relative;
             width: 100%;
@@ -69,16 +69,18 @@
             flex-direction: column;
             justify-content: center;
             padding: 2rem;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: black !important;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
             font-family: 'Jost', sans-serif;
-            font-size: 3rem;
+            font-size: 4rem !important; /* Larger font size */
+            font-weight: bold; /* Bolder text */
             text-align: left;
             overflow: hidden;
+            line-height: 1.2; /* Better line spacing */
         }
     </style>
     <!-- Add Jost font for Aktuális slides -->
-    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="slideshow-container" id="slideshow-container"></div>
@@ -91,7 +93,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
         import { getFirestore, doc, setDoc, collection, query, where, onSnapshot, orderBy, serverTimestamp, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
-        // Firebase konfiguráció
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAmlb3HFiXq18IlV--o1GOC5yofXSZjV48",
             authDomain: "infotv-50232.firebaseapp.com",
@@ -102,41 +104,34 @@
             measurementId: "G-2V1HZ0RPJK"
         };
 
-        // Firebase inicializálása
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Eszköz azonosítója
+        // Device ID
         const urlParams = new URLSearchParams(window.location.search);
         const deviceId = urlParams.get('id') || 'unknown';
 
-        // Eszköz információk összegyűjtése
+        // Device info collection
         function getDeviceInfo() {
             const userAgent = navigator.userAgent;
-
-            // Operációs rendszer felismerése
             const os = userAgent.includes('Windows') ? 'Windows' :
                        userAgent.includes('Mac') ? 'Mac' :
                        userAgent.includes('Linux') ? 'Linux' :
                        userAgent.includes('Android') ? 'Android' :
                        userAgent.includes('iOS') ? 'iOS' :
-                       userAgent.includes('SmartTV') ? 'Smart TV' : 'Ismeretlen';
-
-            // Böngésző felismerése
+                       userAgent.includes('SmartTV') ? 'Smart TV' : 'Unknown';
             const browser = userAgent.includes('FullyKiosk') ? 'Fully Kiosk Browser' :
-                            userAgent.includes('SamsungBrowser') ? 'Samsung Smart TV böngésző' :
-                            userAgent.includes('Chrome') ? 'Chrome' :
-                            userAgent.includes('Firefox') ? 'Firefox' :
-                            userAgent.includes('Safari') ? 'Safari' :
-                            userAgent.includes('Edge') ? 'Edge' : 'Ismeretlen';
-
-            // Kijelző felbontása
+                           userAgent.includes('SamsungBrowser') ? 'Samsung Smart TV' :
+                           userAgent.includes('Chrome') ? 'Chrome' :
+                           userAgent.includes('Firefox') ? 'Firefox' :
+                           userAgent.includes('Safari') ? 'Safari' :
+                           userAgent.includes('Edge') ? 'Edge' : 'Unknown';
             const resolution = `${window.screen.width}x${window.screen.height}`;
-
             return { os, browser, resolution };
         }
 
-        // Eszköz információk küldése a Firestore-ba
+        // Send device info to Firestore
         async function sendDeviceInfo() {
             const deviceInfo = getDeviceInfo();
             try {
@@ -146,52 +141,47 @@
                     status: 'online'
                 }, { merge: true });
             } catch (error) {
-                console.error('Hiba az eszköz információk küldésekor:', error);
+                console.error('Error sending device info:', error);
             }
         }
 
-        // Szívverés küldése percenként
+        // Heartbeat every minute
         setInterval(sendDeviceInfo, 60000);
-        sendDeviceInfo(); // Azonnali küldés
+        sendDeviceInfo();
 
-        // Figyeljük a Firestore változásait
+        // Monitor Firestore for changes
         const deviceRef = doc(db, 'devices', deviceId);
         onSnapshot(deviceRef, async (doc) => {
             const deviceData = doc.data();
             if (deviceData) {
-                // Távoli oldal frissítése
                 if (deviceData.refresh) {
-                    await updateDoc(deviceRef, { refresh: false }); // Reseteljük a frissítési állapotot
-                    location.reload(); // Oldal frissítése
+                    await updateDoc(deviceRef, { refresh: false });
+                    location.reload();
                 }
-
-                // Eszköz újraindítása
                 if (deviceData.restart) {
-                    await updateDoc(deviceRef, { restart: false }); // Reseteljük az újraindítási állapotot
-                    setTimeout(() => {
-                        location.reload(); // Oldal újratöltése
-                    }, 1000); // 1 másodperc várakozás
+                    await updateDoc(deviceRef, { restart: false });
+                    setTimeout(() => location.reload(), 1000);
                 }
             }
         });
 
-        // Diavetítés változók
+        // Slideshow variables
         let slides = [];
         let emergencySlides = [];
         let currentSlideIndex = 0;
 
-        // Dátum formázása
+        // Format date
         function formatDate(date) {
             return date.toISOString().split('T')[0];
         }
 
-        // Diák betöltése
+        // Load slides
         function fetchSlides() {
             const slidesRef = collection(db, 'slides');
             const emergencyRef = collection(db, 'emergency_slides');
             const today = formatDate(new Date());
 
-            // Normál hirdetések betöltése
+            // Normal slides
             const q = query(slidesRef, where('active', '==', true), where('startDate', '<=', today), where('endDate', '>=', today), orderBy("order", "asc"));
             onSnapshot(q, async (querySnapshot) => {
                 const newSlides = [];
@@ -199,67 +189,52 @@
                     newSlides.push({ id: doc.id, ...doc.data() });
                 });
 
-                // Rögzített dia ellenőrzése
                 const deviceDoc = await getDoc(deviceRef);
                 if (deviceDoc.exists() && deviceDoc.data().pinnedSlideId) {
                     const pinnedSlideId = deviceDoc.data().pinnedSlideId;
                     const pinnedSlide = newSlides.find(slide => slide.id === pinnedSlideId);
-                    if (pinnedSlide) {
-                        slides = [pinnedSlide]; // Csak a rögzített dia jelenjen meg
-                    } else {
-                        slides = newSlides; // Ha nincs rögzített dia, akkor az összes dia
-                    }
+                    slides = pinnedSlide ? [pinnedSlide] : newSlides;
                 } else {
-                    slides = newSlides; // Ha nincs rögzített dia, akkor az összes dia
+                    slides = newSlides;
                 }
                 renderSlides();
             }, (error) => {
-                console.error('Hiba a diák betöltésekor:', error);
+                console.error('Error loading slides:', error);
             });
 
-            // Haváriák betöltése
+            // Emergency slides
             const emergencyQ = query(emergencyRef, where('active', '==', true), where('startDate', '<=', today), where('endDate', '>=', today));
             onSnapshot(emergencyQ, (querySnapshot) => {
-                const newEmergencySlides = [];
-                querySnapshot.forEach((doc) => {
-                    newEmergencySlides.push({ id: doc.id, ...doc.data() });
-                });
-                emergencySlides = newEmergencySlides;
+                emergencySlides = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderEmergencyOverlay();
             }, (error) => {
-                console.error('Hiba a haváriák betöltésekor:', error);
+                console.error('Error loading emergency slides:', error);
             });
         }
 
-        // Havária overlay megjelenítése
+        // Render emergency overlay
         function renderEmergencyOverlay() {
             const overlay = document.getElementById('emergency-overlay');
             const content = document.getElementById('emergency-content');
 
-            if (!overlay || !content) {
-                console.error('Hiba: Az emergency-overlay vagy emergency-content elem nem található.');
-                return;
-            }
+            if (!overlay || !content) return;
 
             if (emergencySlides.length > 0) {
-                const emergencySlide = emergencySlides[0]; // Csak egy aktív havária lehet
-                if (emergencySlide.type === 'image') {
-                    content.innerHTML = `<img src="${emergencySlide.content}" alt="Havária">`;
-                } else if (emergencySlide.type === 'embed') {
-                    content.innerHTML = `<iframe src="${emergencySlide.content}"></iframe>`;
-                }
-                overlay.classList.add('active'); // Overlay láthatóvá tétele
+                const emergencySlide = emergencySlides[0];
+                content.innerHTML = emergencySlide.type === 'image' 
+                    ? `<img src="${emergencySlide.content}" alt="Emergency">`
+                    : `<iframe src="${emergencySlide.content}"></iframe>`;
+                overlay.classList.add('active');
             } else {
-                overlay.classList.remove('active'); // Overlay elrejtése
+                overlay.classList.remove('active');
             }
         }
 
-        // Diák megjelenítése
+        // Render slides with LARGE BLACK TEXT
         function renderSlides() {
             const container = document.getElementById('slideshow-container');
             container.innerHTML = '';
 
-            // Normál hirdetések megjelenítése
             slides.forEach((slide, index) => {
                 const slideElement = document.createElement('div');
                 slideElement.className = `slide ${index === currentSlideIndex ? 'active' : ''}`;
@@ -270,25 +245,25 @@
                     slideElement.innerHTML = `<iframe src="${slide.content}"></iframe>`;
                 } else if (slide.type === 'aktuális') {
                     try {
-                        // Parse the Aktuális slide content
                         const content = JSON.parse(slide.content);
                         slideElement.innerHTML = `
                             <div class="aktualis-slide" style="background-image: url('${content.presetLink}')">
                                 <div class="aktualis-text" style="
-                                    font-family: ${content.style.fontFamily};
-                                    font-size: ${content.style.fontSize};
+                                    font-family: 'Jost', sans-serif;
+                                    font-size: 4rem !important;
                                     text-align: left;
-                                    color: ${content.style.color};
-                                    text-shadow: ${content.style.textShadow};
-                                    padding: ${content.style.padding};
+                                    color: black !important;
+                                    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+                                    padding: 2rem;
+                                    font-weight: bold;
                                 ">
                                     ${content.text}
                                 </div>
                             </div>
                         `;
                     } catch (e) {
-                        console.error('Error parsing Aktuális slide content:', e);
-                        slideElement.innerHTML = `<div style="width:100%;height:100%;display:flex;justify-content:center;align-items:center;background:#000;color:#fff;">Hiba az aktuális dia betöltésében</div>`;
+                        console.error('Error parsing Aktuális slide:', e);
+                        slideElement.innerHTML = `<div style="width:100%;height:100%;display:flex;justify-content:center;align-items:center;background:#000;color:#fff;">Error loading slide</div>`;
                     }
                 }
                 
@@ -296,33 +271,23 @@
             });
         }
 
-        // Következő dia
+        // Next slide
         function nextSlide() {
-            // Ha van rögzített dia, ne lapozzon
-            if (slides.length === 1 && slides[0].id === getPinnedSlideId()) {
-                return;
-            }
-
-            // Normál váltogatás
-            if (slides.length > 0) {
-                currentSlideIndex = (currentSlideIndex + 1) % slides.length;
-                renderSlides();
-            }
+            if (slides.length <= 1) return;
+            currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+            renderSlides();
         }
 
-        // Rögzített dia azonosítójának lekérése
+        // Get pinned slide ID
         async function getPinnedSlideId() {
             const deviceDoc = await getDoc(deviceRef);
-            if (deviceDoc.exists() && deviceDoc.data().pinnedSlideId) {
-                return deviceDoc.data().pinnedSlideId;
-            }
-            return null;
+            return deviceDoc.exists() ? deviceDoc.data().pinnedSlideId : null;
         }
 
-        // Indítás
-        setInterval(nextSlide, 30000); // 30 másodpercenként vált
-        setInterval(fetchSlides, 60000); // 1 percenként ellenőriz új diákért
-        fetchSlides(); // Kezdeti betöltés
+        // Initialize
+        setInterval(nextSlide, 30000); // 30s slide duration
+        setInterval(fetchSlides, 60000); // 1min refresh
+        fetchSlides();
     </script>
 </body>
 </html>
