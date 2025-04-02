@@ -6,86 +6,163 @@
     <title>InfoTV Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <!-- Add Now font from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* Add Now font family */
         body {
             font-family: 'Jost', sans-serif;
+            min-height: 100vh;
+        }
+        
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f3f4f6;
+            padding: 1rem;
+        }
+        
+        .login-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .login-input {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 0.375rem;
+            font-weight: 500;
+        }
+        
+        .login-btn:hover {
+            background-color: #2563eb;
         }
         
         .slide-item {
             display: flex;
-            align-items: center;
-            gap: 16px;
+            flex-direction: column;
+            gap: 0.75rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+            background-color: #f9fafb;
         }
+        
+        @media (min-width: 640px) {
+            .slide-item {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+        
         .drag-handle {
             cursor: grab;
             opacity: 0.5;
+            padding: 0.5rem;
         }
+        
         .drag-handle:hover {
             opacity: 1;
         }
+        
         .preview-image {
             max-height: 100px;
             width: auto;
+            max-width: 100%;
+            object-fit: contain;
+            border-radius: 0.25rem;
         }
+        
         .date-range {
             display: flex;
-            gap: 8px;
+            flex-direction: column;
+            gap: 0.5rem;
         }
+        
+        @media (min-width: 640px) {
+            .date-range {
+                flex-direction: row;
+            }
+        }
+        
         .sortable-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 0.5rem;
         }
+        
         .notification {
             position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            bottom: 1rem;
+            left: 1rem;
+            right: 1rem;
+            max-width: 400px;
+            margin: 0 auto;
             background: #4CAF50;
             color: white;
-            padding: 12px 24px;
-            border-radius: 4px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             z-index: 1000;
-            animation: slideIn 0.5s ease-out;
+            animation: slideIn 0.3s ease-out;
         }
+        
         @keyframes slideIn {
             from {
-                bottom: -50px;
+                transform: translateY(100%);
                 opacity: 0;
             }
             to {
-                bottom: 20px;
+                transform: translateY(0);
                 opacity: 1;
             }
         }
+        
         .notification.hide {
-            animation: slideOut 0.5s ease-in;
+            animation: slideOut 0.3s ease-in;
         }
+        
         @keyframes slideOut {
             from {
-                bottom: 20px;
+                transform: translateY(0);
                 opacity: 1;
             }
             to {
-                bottom: -50px;
+                transform: translateY(100%);
                 opacity: 0;
             }
         }
+        
         .popup {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             background: white;
-            padding: 20px;
-            border-radius: 8px;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             z-index: 1000;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
+        
         .popup-overlay {
             position: fixed;
             top: 0;
@@ -95,56 +172,72 @@
             background: rgba(0, 0, 0, 0.5);
             z-index: 999;
         }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
         .animate-spin {
             animation: spin 1s linear infinite;
         }
+        
         /* Rich text editor styles */
         .rich-text-toolbar {
             display: flex;
-            gap: 4px;
-            margin-bottom: 4px;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            margin-bottom: 0.5rem;
         }
+        
         .rich-text-toolbar button {
-            padding: 2px 6px;
+            padding: 0.25rem 0.5rem;
             background: #e2e8f0;
             border: 1px solid #cbd5e0;
-            border-radius: 3px;
+            border-radius: 0.25rem;
             cursor: pointer;
+            font-size: 0.875rem;
         }
+        
         .rich-text-toolbar button:hover {
             background: #cbd5e0;
         }
-        #slide-text-content {
+        
+        .rich-text-content {
             min-height: 100px;
             border: 1px solid #cbd5e0;
-            padding: 8px;
+            padding: 0.5rem;
             font-family: 'Jost', sans-serif;
+            border-radius: 0.25rem;
+            outline: none;
         }
+        
         /* Character counter */
         .char-counter {
             text-align: right;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #666;
-            margin-top: 4px;
+            margin-top: 0.25rem;
         }
+        
         .char-counter.warning {
             color: orange;
         }
+        
         .char-counter.error {
             color: red;
         }
+        
         /* Aktuális slide preview */
         .aktualis-preview {
             position: relative;
-            width: 200px;
+            width: 100%;
             height: 120px;
             background-size: cover;
             background-position: center;
+            margin-bottom: 0.5rem;
         }
+        
         .aktualis-text-preview {
             position: absolute;
             top: 0;
@@ -162,128 +255,246 @@
             text-align: left;
             overflow: hidden;
         }
+        
+        /* Edit button styles */
+        .edit-btn {
+            background-color: #f6ad55;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+        
+        .edit-btn:hover {
+            background-color: #ed8936;
+        }
+        
+        /* Emergency slide form - removed date range */
+        #emergency-slide-form .date-range {
+            display: none;
+        }
+        
+        /* Slide actions */
+        .slide-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        @media (min-width: 640px) {
+            .slide-actions {
+                flex-direction: row;
+                margin-top: 0;
+                margin-left: auto;
+            }
+        }
+        
+        /* Form groups */
+        .edit-form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .edit-form-label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+        
+        .edit-form-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.25rem;
+        }
+        
+        /* Device status */
+        .device-card {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+        
+        /* Log entries */
+        .log-entry {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        /* Responsive grid */
+        .responsive-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .responsive-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Full width buttons on mobile */
+        .mobile-full-width {
+            width: 100%;
+        }
+        
+        @media (min-width: 640px) {
+            .mobile-full-width {
+                width: auto;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-100 p-4 sm:p-8">
-    <!-- Értesítési sáv -->
+<body class="bg-gray-100">
+    <!-- Login Form -->
+    <div id="login-form" class="login-container">
+        <div class="login-form">
+            <h2 class="text-2xl font-bold mb-4 text-center">InfoTV Admin Bejelentkezés</h2>
+            <input type="email" id="email" placeholder="E-mail cím" class="login-input">
+            <input type="password" id="password" placeholder="Jelszó" class="login-input">
+            <button onclick="login()" class="login-btn">Bejelentkezés</button>
+        </div>
+    </div>
+
+    <!-- Notification -->
     <div id="notification" class="notification hidden"></div>
 
-    <!-- Megerősítő popup -->
+    <!-- Confirmation Popup -->
     <div id="confirm-popup" class="popup hidden">
-        <p id="confirm-message"></p>
-        <div class="mt-4 flex gap-4">
-            <button onclick="confirmAction(true)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Igen</button>
-            <button onclick="confirmAction(false)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Mégse</button>
+        <p id="confirm-message" class="mb-4"></p>
+        <div class="flex flex-col sm:flex-row justify-end gap-3">
+            <button onclick="confirmAction(false)" class="mobile-full-width px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Mégse</button>
+            <button onclick="confirmAction(true)" class="mobile-full-width px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Igen</button>
         </div>
     </div>
     <div id="confirm-overlay" class="popup-overlay hidden"></div>
 
-    <div class="max-w-4xl mx-auto">
-        <!-- Bejelentkezési űrlap -->
-        <div id="login-form" class="bg-white p-6 rounded-lg shadow-md mb-8">
-            <h2 class="text-xl font-semibold mb-4">Bejelentkezés</h2>
-            <input type="email" id="email" placeholder="E-mail" class="w-full p-2 border rounded mb-4">
-            <input type="password" id="password" placeholder="Jelszó" class="w-full p-2 border rounded mb-4">
-            <button onclick="login()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Bejelentkezés</button>
+    <!-- Edit Slide Popup -->
+    <div id="edit-popup" class="popup hidden">
+        <h3 class="text-xl font-bold mb-4">Dia szerkesztése</h3>
+        <div class="edit-form-group">
+            <label class="edit-form-label">Kezdő dátum</label>
+            <input type="date" id="edit-start-date" class="edit-form-input">
+        </div>
+        <div class="edit-form-group">
+            <label class="edit-form-label">Végdátum</label>
+            <input type="date" id="edit-end-date" class="edit-form-input">
+        </div>
+        <div id="edit-text-content-group" class="edit-form-group hidden">
+            <label class="edit-form-label">Szöveg (max 120 karakter):</label>
+            <div class="rich-text-toolbar">
+                <button type="button" onclick="editFormatText('bold')"><b>B</b></button>
+                <button type="button" onclick="editFormatText('italic')"><i>I</i></button>
+                <button type="button" onclick="editFormatText('underline')"><u>U</u></button>
+                <button type="button" onclick="editFormatText('insertLineBreak')">↵</button>
+            </div>
+            <div id="edit-text-content" contenteditable="true" class="rich-text-content" oninput="editUpdateCharCounter()"></div>
+            <div id="edit-char-counter" class="char-counter">0/120 karakter</div>
+        </div>
+        <div class="edit-form-group">
+            <label class="edit-form-label">Megjegyzés</label>
+            <textarea id="edit-comment" class="edit-form-input"></textarea>
+        </div>
+        <div class="flex flex-col sm:flex-row justify-end gap-3 mt-4">
+            <button onclick="closeEditPopup()" class="mobile-full-width px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Mégse</button>
+            <button onclick="saveEditedSlide()" class="mobile-full-width px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Mentés</button>
+        </div>
+    </div>
+
+    <!-- Admin Content -->
+    <div id="admin-content" class="hidden max-w-7xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">InfoTV Admin</h1>
+            <div class="flex flex-wrap gap-2 sm:gap-4">
+                <a href="https://www.canva.com/design/DAGI4OevAdo/QiptmBWJUsqrn3_MJbQLww/edit" target="_blank" class="mobile-full-width sm:w-auto px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Sablonok</a>
+                <a href="https://infotv.tmskoncz.hu" target="_blank" class="mobile-full-width sm:w-auto px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Élő oldal</a>
+                <button onclick="logout()" class="mobile-full-width sm:w-auto px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Kijelentkezés</button>
+            </div>
         </div>
 
-        <!-- Admin felület (csak bejelentkezés után látható) -->
-        <div id="admin-content" class="hidden">
-            <!-- Fejléc -->
-            <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-                <h1 class="text-2xl sm:text-3xl font-bold">InfoTV Admin</h1>
-                <div class="flex flex-wrap gap-2 sm:gap-4">
-                    <a href="https://www.canva.com/design/DAGI4OevAdo/QiptmBWJUsqrn3_MJbQLww/edit" target="_blank" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Sablonok</a>
-                    <a href="https://infotv.tmskoncz.hu" target="_blank" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Élő oldal</a>
-                    <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Kijelentkezés</button>
+        <!-- Device Status -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold mb-6 text-gray-800">Eszközök állapota</h1>
+            <div class="responsive-grid">
+                <div class="device-card bg-white">
+                    <h2 class="text-xl font-semibold mb-4">Online eszközök</h2>
+                    <p class="text-4xl font-bold text-green-600" id="online-count">0</p>
+                </div>
+                <div class="device-card bg-white">
+                    <h2 class="text-xl font-semibold mb-4">Eszközök listája</h2>
+                    <div id="devices-list" class="overflow-y-auto max-h-48"></div>
                 </div>
             </div>
+        </div>
 
-            <!-- Nyomonkövetés -->
-            <div class="mb-8">
-                <h1 class="text-2xl font-bold mb-6">Eszközök állapota</h1>
-
-                <!-- Kártyák -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Online eszközök száma -->
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h2 class="text-xl font-semibold mb-4">Online eszközök</h2>
-                        <p class="text-4xl font-bold text-green-600" id="online-count">0</p>
-                    </div>
-
-                    <!-- Eszközök listája -->
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h2 class="text-xl font-semibold mb-4">Eszközök listája</h2>
-                        <div id="devices-list" class="overflow-y-auto max-h-48"></div>
-                    </div>
+        <!-- Slide Management -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold mb-6 text-gray-800">Hirdetéskezelés</h1>
+            
+            <!-- Add New Slide -->
+            <div class="bg-white p-6 rounded-lg shadow mb-8">
+                <div class="flex justify-between items-center cursor-pointer" onclick="toggleSlideForm()">
+                    <h2 class="text-xl font-semibold">Új hirdetés hozzáadása</h2>
+                    <span id="slide-form-toggle">▼</span>
                 </div>
-            </div>
-
-            <!-- Hirdetéskezelés -->
-            <div class="mb-8">
-                <h1 class="text-2xl font-bold mb-6">Hirdetéskezelés</h1>
-                <!-- Új dia hozzáadása (becsukható/kinyitható) -->
-                <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-                    <div class="flex justify-between items-center cursor-pointer" onclick="toggleSlideForm()">
-                        <h2 class="text-xl font-semibold">Új hirdetés hozzáadása</h2>
-                        <span id="slide-form-toggle">▼</span>
-                    </div>
-                    <div id="slide-form" class="mt-4 hidden">
-                        <select id="slide-type" class="w-full p-2 border rounded mb-4" onchange="toggleSlideTypeFields()">
-                            <option value="image">Kép</option>
-                            <option value="embed">Beágyazott link</option>
-                            <option value="aktuális">Aktuális</option>
-                        </select>
-                        
-                        <!-- Regular image/embed fields -->
-                        <div id="regular-slide-fields">
-                            <input type="text" id="slide-content" placeholder="Kép URL vagy beágyazott link" class="w-full p-2 border rounded mb-4">
-                            <div class="date-range">
-                                <input type="date" id="slide-start-date" class="w-full p-2 border rounded mb-4">
-                                <input type="date" id="slide-end-date" class="w-full p-2 border rounded mb-4">
-                            </div>
-                            <textarea id="slide-comment" placeholder="Megjegyzés" class="w-full p-2 border rounded mb-4"></textarea>
+                <div id="slide-form" class="mt-4 hidden">
+                    <select id="slide-type" class="w-full p-2 border rounded mb-4" onchange="toggleSlideTypeFields()">
+                        <option value="image">Kép</option>
+                        <option value="embed">Beágyazott link</option>
+                        <option value="aktuális">Aktuális</option>
+                    </select>
+                    
+                    <!-- Regular image/embed fields -->
+                    <div id="regular-slide-fields">
+                        <input type="text" id="slide-content" placeholder="Kép URL vagy beágyazott link" class="w-full p-2 border rounded mb-4">
+                        <div class="date-range">
+                            <input type="date" id="slide-start-date" class="w-full p-2 border rounded mb-4">
+                            <input type="date" id="slide-end-date" class="w-full p-2 border rounded mb-4">
                         </div>
-                        
-                        <!-- Aktuális slide fields -->
-                        <div id="aktualis-slide-fields" class="hidden">
-                            <!-- Preset template image -->
-                            <input type="hidden" id="aktualis-preset-link" value="https://i.ibb.co/k2Q1hT6f/aktu-lis-sablon.png">
-                            
-                            <div class="mb-4">
-                                <label class="block mb-2">Szöveg (max 120 karakter):</label>
-                                <div class="rich-text-toolbar">
-                                    <button type="button" onclick="formatText('bold')"><b>B</b></button>
-                                    <button type="button" onclick="formatText('italic')"><i>I</i></button>
-                                    <button type="button" onclick="formatText('underline')"><u>U</u></button>
-                                    <button type="button" onclick="formatText('insertLineBreak')">↵</button>
-                                </div>
-                                <div id="slide-text-content" contenteditable="true" class="w-full p-2 border rounded bg-white" 
-                                     oninput="updateCharCounter()"></div>
-                                <div id="char-counter" class="char-counter">0/120 karakter</div>
-                            </div>
-                            <div class="date-range">
-                                <input type="date" id="aktualis-start-date" class="w-full p-2 border rounded mb-4">
-                                <input type="date" id="aktualis-end-date" class="w-full p-2 border rounded mb-4">
-                            </div>
-                            <textarea id="aktualis-comment" placeholder="Megjegyzés" class="w-full p-2 border rounded mb-4"></textarea>
-                        </div>
-                        
-                        <button onclick="addSlide()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Hirdetés hozzáadása</button>
+                        <textarea id="slide-comment" placeholder="Megjegyzés" class="w-full p-2 border rounded mb-4"></textarea>
                     </div>
-                </div>
-
-                <!-- Diák listája -->
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h2 class="text-xl font-semibold mb-4">Hirdetések listája</h2>
-                    <div id="slides-container" class="sortable-list"></div>
+                    
+                    <!-- Aktuális slide fields -->
+                    <div id="aktualis-slide-fields" class="hidden">
+                        <input type="hidden" id="aktualis-preset-link" value="https://i.ibb.co/Hfkcjrct/aktu-lis-sablon-1.png">
+                        
+                        <div class="mb-4">
+                            <label class="block mb-2">Szöveg (max 120 karakter):</label>
+                            <div class="rich-text-toolbar">
+                                <button type="button" onclick="formatText('bold')"><b>B</b></button>
+                                <button type="button" onclick="formatText('italic')"><i>I</i></button>
+                                <button type="button" onclick="formatText('underline')"><u>U</u></button>
+                                <button type="button" onclick="formatText('insertLineBreak')">↵</button>
+                            </div>
+                            <div id="slide-text-content" contenteditable="true" class="rich-text-content" 
+                                 oninput="updateCharCounter()"></div>
+                            <div id="char-counter" class="char-counter">0/120 karakter</div>
+                        </div>
+                        <div class="date-range">
+                            <input type="date" id="aktualis-start-date" class="w-full p-2 border rounded mb-4">
+                            <input type="date" id="aktualis-end-date" class="w-full p-2 border rounded mb-4">
+                        </div>
+                        <textarea id="aktualis-comment" placeholder="Megjegyzés" class="w-full p-2 border rounded mb-4"></textarea>
+                    </div>
+                    
+                    <button onclick="addSlide()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Hirdetés hozzáadása</button>
                 </div>
             </div>
 
-            <div class="mb-8">
-                <h1 class="text-2xl font-bold mb-6">Rögzített diák</h1>
-            <!-- Rögzített dia kártya -->
-            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <!-- Slides List -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-semibold mb-4">Hirdetések listája</h2>
+                <div id="slides-container" class="sortable-list"></div>
+            </div>
+        </div>
+
+        <!-- Pinned Slides -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold mb-6 text-gray-800">Rögzített diák</h1>
+            <div class="bg-white p-6 rounded-lg shadow mb-8">
                 <h2 class="text-xl font-semibold mb-4">Rögzített dia beállítása</h2>
                 <div class="space-y-4">
                     <select id="device-select" class="w-full p-2 border rounded">
@@ -296,87 +507,80 @@
                 </div>
             </div>
             
-            <!-- Rögzített diák listája -->
-            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <div class="bg-white p-6 rounded-lg shadow mb-8">
                 <h2 class="text-xl font-semibold mb-4">Rögzített diák listája</h2>
                 <div id="pinned-slides-list" class="sortable-list"></div>
             </div>
-            </div>
+        </div>
 
-            <!-- Havária mód -->
-            <div class="mb-8">
-                <h1 class="text-2xl font-bold mb-6">Havária</h1>
-                <!-- Új havária hozzáadása -->
-                <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-                    <div class="flex justify-between items-center cursor-pointer" onclick="toggleEmergencyForm()">
-                        <h2 class="text-xl font-semibold">Új havária hozzáadása</h2>
-                        <span id="emergency-form-toggle">▼</span>
-                    </div>
-                    <div id="emergency-slide-form" class="mt-4 hidden">
-                        <select id="emergency-slide-type" class="w-full p-2 border rounded mb-4">
-                            <option value="image">Kép</option>
-                            <option value="embed">Beágyazott link</option>
-                        </select>
-                        <input type="text" id="emergency-slide-content" placeholder="Kép URL vagy beágyazott link" class="w-full p-2 border rounded mb-4">
-                        <div class="date-range">
-                            <input type="date" id="emergency-slide-start-date" class="w-full p-2 border rounded mb-4">
-                            <input type="date" id="emergency-slide-end-date" class="w-full p-2 border rounded mb-4">
-                        </div>
-                        <textarea id="emergency-slide-comment" placeholder="Megjegyzés" class="w-full p-2 border rounded mb-4"></textarea>
-                        <button onclick="addEmergencySlide()" class="w-full bg-red-500 text-white p-2 rounded hover:bg-red-600">Havária hozzáadása</button>
-                    </div>
+        <!-- Emergency Mode -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold mb-6 text-gray-800">Havária</h1>
+            
+            <!-- Add Emergency Slide -->
+            <div class="bg-white p-6 rounded-lg shadow mb-8">
+                <div class="flex justify-between items-center cursor-pointer" onclick="toggleEmergencyForm()">
+                    <h2 class="text-xl font-semibold">Új havária hozzáadása</h2>
+                    <span id="emergency-form-toggle">▼</span>
                 </div>
-
-                <!-- Haváriák listája -->
-                <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-                    <h2 class="text-xl font-semibold mb-4">Haváriák listája</h2>
-                    <div id="emergency-slides-container" class="sortable-list"></div>
+                <div id="emergency-slide-form" class="mt-4 hidden">
+                    <select id="emergency-slide-type" class="w-full p-2 border rounded mb-4">
+                        <option value="image">Kép</option>
+                        <option value="embed">Beágyazott link</option>
+                    </select>
+                    <input type="text" id="emergency-slide-content" placeholder="Kép URL vagy beágyazott link" class="w-full p-2 border rounded mb-4">
+                    <textarea id="emergency-slide-comment" placeholder="Megjegyzés" class="w-full p-2 border rounded mb-4"></textarea>
+                    <button onclick="addEmergencySlide()" class="w-full bg-red-500 text-white p-2 rounded hover:bg-red-600">Havária hozzáadása</button>
                 </div>
             </div>
 
-            <!-- Hibaelhárítás -->
-            <div class="mb-8">
-                <h1 class="text-2xl font-bold mb-6">Hibaelhárítás</h1>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h2 class="text-xl font-semibold mb-4">Hibaelhárítási eszközök</h2>
-                    <div class="space-y-4">
-                        <!-- Távoli oldal frissítése -->
-                        <button onclick="refreshAllDevices()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
-                            Összes eszköz oldalának frissítése
-                        </button>
-                        <!-- Naplók megtekintése -->
-                        <button onclick="toggleLogCard()" class="w-full bg-gray-500 text-white p-2 rounded hover:bg-gray-600">
-                            Naplók megtekintése
-                        </button>
-                    </div>
-                </div>
+            <!-- Emergency Slides List -->
+            <div class="bg-white p-6 rounded-lg shadow mb-8">
+                <h2 class="text-xl font-semibold mb-4">Haváriák listája</h2>
+                <div id="emergency-slides-container" class="sortable-list"></div>
             </div>
+        </div>
 
-            <!-- Naplók kártya -->
-            <div id="log-card" class="bg-white p-6 rounded-lg shadow-md mt-8 hidden">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-semibold">Naplóbejegyzések</h2>
-                    <div class="flex gap-2">
-                        <button onclick="refreshLogs()" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
-                            Frissítés
-                        </button>
-                        <button onclick="toggleLogCard()" class="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600">
-                            Bezárás
-                        </button>
-                    </div>
+        <!-- Troubleshooting -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold mb-6 text-gray-800">Hibaelhárítás</h1>
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-semibold mb-4">Hibaelhárítási eszközök</h2>
+                <div class="space-y-4">
+                    <button onclick="refreshAllDevices()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+                        Összes eszköz oldalának frissítése
+                    </button>
+                    <button onclick="toggleLogCard()" class="w-full bg-gray-500 text-white p-2 rounded hover:bg-gray-600">
+                        Naplók megtekintése
+                    </button>
                 </div>
-                <div id="log-entries" class="overflow-y-auto max-h-96 border rounded p-2 bg-gray-50"></div>
             </div>
+        </div>
+
+        <!-- Logs Card -->
+        <div id="log-card" class="bg-white p-6 rounded-lg shadow mt-8 hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-2">
+                <h2 class="text-xl font-semibold">Naplóbejegyzések</h2>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button onclick="refreshLogs()" class="mobile-full-width bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+                        Frissítés
+                    </button>
+                    <button onclick="toggleLogCard()" class="mobile-full-width bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600">
+                        Bezárás
+                    </button>
+                </div>
+            </div>
+            <div id="log-entries" class="overflow-y-auto max-h-96 border rounded p-2 bg-gray-50"></div>
         </div>
     </div>
 
-    <!-- Firebase és Firestore SDK -->
+    <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, getDoc, setDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
-        // Firebase konfiguráció
+        // Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyAmlb3HFiXq18IlV--o1GOC5yofXSZjV48",
             authDomain: "infotv-50232.firebaseapp.com",
@@ -387,16 +591,18 @@
             measurementId: "G-2V1HZ0RPJK"
         };
 
-        // Firebase inicializálása
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // Bejelentkezési űrlap és admin tartalom kezelése
+        // UI elements
         const loginForm = document.getElementById('login-form');
         const adminContent = document.getElementById('admin-content');
+        let currentEditingSlideId = null;
+        let currentEditingSlideType = null;
 
-        // Felhasználó bejelentkezési állapotának figyelése
+        // Auth state listener
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 loginForm.style.display = 'none';
@@ -409,19 +615,18 @@
                 loadSlides();
                 renderPinnedSlides();
             } else {
-                loginForm.style.display = 'block';
+                loginForm.style.display = 'flex';
                 adminContent.style.display = 'none';
             }
         });
 
-        // Bejelentkezés
+        // Login function
         window.login = async function() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                // Log successful login
                 await addDoc(collection(db, 'logs'), {
                     eventType: "Bejelentkezés",
                     details: "Sikeres bejelentkezés",
@@ -435,10 +640,9 @@
             }
         };
 
-        // Kijelentkezés
+        // Logout function
         window.logout = async function() {
             try {
-                // Log logout event
                 if (auth.currentUser) {
                     await addDoc(collection(db, 'logs'), {
                         eventType: "Kijelentkezés",
@@ -455,7 +659,7 @@
             }
         };
 
-        // Naplók kártya megjelenítése/elrejtése
+        // Toggle log card visibility
         window.toggleLogCard = function() {
             const logCard = document.getElementById('log-card');
             if (logCard.classList.contains('hidden')) {
@@ -466,22 +670,23 @@
             }
         };
 
-        // Naplók betöltése
+        // Fetch and display logs (sorted by timestamp)
         async function fetchLogs() {
             try {
                 showLogLoading(true);
                 const logsRef = collection(db, 'logs');
-                const querySnapshot = await getDocs(logsRef);
-                const logEntries = [];
+                const q = query(logsRef, orderBy("timestamp", "desc")); // Sort by timestamp descending
+                const querySnapshot = await getDocs(q);
                 
+                const logEntries = [];
                 querySnapshot.forEach((doc) => {
                     const logData = doc.data();
                     const timestamp = logData.timestamp?.toDate() || new Date();
                     
                     logEntries.push(`
-                        <div class="p-3 mb-2 bg-white rounded border border-gray-200">
-                            <div class="flex justify-between items-start">
-                                <div>
+                        <div class="log-entry">
+                            <div class="flex flex-col sm:flex-row justify-between items-start gap-1">
+                                <div class="flex-1">
                                     <p class="font-semibold">${timestamp.toLocaleString('hu-HU')}</p>
                                     <p class="text-gray-700">${logData.eventType || 'Ismeretlen esemény'}</p>
                                     <p class="text-sm text-gray-600">${logData.details || 'Nincs részlet'}</p>
@@ -492,17 +697,10 @@
                     `);
                 });
                 
-                // Sort by timestamp (newest first)
-                logEntries.sort((a, b) => {
-                    const aTime = new Date(a.match(/<p class="font-semibold">(.*?)<\/p>/)[1]);
-                    const bTime = new Date(b.match(/<p class="font-semibold">(.*?)<\/p>/)[1]);
-                    return bTime - aTime;
-                });
-                
                 document.getElementById('log-entries').innerHTML = logEntries.join('');
                 showLogLoading(false);
             } catch (error) {
-                console.error('Hiba a naplók betöltésekor:', error);
+                console.error('Error loading logs:', error);
                 document.getElementById('log-entries').innerHTML = `
                     <div class="p-3 text-red-500">
                         Hiba történt a naplók betöltésekor. Próbáld újra később.
@@ -512,6 +710,7 @@
             }
         }
 
+        // Show loading indicator for logs
         function showLogLoading(show) {
             const logEntries = document.getElementById('log-entries');
             if (show) {
@@ -524,6 +723,7 @@
             }
         }
 
+        // Refresh logs
         window.refreshLogs = async function() {
             await fetchLogs();
             showNotification('Naplók frissítve!');
@@ -552,11 +752,18 @@
             updateCharCounter();
         };
 
+        // Rich text formatting for Edit popup
+        window.editFormatText = function(command) {
+            const textField = document.getElementById('edit-text-content');
+            document.execCommand(command, false, null);
+            textField.focus();
+            editUpdateCharCounter();
+        };
+
         // Character counter for Aktuális slides
         window.updateCharCounter = function() {
             const textContent = document.getElementById('slide-text-content');
             const counter = document.getElementById('char-counter');
-            // Get text without HTML tags
             const text = textContent.innerText;
             const charCount = text.length;
             
@@ -570,7 +777,24 @@
             }
         };
 
-        // Dia hozzáadása
+        // Character counter for Edit popup
+        window.editUpdateCharCounter = function() {
+            const textContent = document.getElementById('edit-text-content');
+            const counter = document.getElementById('edit-char-counter');
+            const text = textContent.innerText;
+            const charCount = text.length;
+            
+            counter.textContent = `${charCount}/120 karakter`;
+            counter.className = 'char-counter';
+            
+            if (charCount > 100 && charCount <= 120) {
+                counter.classList.add('warning');
+            } else if (charCount > 120) {
+                counter.classList.add('error');
+            }
+        };
+
+        // Add new slide
         window.addSlide = async function() {
             if (!auth.currentUser) {
                 showNotification('Kérlek, jelentkezz be!');
@@ -590,7 +814,6 @@
                 content = {
                     presetLink: document.getElementById('aktualis-preset-link').value,
                     text: document.getElementById('slide-text-content').innerHTML,
-                    // Add styling information for the display
                     style: {
                         fontFamily: "'Jost', sans-serif",
                         fontSize: "3rem",
@@ -621,7 +844,6 @@
             }
 
             try {
-                // Log the slide creation
                 await addDoc(collection(db, 'logs'), {
                     eventType: "Dia létrehozás",
                     details: `Új dia hozzáadva (típus: ${type})`,
@@ -659,12 +881,12 @@
                 
                 renderSlides();
             } catch (error) {
-                console.error('Hiba a hirdetés hozzáadásakor:', error);
-                showNotification('Hiba történt a hirdetés hozzáadásakor. Ellenőrizd a konzolt!');
+                console.error('Error adding slide:', error);
+                showNotification('Hiba történt a hirdetés hozzáadásakor!');
             }
         };
 
-        // Havária hozzáadása
+        // Add emergency slide (without date range)
         window.addEmergencySlide = async function() {
             if (!auth.currentUser) {
                 showNotification('Kérlek, jelentkezz be!');
@@ -673,11 +895,9 @@
 
             const type = document.getElementById('emergency-slide-type').value;
             const content = document.getElementById('emergency-slide-content').value;
-            const startDate = document.getElementById('emergency-slide-start-date').value;
-            const endDate = document.getElementById('emergency-slide-end-date').value;
             const comment = document.getElementById('emergency-slide-comment').value;
 
-            if (!type || !startDate || !endDate) {
+            if (!type || !content) {
                 showNotification('Minden mezőt ki kell tölteni!');
                 return;
             }
@@ -691,7 +911,7 @@
                     timestamp: serverTimestamp()
                 });
 
-                // Deaktiváljuk az összes korábbi haváriát
+                // Deactivate all other emergencies
                 const emergencies = await getDocs(collection(db, 'emergency_slides'));
                 const deactivationPromises = [];
                 emergencies.forEach(doc => {
@@ -699,115 +919,108 @@
                 });
                 await Promise.all(deactivationPromises);
 
-                // Új havária hozzáadása aktívként
+                // Add new emergency (without date range)
                 await addDoc(collection(db, 'emergency_slides'), {
                     type,
                     content,
-                    startDate,
-                    endDate,
                     comment,
                     active: true,
-                    order: 0, // Csak egy aktív lehet
-                    emergency: true, // Megkülönböztető jelző
+                    order: 0,
+                    emergency: true,
                     createdAt: serverTimestamp()
                 });
 
                 showNotification('Havária hozzáadva!');
                 renderEmergencySlides();
             } catch (error) {
-                console.error('Hiba a havária hozzáadásakor:', error);
+                console.error('Error adding emergency slide:', error);
                 showNotification('Hiba történt a havária hozzáadásakor!');
             }
         };
         
-let slidesRendered = false;
-        // Diák betöltése és megjelenítése
-async function renderSlides() {
-    if (slidesRendered) return;
-    slidesRendered = true;
-    const container = document.getElementById('slides-container');
-    if (!container) {
-        console.error('Hiba: A slides-container elem nem található.');
-        return;
-    }
-    container.innerHTML = '';
+        // Render slides with modified preview
+        async function renderSlides() {
+            const container = document.getElementById('slides-container');
+            container.innerHTML = '';
 
-    try {
-        const querySnapshot = await getDocs(collection(db, 'slides'));
-        const slidesArray = [];
-        querySnapshot.forEach((doc) => {
-            slidesArray.push({ id: doc.id, ...doc.data() });
-        });
-        slidesArray.sort((a, b) => a.order - b.order);
+            try {
+                const querySnapshot = await getDocs(collection(db, 'slides'));
+                const slidesArray = [];
+                querySnapshot.forEach((doc) => {
+                    slidesArray.push({ id: doc.id, ...doc.data() });
+                });
+                slidesArray.sort((a, b) => a.order - b.order);
 
-        slidesArray.forEach((slide) => {
-            let contentPreview = '';
-            if (slide.type === 'image') {
-                contentPreview = `<img src="${slide.content}" alt="Slide Image" class="preview-image">`;
-            } else if (slide.type === 'aktuális') {
-                try {
-                    const contentObj = JSON.parse(slide.content);
-                    contentPreview = `
-                        <div class="aktualis-preview" style="background-image: url('${contentObj.presetLink}')">
-                            <div class="aktualis-text-preview">
-                                ${contentObj.text ? contentObj.text.substring(0, 50) + (contentObj.text.length > 50 ? '...' : '') : 'Nincs szöveg'}
+                slidesArray.forEach((slide) => {
+                    let contentPreview = '';
+                    if (slide.type === 'image') {
+                        contentPreview = `<img src="${slide.content}" alt="Slide Image" class="preview-image">`;
+                    } else if (slide.type === 'aktuális') {
+                        try {
+                            const contentObj = JSON.parse(slide.content);
+                            // Modified preview to show text above comment
+                            contentPreview = `
+                                <div class="slide-preview-container">
+                                    <div class="text-gray-500">Aktuális dia</div>
+                                    <div class="slide-preview-text">
+                                        ${contentObj.text ? contentObj.text.substring(0, 50) + (contentObj.text.length > 50 ? '...' : '') : 'Nincs szöveg'}
+                                    </div>
+                                </div>
+                            `;
+                        } catch (e) {
+                            contentPreview = '<div class="text-gray-500">Aktuális dia</div>';
+                        }
+                    } else {
+                        contentPreview = `<div class="text-gray-500">Beágyazott tartalom</div>`;
+                    }
+
+                    const slideElement = document.createElement('div');
+                    slideElement.className = `slide-item ${slide.active ? 'border-l-4 border-blue-500' : 'border-l-4 border-gray-300'}`;
+                    slideElement.setAttribute('data-id', slide.id);
+                    slideElement.innerHTML = `
+                        <div class="drag-handle">&#9776;</div>
+                        <div class="flex-1">
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                ${contentPreview}
+                                <div>
+                                    <strong>${slide.type === 'image' ? 'Kép' : slide.type === 'aktuális' ? 'Aktuális' : 'Beágyazott link'}</strong>
+                                    <br>
+                                    <small>${slide.startDate} - ${slide.endDate}</small>
+                                    <br>
+                                    <small>Megjegyzés: ${slide.comment || 'Nincs megjegyzés'}</small>
+                                </div>
                             </div>
                         </div>
-                    `;
-                } catch (e) {
-                    contentPreview = '<div class="text-gray-500">Aktuális dia</div>';
-                }
-            } else {
-                contentPreview = `<div class="text-gray-500">Beágyazott tartalom</div>`;
-            }
-
-            const slideElement = document.createElement('div');
-            slideElement.className = `slide-item bg-gray-50 p-4 rounded-lg mb-4 ${slide.active ? 'border-l-4 border-blue-500' : 'border-l-4 border-gray-300'}`;
-            slideElement.setAttribute('data-id', slide.id);
-            slideElement.innerHTML = `
-                <div class="drag-handle">&#9776;</div>
-                <div class="flex-1">
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        ${contentPreview}
-                        <div>
-                            <strong>${slide.type === 'image' ? 'Kép' : slide.type === 'aktuális' ? 'Aktuális' : 'Beágyazott link'}</strong>
-                            <br>
-                            <small>${slide.startDate} - ${slide.endDate}</small>
-                            <br>
-                            <small>Megjegyzés: ${slide.comment || 'Nincs megjegyzés'}</small>
+                        <div class="slide-actions">
+                            <button onclick="editSlide('${slide.id}')" class="edit-btn">Szerkesztés</button>
+                            <button onclick="toggleSlide('${slide.id}')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">${slide.active ? 'Elrejtés' : 'Megjelenítés'}</button>
+                            <button onclick="deleteSlide('${slide.id}')" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Törlés</button>
                         </div>
-                    </div>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="toggleSlide('${slide.id}')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">${slide.active ? 'Elrejtés' : 'Megjelenítés'}</button>
-                    <button onclick="deleteSlide('${slide.id}')" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Törlés</button>
-                </div>
-            `;
-            container.appendChild(slideElement);
-        });
-
-        // Sortable inicializálása
-        Sortable.create(container, {
-            handle: '.drag-handle',
-            animation: 150,
-            onEnd: async function(evt) {
-                const slides = Array.from(container.children);
-                const updates = slides.map((slide, index) => {
-                    const slideId = slide.getAttribute('data-id');
-                    return updateDoc(doc(db, 'slides', slideId), { order: index });
+                    `;
+                    container.appendChild(slideElement);
                 });
-                await Promise.all(updates);
-                showNotification('Diák sorrendje frissítve!');
-            }
-        });
-    } catch (error) {
-        console.error('Hiba a diák betöltésekor:', error);
-        showNotification('Hiba történt a diák betöltésekor. Ellenőrizd a konzolt!');
-    }
-    slidesRendered = false;
-}
 
-        // Haváriák betöltése és megjelenítése
+                // Initialize sortable
+                Sortable.create(container, {
+                    handle: '.drag-handle',
+                    animation: 150,
+                    onEnd: async function(evt) {
+                        const slides = Array.from(container.children);
+                        const updates = slides.map((slide, index) => {
+                            const slideId = slide.getAttribute('data-id');
+                            return updateDoc(doc(db, 'slides', slideId), { order: index });
+                        });
+                        await Promise.all(updates);
+                        showNotification('Diák sorrendje frissítve!');
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading slides:', error);
+                showNotification('Hiba történt a diák betöltésekor!');
+            }
+        }
+
+        // Render emergency slides
         async function renderEmergencySlides() {
             const container = document.getElementById('emergency-slides-container');
             container.innerHTML = '';
@@ -821,7 +1034,7 @@ async function renderSlides() {
 
                 slidesArray.forEach((slide) => {
                     const slideElement = document.createElement('div');
-                    slideElement.className = `slide-item bg-red-50 p-4 rounded-lg mb-4 ${slide.active ? 'border-l-4 border-red-500' : 'border-l-4 border-gray-300'}`;
+                    slideElement.className = `slide-item ${slide.active ? 'border-l-4 border-red-500' : 'border-l-4 border-gray-300'}`;
                     slideElement.setAttribute('data-id', slide.id);
                     slideElement.innerHTML = `
                         <div class="flex-1">
@@ -830,13 +1043,12 @@ async function renderSlides() {
                                 <div>
                                     <strong>HAVÁRIA - ${slide.type === 'image' ? 'Kép' : 'Beágyazott link'}</strong>
                                     <br>
-                                    <small>${slide.startDate} - ${slide.endDate}</small>
-                                    <br>
                                     <small>Megjegyzés: ${slide.comment || 'Nincs megjegyzés'}</small>
                                 </div>
                             </div>
                         </div>
-                        <div class="flex gap-2">
+                        <div class="slide-actions">
+                            <button onclick="editEmergencySlide('${slide.id}')" class="edit-btn">Szerkesztés</button>
                             <button onclick="toggleEmergency('${slide.id}')" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">${slide.active ? 'Deaktiválás' : 'Aktiválás'}</button>
                             <button onclick="deleteEmergency('${slide.id}')" class="bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-600">Törlés</button>
                         </div>
@@ -844,191 +1056,361 @@ async function renderSlides() {
                     container.appendChild(slideElement);
                 });
             } catch (error) {
-                console.error('Hiba a haváriák betöltésekor:', error);
+                console.error('Error loading emergency slides:', error);
             }
         }
 
-        // Dia állapotának váltása (Elrejtés/Megjelenítés)
-window.toggleSlide = async function(id) {
-    if (!auth.currentUser) {
-        showNotification('Kérlek, jelentkezz be!');
-        return;
-    }
-
-    try {
-        const slideRef = doc(db, 'slides', id);
-        const slideDoc = await getDoc(slideRef);
-        const currentActiveStatus = slideDoc.data().active;
-        
-        // Log the slide status change
-        await addDoc(collection(db, 'logs'), {
-            eventType: "Dia állapot változás",
-            details: `Dia ${currentActiveStatus ? 'elrejtve' : 'megjelenítve'} (ID: ${id})`,
-            user: auth.currentUser.email,
-            timestamp: serverTimestamp()
-        });
-
-        await updateDoc(slideRef, { active: !currentActiveStatus });
-        showNotification(`Hirdetés ${currentActiveStatus ? 'elrejtve' : 'megjelenítve'}!`);
-        renderSlides();
-    } catch (error) {
-        console.error('Hiba a dia állapotának váltásakor:', error);
-        showNotification('Hiba történt a dia állapotának váltásakor. Ellenőrizd a konzolt!');
-    }
-};
-
-        // Rögzített diák
-        window.pinSlideToDevice = async function() {
-    const deviceId = document.getElementById('device-select').value;
-    const slideId = document.getElementById('pinned-slide-select').value;
-
-    if (!deviceId || !slideId) {
-        showNotification('Válassz eszközt és diát!');
-        return;
-    }
-
-    try {
-        // Log the pin action
-        await addDoc(collection(db, 'logs'), {
-            eventType: "Dia rögzítés",
-            details: `Dia rögzítve az eszközhöz (Eszköz: ${deviceId}, Dia: ${slideId})`,
-            user: auth.currentUser.email,
-            timestamp: serverTimestamp()
-        });
-
-        const deviceRef = doc(db, 'devices', deviceId);
-        await updateDoc(deviceRef, { pinnedSlideId: slideId });
-        showNotification('Rögzített dia hozzáadva!');
-        renderPinnedSlides();
-    } catch (error) {
-        console.error('Hiba a rögzített dia hozzáadásakor:', error);
-        showNotification('Hiba történt a rögzített dia hozzáadásakor!');
-    }
-};
-        
-        async function renderPinnedSlides() {
-    const container = document.getElementById('pinned-slides-list');
-    container.innerHTML = '';
-
-    try {
-        const devicesRef = collection(db, 'devices');
-        const devicesSnapshot = await getDocs(devicesRef);
-        const slidesRef = collection(db, 'slides');
-        const slidesSnapshot = await getDocs(slidesRef);
-
-        devicesSnapshot.forEach((deviceDoc) => {
-            const deviceData = deviceDoc.data();
-            const pinnedSlideId = deviceData.pinnedSlideId;
-
-            if (pinnedSlideId) {
-                const slideDoc = slidesSnapshot.docs.find(doc => doc.id === pinnedSlideId);
-                if (slideDoc) {
+        // Edit slide function
+        window.editSlide = async function(id) {
+            try {
+                const slideRef = doc(db, 'slides', id);
+                const slideDoc = await getDoc(slideRef);
+                
+                if (slideDoc.exists()) {
                     const slideData = slideDoc.data();
-                    const slideElement = document.createElement('div');
-                    slideElement.className = 'bg-white p-4 rounded-lg shadow-md mb-4';
-                    slideElement.innerHTML = `
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <strong>Eszköz:</strong> ${deviceDoc.id}
-                                <br>
-                                <strong>Dia:</strong> ${slideData.comment || 'Nincs megjegyzés'}
-                                <br>
-                                <small>Típus: ${slideData.type}</small>
-                            </div>
-                            <button onclick="unpinSlide('${deviceDoc.id}')" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Rögzítés törlése</button>
-                        </div>
-                    `;
-                    container.appendChild(slideElement);
+                    currentEditingSlideId = id;
+                    currentEditingSlideType = slideData.type;
+                    
+                    // Fill edit form
+                    document.getElementById('edit-start-date').value = slideData.startDate;
+                    document.getElementById('edit-end-date').value = slideData.endDate;
+                    document.getElementById('edit-comment').value = slideData.comment || '';
+                    
+                    // Handle Aktuális slide text content
+                    const textContentGroup = document.getElementById('edit-text-content-group');
+                    const textContent = document.getElementById('edit-text-content');
+                    const charCounter = document.getElementById('edit-char-counter');
+                    
+                    if (slideData.type === 'aktuális') {
+                        try {
+                            const contentObj = JSON.parse(slideData.content);
+                            textContent.innerHTML = contentObj.text || '';
+                            const charCount = textContent.innerText.length;
+                            charCounter.textContent = `${charCount}/120 karakter`;
+                            textContentGroup.classList.remove('hidden');
+                        } catch (e) {
+                            textContent.innerHTML = '';
+                            charCounter.textContent = '0/120 karakter';
+                            textContentGroup.classList.remove('hidden');
+                        }
+                    } else {
+                        textContentGroup.classList.add('hidden');
+                    }
+                    
+                    // Show edit popup
+                    document.getElementById('edit-popup').classList.remove('hidden');
+                    document.getElementById('confirm-overlay').classList.remove('hidden');
                 }
+            } catch (error) {
+                console.error('Error preparing slide edit:', error);
+                showNotification('Hiba történt a dia szerkesztésének előkészítésekor!');
             }
-        });
-    } catch (error) {
-        console.error('Hiba a rögzített diák betöltésekor:', error);
-    }
-}
+        };
+
+        // Edit emergency slide function
+        window.editEmergencySlide = async function(id) {
+            try {
+                const slideRef = doc(db, 'emergency_slides', id);
+                const slideDoc = await getDoc(slideRef);
+                
+                if (slideDoc.exists()) {
+                    const slideData = slideDoc.data();
+                    currentEditingSlideId = id;
+                    currentEditingSlideType = 'emergency';
+                    
+                    // Fill edit form (emergency slides don't have date range)
+                    document.getElementById('edit-comment').value = slideData.comment || '';
+                    
+                    // Hide date fields and text content for emergency slides
+                    document.getElementById('edit-start-date').closest('.edit-form-group').style.display = 'none';
+                    document.getElementById('edit-end-date').closest('.edit-form-group').style.display = 'none';
+                    document.getElementById('edit-text-content-group').classList.add('hidden');
+                    
+                    // Show edit popup
+                    document.getElementById('edit-popup').classList.remove('hidden');
+                    document.getElementById('confirm-overlay').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error preparing emergency slide edit:', error);
+                showNotification('Hiba történt a havária szerkesztésének előkészítésekor!');
+            }
+        };
+
+        // Close edit popup
+        window.closeEditPopup = function() {
+            document.getElementById('edit-popup').classList.add('hidden');
+            document.getElementById('confirm-overlay').classList.add('hidden');
+            // Reset date fields visibility
+            document.getElementById('edit-start-date').closest('.edit-form-group').style.display = 'block';
+            document.getElementById('edit-end-date').closest('.edit-form-group').style.display = 'block';
+            document.getElementById('edit-text-content-group').classList.add('hidden');
+            currentEditingSlideId = null;
+            currentEditingSlideType = null;
+        };
+
+        // Save edited slide
+        window.saveEditedSlide = async function() {
+            if (!currentEditingSlideId) return;
+            
+            try {
+                const startDate = document.getElementById('edit-start-date').value;
+                const endDate = document.getElementById('edit-end-date').value;
+                const comment = document.getElementById('edit-comment').value;
+                
+                // Determine if it's a regular slide or emergency slide
+                const isEmergency = currentEditingSlideType === 'emergency';
+                
+                if (isEmergency) {
+                    // Update emergency slide (only comment)
+                    await updateDoc(doc(db, 'emergency_slides', currentEditingSlideId), {
+                        comment
+                    });
+                } else {
+                    // Update regular slide
+                    if (!startDate || !endDate) {
+                        showNotification('Kezdő és végdátum megadása kötelező!');
+                        return;
+                    }
+                    
+                    let updateData = {
+                        startDate,
+                        endDate,
+                        comment
+                    };
+                    
+                    // Handle Aktuális slide text content update
+                    if (currentEditingSlideType === 'aktuális') {
+                        const textContent = document.getElementById('edit-text-content').innerHTML;
+                        const textContentText = document.getElementById('edit-text-content').innerText;
+                        
+                        if (textContentText.length > 120) {
+                            showNotification('Az aktuális dia szövege maximum 120 karakter lehet!');
+                            return;
+                        }
+                        
+                        const contentObj = {
+                            presetLink: "https://i.ibb.co/Hfkcjrct/aktu-lis-sablon-1.png",
+                            text: textContent,
+                            style: {
+                                fontFamily: "'Jost', sans-serif",
+                                fontSize: "3rem",
+                                textAlign: "left",
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                height: "100%",
+                                padding: "2rem",
+                                color: "#ffffff",
+                                textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)"
+                            }
+                        };
+                        
+                        updateData.content = JSON.stringify(contentObj);
+                    }
+                    
+                    await updateDoc(doc(db, 'slides', currentEditingSlideId), updateData);
+                }
+                
+                showNotification('Dia frissítve!');
+                closeEditPopup();
+                
+                // Refresh the appropriate list
+                if (isEmergency) {
+                    renderEmergencySlides();
+                } else {
+                    renderSlides();
+                }
+            } catch (error) {
+                console.error('Error saving edited slide:', error);
+                showNotification('Hiba történt a dia mentésekor!');
+            }
+        };
+
+        // Toggle slide active status
+        window.toggleSlide = async function(id) {
+            if (!auth.currentUser) {
+                showNotification('Kérlek, jelentkezz be!');
+                return;
+            }
+
+            try {
+                const slideRef = doc(db, 'slides', id);
+                const slideDoc = await getDoc(slideRef);
+                const currentActiveStatus = slideDoc.data().active;
+                
+                await addDoc(collection(db, 'logs'), {
+                    eventType: "Dia állapot változás",
+                    details: `Dia ${currentActiveStatus ? 'elrejtve' : 'megjelenítve'} (ID: ${id})`,
+                    user: auth.currentUser.email,
+                    timestamp: serverTimestamp()
+                });
+
+                await updateDoc(slideRef, { active: !currentActiveStatus });
+                showNotification(`Hirdetés ${currentActiveStatus ? 'elrejtve' : 'megjelenítve'}!`);
+                renderSlides();
+            } catch (error) {
+                console.error('Error toggling slide status:', error);
+                showNotification('Hiba történt a dia állapotának váltásakor!');
+            }
+        };
+
+        // Pin slide to device
+        window.pinSlideToDevice = async function() {
+            const deviceId = document.getElementById('device-select').value;
+            const slideId = document.getElementById('pinned-slide-select').value;
+
+            if (!deviceId || !slideId) {
+                showNotification('Válassz eszközt és diát!');
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, 'logs'), {
+                    eventType: "Dia rögzítés",
+                    details: `Dia rögzítve az eszközhöz (Eszköz: ${deviceId}, Dia: ${slideId})`,
+                    user: auth.currentUser.email,
+                    timestamp: serverTimestamp()
+                });
+
+                const deviceRef = doc(db, 'devices', deviceId);
+                await updateDoc(deviceRef, { pinnedSlideId: slideId });
+                showNotification('Rögzített dia hozzáadva!');
+                renderPinnedSlides();
+            } catch (error) {
+                console.error('Error pinning slide:', error);
+                showNotification('Hiba történt a rögzített dia hozzáadásakor!');
+            }
+        };
         
+        // Render pinned slides
+        async function renderPinnedSlides() {
+            const container = document.getElementById('pinned-slides-list');
+            container.innerHTML = '';
+
+            try {
+                const devicesRef = collection(db, 'devices');
+                const devicesSnapshot = await getDocs(devicesRef);
+                const slidesRef = collection(db, 'slides');
+                const slidesSnapshot = await getDocs(slidesRef);
+
+                devicesSnapshot.forEach((deviceDoc) => {
+                    const deviceData = deviceDoc.data();
+                    const pinnedSlideId = deviceData.pinnedSlideId;
+
+                    if (pinnedSlideId) {
+                        const slideDoc = slidesSnapshot.docs.find(doc => doc.id === pinnedSlideId);
+                        if (slideDoc) {
+                            const slideData = slideDoc.data();
+                            const slideElement = document.createElement('div');
+                            slideElement.className = 'bg-white p-4 rounded-lg shadow-md mb-4';
+                            slideElement.innerHTML = `
+                                <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
+                                    <div class="flex-1">
+                                        <strong>Eszköz:</strong> ${deviceDoc.id}
+                                        <br>
+                                        <strong>Dia:</strong> ${slideData.comment || 'Nincs megjegyzés'}
+                                        <br>
+                                        <small>Típus: ${slideData.type}</small>
+                                    </div>
+                                    <button onclick="unpinSlide('${deviceDoc.id}')" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 w-full sm:w-auto">Rögzítés törlése</button>
+                                </div>
+                            `;
+                            container.appendChild(slideElement);
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading pinned slides:', error);
+            }
+        }
+        
+        // Unpin slide
         window.unpinSlide = async function(deviceId) {
-    try {
-        // Log the unpin action
-        await addDoc(collection(db, 'logs'), {
-            eventType: "Dia rögzítés törlése",
-            details: `Dia rögzítés törölve (Eszköz: ${deviceId})`,
-            user: auth.currentUser.email,
-            timestamp: serverTimestamp()
-        });
+            try {
+                await addDoc(collection(db, 'logs'), {
+                    eventType: "Dia rögzítés törlése",
+                    details: `Dia rögzítés törölve (Eszköz: ${deviceId})`,
+                    user: auth.currentUser.email,
+                    timestamp: serverTimestamp()
+                });
 
-        const deviceRef = doc(db, 'devices', deviceId);
-        await updateDoc(deviceRef, { pinnedSlideId: null });
-        showNotification('Rögzített dia törölve!');
-        renderPinnedSlides();
-    } catch (error) {
-        console.error('Hiba a rögzített dia törlésekor:', error);
-        showNotification('Hiba történt a rögzített dia törlésekor!');
-    }
-};
+                const deviceRef = doc(db, 'devices', deviceId);
+                await updateDoc(deviceRef, { pinnedSlideId: null });
+                showNotification('Rögzített dia törölve!');
+                renderPinnedSlides();
+            } catch (error) {
+                console.error('Error unpinning slide:', error);
+                showNotification('Hiba történt a rögzített dia törlésekor!');
+            }
+        };
         
+        // Toggle slide form visibility
         window.toggleSlideForm = function() {
-    const form = document.getElementById('slide-form');
-    const toggleIcon = document.getElementById('slide-form-toggle');
-    if (form.classList.contains('hidden')) {
-        form.classList.remove('hidden');
-        toggleIcon.textContent = '▲';
-    } else {
-        form.classList.add('hidden');
-        toggleIcon.textContent = '▼';
-    }
-};
+            const form = document.getElementById('slide-form');
+            const toggleIcon = document.getElementById('slide-form-toggle');
+            if (form.classList.contains('hidden')) {
+                form.classList.remove('hidden');
+                toggleIcon.textContent = '▲';
+            } else {
+                form.classList.add('hidden');
+                toggleIcon.textContent = '▼';
+            }
+        };
         
+        // Toggle emergency form visibility
         window.toggleEmergencyForm = function() {
-    const form = document.getElementById('emergency-slide-form');
-    const toggleIcon = document.getElementById('emergency-form-toggle');
-    if (form.classList.contains('hidden')) {
-        form.classList.remove('hidden');
-        toggleIcon.textContent = '▲';
-    } else {
-        form.classList.add('hidden');
-        toggleIcon.textContent = '▼';
-    }
-};
+            const form = document.getElementById('emergency-slide-form');
+            const toggleIcon = document.getElementById('emergency-form-toggle');
+            if (form.classList.contains('hidden')) {
+                form.classList.remove('hidden');
+                toggleIcon.textContent = '▲';
+            } else {
+                form.classList.add('hidden');
+                toggleIcon.textContent = '▼';
+            }
+        };
         
+        // Load devices for pinning
         async function loadDevices() {
-    const deviceSelect = document.getElementById('device-select');
-    deviceSelect.innerHTML = '<option value="">Válassz eszközt</option>';
+            const deviceSelect = document.getElementById('device-select');
+            deviceSelect.innerHTML = '<option value="">Válassz eszközt</option>';
 
-    try {
-        const devicesRef = collection(db, 'devices');
-        const devicesSnapshot = await getDocs(devicesRef);
-        devicesSnapshot.forEach((doc) => {
-            const option = document.createElement('option');
-            option.value = doc.id;
-            option.textContent = doc.id;
-            deviceSelect.appendChild(option);
-        });
-    } catch (error) {
-        console.error('Hiba az eszközök betöltésekor:', error);
-    }
-}
+            try {
+                const devicesRef = collection(db, 'devices');
+                const devicesSnapshot = await getDocs(devicesRef);
+                devicesSnapshot.forEach((doc) => {
+                    const option = document.createElement('option');
+                    option.value = doc.id;
+                    option.textContent = doc.id;
+                    deviceSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading devices:', error);
+            }
+        }
         
-    async function loadSlides() {
-    const slideSelect = document.getElementById('pinned-slide-select');
-    slideSelect.innerHTML = '<option value="">Válassz diát</option>';
+        // Load slides for pinning
+        async function loadSlides() {
+            const slideSelect = document.getElementById('pinned-slide-select');
+            slideSelect.innerHTML = '<option value="">Válassz diát</option>';
 
-    try {
-        const slidesRef = collection(db, 'slides');
-        const slidesSnapshot = await getDocs(slidesRef);
-        slidesSnapshot.forEach((doc) => {
-            const option = document.createElement('option');
-            option.value = doc.id;
-            const slideData = doc.data();
-            option.textContent = slideData.comment || `Dia (${doc.id}) - ${slideData.type}`;
-            slideSelect.appendChild(option);
-        });
-    } catch (error) {
-        console.error('Hiba a diák betöltésekor:', error);
-    }
-}
+            try {
+                const slidesRef = collection(db, 'slides');
+                const slidesSnapshot = await getDocs(slidesRef);
+                slidesSnapshot.forEach((doc) => {
+                    const option = document.createElement('option');
+                    option.value = doc.id;
+                    const slideData = doc.data();
+                    option.textContent = slideData.comment || `Dia (${doc.id}) - ${slideData.type}`;
+                    slideSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading slides:', error);
+            }
+        }
         
-        // Havária állapotának váltása (Aktiválás/Deaktiválás)
+        // Toggle emergency slide status
         window.toggleEmergency = async function(id) {
             if (!auth.currentUser) {
                 showNotification('Kérlek, jelentkezz be!');
@@ -1040,7 +1422,6 @@ window.toggleSlide = async function(id) {
                 const slideDoc = await getDoc(slideRef);
                 const currentActiveStatus = slideDoc.data().active;
 
-                // Log the emergency slide status change
                 await addDoc(collection(db, 'logs'), {
                     eventType: "Havária állapot változás",
                     details: `Havária ${currentActiveStatus ? 'deaktiválva' : 'aktiválva'} (ID: ${id})`,
@@ -1049,10 +1430,8 @@ window.toggleSlide = async function(id) {
                 });
 
                 if (currentActiveStatus) {
-                    // Deaktiváljuk a haváriát
                     await updateDoc(slideRef, { active: false });
                 } else {
-                    // Deaktiváljuk az összes többit, majd aktiváljuk ezt
                     const emergencies = await getDocs(collection(db, 'emergency_slides'));
                     const deactivationPromises = [];
                     emergencies.forEach(doc => {
@@ -1065,16 +1444,15 @@ window.toggleSlide = async function(id) {
                 showNotification(`Havária ${currentActiveStatus ? 'deaktiválva' : 'aktiválva'}!`);
                 renderEmergencySlides();
             } catch (error) {
-                console.error('Hiba a havária állapotának váltásakor:', error);
-                showNotification('Hiba történt a havária állapotának váltásakor. Ellenőrizd a konzolt!');
+                console.error('Error toggling emergency status:', error);
+                showNotification('Hiba történt a havária állapotának váltásakor!');
             }
         };
 
-        // Dia törlése
+        // Delete slide
         window.deleteSlide = async function(id) {
             showConfirmPopup('Biztosan törlöd ezt a hirdetést?', async () => {
                 try {
-                    // Log the slide deletion
                     await addDoc(collection(db, 'logs'), {
                         eventType: "Dia törlés",
                         details: `Dia törölve (ID: ${id})`,
@@ -1086,17 +1464,16 @@ window.toggleSlide = async function(id) {
                     showNotification('Hirdetés törölve!');
                     renderSlides();
                 } catch (error) {
-                    console.error('Hiba a dia törlésekor:', error);
+                    console.error('Error deleting slide:', error);
                     showNotification('Hiba történt a dia törlésekor!');
                 }
             });
         };
 
-        // Havária törlése
+        // Delete emergency slide
         window.deleteEmergency = async function(id) {
             showConfirmPopup('Biztosan törlöd ezt a haváriát?', async () => {
                 try {
-                    // Log the emergency slide deletion
                     await addDoc(collection(db, 'logs'), {
                         eventType: "Havária törlés",
                         details: `Havária dia törölve (ID: ${id})`,
@@ -1108,26 +1485,25 @@ window.toggleSlide = async function(id) {
                     showNotification('Havária törölve!');
                     renderEmergencySlides();
                 } catch (error) {
-                    console.error('Hiba a havária törlésekor:', error);
+                    console.error('Error deleting emergency slide:', error);
                     showNotification('Hiba történt a havária törlésekor!');
                 }
             });
         };
 
-        // Értesítés megjelenítése
+        // Show notification
         function showNotification(message) {
             const notification = document.getElementById('notification');
             notification.textContent = message;
             notification.classList.remove('hidden');
 
-            // Értesítés bezárása 10 másodperc után
             setTimeout(() => {
                 notification.classList.add('hide');
                 setTimeout(() => notification.classList.add('hidden'), 500);
             }, 10000);
         }
 
-        // Megerősítő popup megjelenítése
+        // Show confirmation popup
         function showConfirmPopup(message, callback) {
             const confirmPopup = document.getElementById('confirm-popup');
             const confirmOverlay = document.getElementById('confirm-overlay');
@@ -1142,63 +1518,56 @@ window.toggleSlide = async function(id) {
             };
         }
 
-// Eszközök listájának frissítése
-function monitorDevices() {
-    const devicesRef = collection(db, 'devices');
-    onSnapshot(devicesRef, (snapshot) => {
-        const onlineCountElement = document.getElementById('online-count');
-        const devicesListElement = document.getElementById('devices-list');
-        let onlineCount = 0;
+        // Monitor devices
+        function monitorDevices() {
+            const devicesRef = collection(db, 'devices');
+            onSnapshot(devicesRef, (snapshot) => {
+                const onlineCountElement = document.getElementById('online-count');
+                const devicesListElement = document.getElementById('devices-list');
+                let onlineCount = 0;
 
-        devicesListElement.innerHTML = '';
+                devicesListElement.innerHTML = '';
 
-        snapshot.forEach((doc) => {
-            const device = doc.data();
-            const deviceId = doc.id;
-            const lastHeartbeat = device.lastHeartbeat?.toDate();
-            const isOnline = lastHeartbeat && (new Date() - lastHeartbeat) < 120000;
+                snapshot.forEach((doc) => {
+                    const device = doc.data();
+                    const deviceId = doc.id;
+                    const lastHeartbeat = device.lastHeartbeat?.toDate();
+                    const isOnline = lastHeartbeat && (new Date() - lastHeartbeat) < 120000;
 
-            if (isOnline) onlineCount++;
+                    if (isOnline) onlineCount++;
 
-            const deviceElement = document.createElement('div');
-            deviceElement.className = `p-3 mb-2 rounded flex flex-col ${isOnline ? 'bg-green-100' : 'bg-red-100'}`;
-            deviceElement.innerHTML = `
-                <div class="flex justify-between items-center">
-                    <span>${deviceId}</span>
-                    <span class="font-semibold ${isOnline ? 'text-green-600' : 'text-red-600'}">${isOnline ? 'Online' : 'Offline'}</span>
-                    <button onclick="toggleDetails('${deviceId}')" class="text-blue-500 hover:text-blue-700">Részletek</button>
-                </div>
-                <div id="details-${deviceId}" class="hidden mt-2">
-                    <p><strong>Operációs rendszer:</strong> ${device.os || 'Ismeretlen'}</p>
-                    <p><strong>Böngésző:</strong> ${device.browser || 'Ismeretlen'}</p>
-                    <p><strong>Felbontás:</strong> ${device.resolution || 'Ismeretlen'}</p>
-                    <p><strong>Utolsó ping:</strong> <span id="last-ping-${deviceId}">${lastHeartbeat ? lastHeartbeat.toLocaleString() : 'Ismeretlen'}</span></p>
-                    <button onclick="refreshDevice('${deviceId}')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 mt-2">Oldal frissítése</button>
-                </div>
-            `;
-            devicesListElement.appendChild(deviceElement);
+                    const deviceElement = document.createElement('div');
+                    deviceElement.className = `p-3 mb-2 rounded flex flex-col ${isOnline ? 'bg-green-100' : 'bg-red-100'}`;
+                    deviceElement.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <span>${deviceId}</span>
+                            <span class="font-semibold ${isOnline ? 'text-green-600' : 'text-red-600'}">${isOnline ? 'Online' : 'Offline'}</span>
+                            <button onclick="toggleDetails('${deviceId}')" class="text-blue-500 hover:text-blue-700">Részletek</button>
+                        </div>
+                        <div id="details-${deviceId}" class="hidden mt-2">
+                            <p><strong>Operációs rendszer:</strong> ${device.os || 'Ismeretlen'}</p>
+                            <p><strong>Böngésző:</strong> ${device.browser || 'Ismeretlen'}</p>
+                            <p><strong>Felbontás:</strong> ${device.resolution || 'Ismeretlen'}</p>
+                            <p><strong>Utolsó ping:</strong> <span id="last-ping-${deviceId}">${lastHeartbeat ? lastHeartbeat.toLocaleString() : 'Ismeretlen'}</span></p>
+                            <button onclick="refreshDevice('${deviceId}')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 mt-2 w-full">Oldal frissítése</button>
+                        </div>
+                    `;
+                    devicesListElement.appendChild(deviceElement);
+                });
 
-            const detailsElement = document.getElementById(`details-${deviceId}`);
-            if (!detailsElement.classList.contains('hidden')) {
-                const lastPingElement = document.getElementById(`last-ping-${deviceId}`);
-                lastPingElement.textContent = lastHeartbeat ? lastHeartbeat.toLocaleString() : 'Ismeretlen';
-            }
-        });
+                onlineCountElement.textContent = onlineCount;
+            });
+        }
 
-        onlineCountElement.textContent = onlineCount;
-    });
-}
-
-        // Részletek lenyitása/bezárása
+        // Toggle device details
         window.toggleDetails = function(deviceId) {
             const detailsElement = document.getElementById(`details-${deviceId}`);
             detailsElement.classList.toggle('hidden');
         };
         
-        // Távoli oldal frissítése
+        // Refresh all devices
         window.refreshAllDevices = async function() {
             try {
-                // Log the refresh action
                 await addDoc(collection(db, 'logs'), {
                     eventType: "Eszközök frissítése",
                     details: "Összes eszköz oldalának frissítése",
@@ -1215,36 +1584,33 @@ function monitorDevices() {
                 await Promise.all(updates);
                 showNotification('Összes eszköz oldala frissítve!');
             } catch (error) {
-                console.error('Hiba az eszközök frissítésekor:', error);
+                console.error('Error refreshing devices:', error);
                 showNotification('Hiba történt az eszközök frissítésekor!');
             }
         };
 
-        
-        // Egy adott eszköz oldalának frissítése
-window.refreshDevice = async function(deviceId) {
-    try {
-        // Log the device refresh
-        await addDoc(collection(db, 'logs'), {
-            eventType: "Eszköz frissítése",
-            details: `Eszköz oldalának frissítése (ID: ${deviceId})`,
-            user: auth.currentUser.email,
-            timestamp: serverTimestamp()
-        });
+        // Refresh single device
+        window.refreshDevice = async function(deviceId) {
+            try {
+                await addDoc(collection(db, 'logs'), {
+                    eventType: "Eszköz frissítése",
+                    details: `Eszköz oldalának frissítése (ID: ${deviceId})`,
+                    user: auth.currentUser.email,
+                    timestamp: serverTimestamp()
+                });
 
-        const deviceRef = doc(db, 'devices', deviceId);
-        await updateDoc(deviceRef, { refresh: true });
-        showNotification(`Eszköz (${deviceId}) oldala frissítve!`);
-    } catch (error) {
-        console.error('Hiba az eszköz frissítésekor:', error);
-        showNotification('Hiba történt az eszköz frissítésekor!');
-    }
-};
+                const deviceRef = doc(db, 'devices', deviceId);
+                await updateDoc(deviceRef, { refresh: true });
+                showNotification(`Eszköz (${deviceId}) oldala frissítve!`);
+            } catch (error) {
+                console.error('Error refreshing device:', error);
+                showNotification('Hiba történt az eszköz frissítésekor!');
+            }
+        };
         
-        // Eszközök újraindítása
+        // Restart all devices
         window.restartAllDevices = async function() {
             try {
-                // Log the restart action
                 await addDoc(collection(db, 'logs'), {
                     eventType: "Eszközök újraindítása",
                     details: "Összes eszköz újraindítása",
@@ -1261,11 +1627,10 @@ window.refreshDevice = async function(deviceId) {
                 await Promise.all(updates);
                 showNotification('Összes eszköz újraindítva!');
             } catch (error) {
-                console.error('Hiba az eszközök újraindításakor:', error);
+                console.error('Error restarting devices:', error);
                 showNotification('Hiba történt az eszközök újraindításakor!');
             }
         };
-
     </script>
 </body>
 </html>

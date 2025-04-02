@@ -51,7 +51,7 @@
             width: 100%;
             height: 100%;
         }
-        /* Aktuális slide styles with LARGE BLACK TEXT */
+        /* Aktuális slide styles with responsive text */
         .aktualis-slide {
             position: relative;
             width: 100%;
@@ -65,26 +65,30 @@
             left: 0;
             right: 0;
             transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 2rem;
-            color: black !important;
+            padding: 5rem;
+            color: black;
             text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
-            font-family: 'Jost', sans-serif;
-            font-size: 4rem !important; /* Larger font size */
-            font-weight: bold; /* Bolder text */
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4vw; /* Responsive font size */
             text-align: left;
             overflow: hidden;
-            line-height: 1.2; /* Better line spacing */
+            line-height: 1.3;
+        }
+        .aktualis-heading {
+            font-weight: bold;
+            font-size: 6vw; /* Slightly larger for heading */
+            margin-bottom: 0.5em;
+            display: block;
+        }
+        .aktualis-content {
+            font-weight: normal;
         }
     </style>
-    <!-- Add Jost font for Aktuális slides -->
-    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@700&display=swap" rel="stylesheet">
+    <!-- Add Montserrat font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="slideshow-container" id="slideshow-container"></div>
-    <!-- Havária overlay -->
     <div id="emergency-overlay">
         <div id="emergency-content"></div>
     </div>
@@ -93,7 +97,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
         import { getFirestore, doc, setDoc, collection, query, where, onSnapshot, orderBy, serverTimestamp, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
-        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAmlb3HFiXq18IlV--o1GOC5yofXSZjV48",
             authDomain: "infotv-50232.firebaseapp.com",
@@ -104,137 +107,116 @@
             measurementId: "G-2V1HZ0RPJK"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const deviceId = new URLSearchParams(window.location.search).get('id') || 'unknown';
+        let slides = [];
+        let emergencySlides = [];
+        let currentSlideIndex = 0;
 
-        // Device ID
-        const urlParams = new URLSearchParams(window.location.search);
-        const deviceId = urlParams.get('id') || 'unknown';
-
-        // Device info collection
         function getDeviceInfo() {
             const userAgent = navigator.userAgent;
             const os = userAgent.includes('Windows') ? 'Windows' :
                        userAgent.includes('Mac') ? 'Mac' :
                        userAgent.includes('Linux') ? 'Linux' :
                        userAgent.includes('Android') ? 'Android' :
-                       userAgent.includes('iOS') ? 'iOS' :
-                       userAgent.includes('SmartTV') ? 'Smart TV' : 'Unknown';
-            const browser = userAgent.includes('FullyKiosk') ? 'Fully Kiosk Browser' :
-                           userAgent.includes('SamsungBrowser') ? 'Samsung Smart TV' :
+                       userAgent.includes('iOS') ? 'iOS' : 'Unknown';
+            const browser = userAgent.includes('FullyKiosk') ? 'Fully Kiosk' :
                            userAgent.includes('Chrome') ? 'Chrome' :
-                           userAgent.includes('Firefox') ? 'Firefox' :
-                           userAgent.includes('Safari') ? 'Safari' :
-                           userAgent.includes('Edge') ? 'Edge' : 'Unknown';
-            const resolution = `${window.screen.width}x${window.screen.height}`;
-            return { os, browser, resolution };
+                           userAgent.includes('Firefox') ? 'Firefox' : 'Unknown';
+            return { os, browser, resolution: `${window.screen.width}x${window.screen.height}` };
         }
 
-        // Send device info to Firestore
         async function sendDeviceInfo() {
-            const deviceInfo = getDeviceInfo();
             try {
                 await setDoc(doc(db, 'devices', deviceId), {
-                    ...deviceInfo,
+                    ...getDeviceInfo(),
                     lastHeartbeat: serverTimestamp(),
                     status: 'online'
                 }, { merge: true });
             } catch (error) {
-                console.error('Error sending device info:', error);
+                console.error('Device info error:', error);
             }
         }
 
-        // Heartbeat every minute
+        // Initialize device monitoring
         setInterval(sendDeviceInfo, 60000);
         sendDeviceInfo();
-
-        // Monitor Firestore for changes
         const deviceRef = doc(db, 'devices', deviceId);
         onSnapshot(deviceRef, async (doc) => {
-            const deviceData = doc.data();
-            if (deviceData) {
-                if (deviceData.refresh) {
-                    await updateDoc(deviceRef, { refresh: false });
-                    location.reload();
-                }
-                if (deviceData.restart) {
-                    await updateDoc(deviceRef, { restart: false });
-                    setTimeout(() => location.reload(), 1000);
-                }
+            const data = doc.data();
+            if (data?.refresh) {
+                await updateDoc(deviceRef, { refresh: false });
+                location.reload();
+            }
+            if (data?.restart) {
+                await updateDoc(deviceRef, { restart: false });
+                setTimeout(() => location.reload(), 1000);
             }
         });
 
-        // Slideshow variables
-        let slides = [];
-        let emergencySlides = [];
-        let currentSlideIndex = 0;
-
-        // Format date
+        // Format date for queries
         function formatDate(date) {
             return date.toISOString().split('T')[0];
         }
 
         // Load slides
         function fetchSlides() {
-            const slidesRef = collection(db, 'slides');
-            const emergencyRef = collection(db, 'emergency_slides');
             const today = formatDate(new Date());
-
-            // Normal slides
-            const q = query(slidesRef, where('active', '==', true), where('startDate', '<=', today), where('endDate', '>=', today), orderBy("order", "asc"));
-            onSnapshot(q, async (querySnapshot) => {
-                const newSlides = [];
-                querySnapshot.forEach((doc) => {
-                    newSlides.push({ id: doc.id, ...doc.data() });
-                });
-
+            const slidesQuery = query(
+                collection(db, 'slides'),
+                where('active', '==', true),
+                where('startDate', '<=', today),
+                where('endDate', '>=', today),
+                orderBy("order", "asc")
+            );
+            
+            onSnapshot(slidesQuery, async (snapshot) => {
+                const newSlides = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 const deviceDoc = await getDoc(deviceRef);
+                
                 if (deviceDoc.exists() && deviceDoc.data().pinnedSlideId) {
-                    const pinnedSlideId = deviceDoc.data().pinnedSlideId;
-                    const pinnedSlide = newSlides.find(slide => slide.id === pinnedSlideId);
+                    const pinnedId = deviceDoc.data().pinnedSlideId;
+                    const pinnedSlide = newSlides.find(s => s.id === pinnedId);
                     slides = pinnedSlide ? [pinnedSlide] : newSlides;
                 } else {
                     slides = newSlides;
                 }
                 renderSlides();
-            }, (error) => {
-                console.error('Error loading slides:', error);
             });
 
             // Emergency slides
-            const emergencyQ = query(emergencyRef, where('active', '==', true), where('startDate', '<=', today), where('endDate', '>=', today));
-            onSnapshot(emergencyQ, (querySnapshot) => {
-                emergencySlides = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            onSnapshot(query(
+                collection(db, 'emergency_slides'),
+                where('active', '==', true),
+                where('startDate', '<=', today),
+                where('endDate', '>=', today)
+            ), (snapshot) => {
+                emergencySlides = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderEmergencyOverlay();
-            }, (error) => {
-                console.error('Error loading emergency slides:', error);
             });
         }
 
-        // Render emergency overlay
         function renderEmergencyOverlay() {
             const overlay = document.getElementById('emergency-overlay');
             const content = document.getElementById('emergency-content');
-
-            if (!overlay || !content) return;
-
+            
             if (emergencySlides.length > 0) {
-                const emergencySlide = emergencySlides[0];
-                content.innerHTML = emergencySlide.type === 'image' 
-                    ? `<img src="${emergencySlide.content}" alt="Emergency">`
-                    : `<iframe src="${emergencySlide.content}"></iframe>`;
+                const slide = emergencySlides[0];
+                content.innerHTML = slide.type === 'image' 
+                    ? `<img src="${slide.content}" alt="Emergency">` 
+                    : `<iframe src="${slide.content}"></iframe>`;
                 overlay.classList.add('active');
             } else {
                 overlay.classList.remove('active');
             }
         }
 
-        // Render slides with LARGE BLACK TEXT
+        // Render slides with proper text formatting
         function renderSlides() {
             const container = document.getElementById('slideshow-container');
             container.innerHTML = '';
-
+            
             slides.forEach((slide, index) => {
                 const slideElement = document.createElement('div');
                 slideElement.className = `slide ${index === currentSlideIndex ? 'active' : ''}`;
@@ -246,24 +228,29 @@
                 } else if (slide.type === 'aktuális') {
                     try {
                         const content = JSON.parse(slide.content);
+                        const textLines = content.text.split('\n')
+                            .filter(line => line.trim())
+                            .map((line, i) => 
+                                i === 0 
+                                    ? `<span class="aktualis-heading">${line}</span>` 
+                                    : `<span class="aktualis-content">${line}</span>`
+                            )
+                            .join('<br>');
+                        
                         slideElement.innerHTML = `
                             <div class="aktualis-slide" style="background-image: url('${content.presetLink}')">
-                                <div class="aktualis-text" style="
-                                    font-family: 'Jost', sans-serif;
-                                    font-size: 4rem !important;
-                                    text-align: left;
-                                    color: black !important;
-                                    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
-                                    padding: 2rem;
-                                    font-weight: bold;
-                                ">
-                                    ${content.text}
+                                <div class="aktualis-text">
+                                    ${textLines}
                                 </div>
                             </div>
                         `;
                     } catch (e) {
-                        console.error('Error parsing Aktuális slide:', e);
-                        slideElement.innerHTML = `<div style="width:100%;height:100%;display:flex;justify-content:center;align-items:center;background:#000;color:#fff;">Error loading slide</div>`;
+                        console.error('Slide error:', e);
+                        slideElement.innerHTML = `
+                            <div style="width:100%;height:100%;display:flex;justify-content:center;align-items:center;background:#000;color:#fff;">
+                                Error loading slide
+                            </div>
+                        `;
                     }
                 }
                 
@@ -271,22 +258,15 @@
             });
         }
 
-        // Next slide
         function nextSlide() {
             if (slides.length <= 1) return;
             currentSlideIndex = (currentSlideIndex + 1) % slides.length;
             renderSlides();
         }
 
-        // Get pinned slide ID
-        async function getPinnedSlideId() {
-            const deviceDoc = await getDoc(deviceRef);
-            return deviceDoc.exists() ? deviceDoc.data().pinnedSlideId : null;
-        }
-
-        // Initialize
-        setInterval(nextSlide, 30000); // 30s slide duration
-        setInterval(fetchSlides, 60000); // 1min refresh
+        // Initialize slideshow
+        setInterval(nextSlide, 30000);
+        setInterval(fetchSlides, 60000);
         fetchSlides();
     </script>
 </body>
