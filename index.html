@@ -61,14 +61,13 @@
         }
         .aktualis-text {
             position: absolute;
-            top: 0;
-            left: 30px;
+            top: 50%;
+            left: 0;
             right: 0;
-            bottom: 0;
+            transform: translateY(-50%);
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
+            justify-content: center;
             padding: 2rem;
             color: white;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -278,7 +277,7 @@
                                 <div class="aktualis-text" style="
                                     font-family: ${content.style.fontFamily};
                                     font-size: ${content.style.fontSize};
-                                    text-align: ${content.style.textAlign};
+                                    text-align: left;
                                     color: ${content.style.color};
                                     text-shadow: ${content.style.textShadow};
                                     padding: ${content.style.padding};
