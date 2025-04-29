@@ -44,7 +44,26 @@
 
         /* Képfeltöltés előnézet */
         .image-preview { max-height: 60px; margin-top: 5px; border-radius: 4px; border: 1px solid #e5e7eb; }
-        .upload-indicator { display: none; /* Alapból rejtett */ }
+
+        /* Upload Indicator Styling */
+        .upload-indicator {
+            display: none; /* Initially hidden */
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem; /* space-x-2 */
+            margin-top: 0.5rem; /* mt-2 */
+            font-size: 0.875rem; /* text-sm */
+        }
+        .upload-indicator.uploading { display: flex; color: #3b82f6; /* text-blue-600 */ }
+        .upload-indicator.success { display: flex; color: #10b981; /* text-green-500 */ }
+        .upload-indicator.error { display: flex; color: #ef4444; /* text-red-500 */ }
+
+        .upload-indicator .spinner { display: none; }
+        .upload-indicator.uploading .spinner { display: inline-block; }
+        .upload-indicator .checkmark { display: none; }
+        .upload-indicator.success .checkmark { display: inline-block; }
+        .upload-indicator .crossmark { display: none; }
+        .upload-indicator.error .crossmark { display: inline-block; }
 
         /* Drag & Drop Styling */
         .drop-zone {
@@ -66,91 +85,70 @@
 
         /* Slide Preview Styling */
         .preview-image {
-            max-width: 100px; /* Limit preview image width */
-            max-height: 60px; /* Limit preview image height */
-            object-fit: contain; /* Ensure aspect ratio is maintained */
-            border-radius: 4px;
-            border: 1px solid #e5e7eb;
-            display: block;
-            margin-bottom: 4px; /* Add some space below image */
+            max-width: 100px; max-height: 60px; object-fit: contain;
+            border-radius: 4px; border: 1px solid #e5e7eb; display: block; margin-bottom: 4px;
         }
-        .slide-preview-container {
-            max-width: 150px; /* Limit width of text preview */
-            overflow: hidden;
-        }
+        .slide-preview-container { max-width: 150px; overflow: hidden; }
         .slide-preview-text {
-            font-size: 0.75rem; /* Smaller text for preview */
-            line-height: 1.2;
-            color: #4b5563; /* gray-600 */
-            max-height: 3.6em; /* Limit to approx 3 lines */
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
+            font-size: 0.75rem; line-height: 1.2; color: #4b5563; max-height: 3.6em;
+            overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+            -webkit-line-clamp: 3; -webkit-box-orient: vertical;
         }
 
         /* Log Entry Styling */
-        .log-entry {
-            border-bottom: 1px solid #e5e7eb; /* Tailwind gray-200 */
-        }
-        .log-entry:last-child {
-            border-bottom: none;
-        }
+        .log-entry { border-bottom: 1px solid #e5e7eb; }
+        .log-entry:last-child { border-bottom: none; }
 
         /* Notification Styling */
-        .notification.success { background-color: #10b981; /* Tailwind green-500 */ }
-        .notification.error { background-color: #ef4444; /* Tailwind red-500 */ }
+        .notification.success { background-color: #10b981; }
+        .notification.error { background-color: #ef4444; }
 
-        /* Edit/Action Button Styling */
+        /* Button Styling */
         .edit-btn, .slide-actions button {
-            padding: 0.25rem 0.5rem; /* Smaller padding */
-            font-size: 0.75rem; /* Smaller font size */
-            border-radius: 0.375rem; /* rounded-md */
-            transition: background-color 0.2s;
-            line-height: 1.2; /* Adjust line height */
+            padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: 0.375rem;
+            transition: background-color 0.2s; line-height: 1.2;
         }
-        .edit-btn {
-            background-color: #d1d5db; /* Tailwind gray-300 */
-            color: #374151; /* Tailwind gray-700 */
-        }
-        .edit-btn:hover {
-            background-color: #9ca3af; /* Tailwind gray-400 */
-        }
+        .edit-btn { background-color: #d1d5db; color: #374151; }
+        .edit-btn:hover { background-color: #9ca3af; }
+        /* Disabled button style */
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
 
         /* Device Details Styling */
         #devices-list .font-semibold {
-             max-width: 150px; /* Limit device name width */
-             white-space: nowrap;
-             overflow: hidden;
-             text-overflow: ellipsis;
-             display: inline-block; /* Needed for ellipsis */
-             vertical-align: middle; /* Align with status badge */
+             max-width: 150px; white-space: nowrap; overflow: hidden;
+             text-overflow: ellipsis; display: inline-block; vertical-align: middle;
         }
 
         /* Emergency Slide Item Styling (Reverted) */
-        .slide-item.border-l-4.border-red-500 { /* Specificity to override potentially conflicting styles */
-             padding: 1rem; /* Revert padding */
-             margin-bottom: 0.75rem; /* Revert margin */
-             border-radius: 0.5rem; /* Revert border-radius */
-             background-color: #fff; /* Revert background */
-             display: flex; /* Revert display */
-             justify-content: space-between; /* Revert justify-content */
-             align-items: center; /* Revert align-items */
-             gap: 1rem; /* Revert gap */
+        .slide-item.border-l-4.border-red-500 {
+             padding: 1rem; margin-bottom: 0.75rem; border-radius: 0.5rem; background-color: #fff;
+             display: flex; justify-content: space-between; align-items: center; gap: 1rem;
         }
         .slide-item.border-l-4.border-gray-300 {
-             padding: 1rem;
-             margin-bottom: 0.75rem;
-             border-radius: 0.5rem;
-             background-color: #f9fafb; /* bg-gray-50 */
-             opacity: 0.8;
-             display: flex;
-             justify-content: space-between;
-             align-items: center;
-             gap: 1rem;
+             padding: 1rem; margin-bottom: 0.75rem; border-radius: 0.5rem; background-color: #f9fafb;
+             opacity: 0.8; display: flex; justify-content: space-between; align-items: center; gap: 1rem;
         }
 
+        /* General Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 1.5rem; /* w-6 */
+            height: 1.5rem; /* h-6 */
+            border: 3px solid rgba(59, 130, 246, 0.3); /* border-blue-500 opacity 30% */
+            border-radius: 50%;
+            border-top-color: #3b82f6; /* border-blue-500 */
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem; /* p-4 */
+            color: #6b7280; /* text-gray-500 */
+        }
+        .loading-container span { margin-top: 0.5rem; /* mt-2 */ }
 
     </style>
 </head>
@@ -246,9 +244,11 @@
                  <input type="file" id="edit-slide-image-upload" accept="image/*" class="hidden">
                  <span class="text-xs text-gray-500 block mb-2">Kattints vagy húzz ide egy képet!</span>
                  <img id="edit-image-preview" src="#" alt="Kép előnézet" class="image-preview hidden mx-auto">
-                 <div id="edit-upload-indicator" class="upload-indicator mt-2 text-sm text-blue-600 flex items-center justify-center gap-2">
-                     <svg class="animate-spin h-4 w-4 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                     Feltöltés...
+                 <div id="edit-upload-indicator" class="upload-indicator">
+                     <svg class="spinner animate-spin h-4 w-4 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                     <svg class="checkmark h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                     <svg class="crossmark h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                     <span class="indicator-text">Feltöltés...</span>
                  </div>
             </div>
             <div id="edit-url-input-group" class="hidden">
@@ -287,8 +287,8 @@
             </div>
         </div>
         <div class="flex flex-col sm:flex-row justify-end gap-3 mt-6 border-t pt-4">
-            <button onclick="closeEditPopup()" class="w-full sm:w-auto px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition duration-200">Mégse</button>
-            <button onclick="saveEditedSlide()" class="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200">Mentés</button>
+            <button id="edit-cancel-btn" onclick="closeEditPopup()" class="w-full sm:w-auto px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition duration-200">Mégse</button>
+            <button id="edit-save-btn" onclick="saveEditedSlide()" class="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200">Mentés</button>
         </div>
     </div>
     <div id="edit-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-60 backdrop-blur-sm z-[1030] hidden"></div>
@@ -321,7 +321,10 @@
                     <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
                         <h2 class="text-xl font-semibold mb-4 text-gray-700">Eszközök listája</h2>
                         <div id="devices-list" class="overflow-y-auto max-h-48 scrollbar-thin">
-                             <div class="p-3 text-gray-500">Eszközök betöltése...</div>
+                             <div class="loading-container">
+                                <div class="loading-spinner"></div>
+                                <span>Eszközök betöltése...</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -349,9 +352,11 @@
                                  <input type="file" id="slide-image-upload" accept="image/*" class="hidden">
                                  <p class="text-xs text-gray-500 mb-2">Kattints vagy húzz ide egy képet!</p>
                                  <img id="add-image-preview" src="#" alt="Kép előnézet" class="image-preview hidden mx-auto">
-                                 <div id="add-upload-indicator" class="upload-indicator mt-2 text-sm text-blue-600 flex items-center justify-center gap-2">
-                                     <svg class="animate-spin h-4 w-4 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                                     Feltöltés...
+                                 <div id="add-upload-indicator" class="upload-indicator">
+                                     <svg class="spinner animate-spin h-4 w-4 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                     <svg class="checkmark h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                                     <svg class="crossmark h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                                     <span class="indicator-text">Feltöltés...</span>
                                  </div>
                              </div>
                              <div id="add-url-input-group" class="hidden">
@@ -406,7 +411,7 @@
                                  <textarea id="aktualis-comment" placeholder="Adminisztratív megjegyzés..." class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" rows="2"></textarea>
                              </div>
                         </div>
-                        <button onclick="addSlide()" class="w-full bg-blue-600 text-white p-2.5 rounded-md hover:bg-blue-700 transition duration-200 font-medium">Hirdetés hozzáadása</button>
+                        <button id="add-slide-btn" onclick="addSlide()" class="w-full bg-blue-600 text-white p-2.5 rounded-md hover:bg-blue-700 transition duration-200 font-medium">Hirdetés hozzáadása</button>
                     </div>
                 </div>
                 <div class="bg-white p-6 rounded-lg border border-gray-200">
@@ -417,7 +422,10 @@
                         </button>
                     </div>
                     <div id="slides-container" class="space-y-3">
-                         <div class="text-center p-4 text-gray-500">Diák betöltése...</div>
+                         <div class="loading-container">
+                            <div class="loading-spinner"></div>
+                            <span>Diák betöltése...</span>
+                        </div>
                     </div>
                     <div id="reorder-controls" class="hidden mt-4 flex flex-col sm:flex-row justify-end gap-3">
                         <button onclick="cancelReorder()" class="w-full sm:w-auto px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition duration-200">Mégse</button>
@@ -447,9 +455,11 @@
                                  <input type="file" id="emergency-slide-image-upload" accept="image/*" class="hidden">
                                  <p class="text-xs text-gray-500 mb-2">Kattints vagy húzz ide egy képet!</p>
                                   <img id="emergency-image-preview" src="#" alt="Havária kép előnézet" class="image-preview hidden mx-auto">
-                                  <div id="emergency-upload-indicator" class="upload-indicator mt-2 text-sm text-red-600 flex items-center justify-center gap-2">
-                                     <svg class="animate-spin h-4 w-4 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                                     Feltöltés...
+                                  <div id="emergency-upload-indicator" class="upload-indicator">
+                                     <svg class="spinner animate-spin h-4 w-4 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                     <svg class="checkmark h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                                     <svg class="crossmark h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                                     <span class="indicator-text">Feltöltés...</span>
                                   </div>
                              </div>
                              <div id="emergency-url-input-group" class="hidden">
@@ -460,13 +470,16 @@
                                 <label for="emergency-slide-comment" class="block text-sm font-medium text-gray-700 mb-1">Megjegyzés (admin)</label>
                                 <textarea id="emergency-slide-comment" placeholder="Adminisztratív megjegyzés..." class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500" rows="2"></textarea>
                              </div>
-                            <button onclick="addEmergencySlide()" class="w-full bg-red-600 text-white p-2.5 rounded-md hover:bg-red-700 transition duration-200 font-medium">Havária hozzáadása és aktiválása</button>
+                            <button id="add-emergency-btn" onclick="addEmergencySlide()" class="w-full bg-red-600 text-white p-2.5 rounded-md hover:bg-red-700 transition duration-200 font-medium">Havária hozzáadása és aktiválása</button>
                         </div>
                     </div>
                     <div class="bg-white p-6 rounded-lg border border-gray-200">
                         <h2 class="text-xl font-semibold mb-4 text-gray-700">Haváriák listája</h2>
                             <div id="emergency-slides-container" class="space-y-3">
-                                <div class="text-center p-4 text-gray-500">Haváriák betöltése...</div>
+                                <div class="loading-container">
+                                    <div class="loading-spinner"></div>
+                                    <span>Haváriák betöltése...</span>
+                                </div>
                             </div>
                     </div>
                 </div>
@@ -500,7 +513,10 @@
                     </div>
                 </div>
                 <div id="log-entries" class="overflow-y-auto max-h-96 border rounded p-2 bg-gray-50 scrollbar-thin">
-                     <div class="text-center p-4 text-gray-500">Naplóbejegyzések betöltése...</div>
+                     <div class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <span>Naplóbejegyzések betöltése...</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -509,12 +525,12 @@
     <script type="module">
         // Firebase importok
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, getDoc, setDoc, serverTimestamp, query, orderBy, where, documentId, limit, writeBatch } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js"; // Added writeBatch
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, getDoc, setDoc, serverTimestamp, query, orderBy, where, documentId, limit, writeBatch } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
-        // Firebase config (változatlan)
+        // Firebase config
         const firebaseConfig = {
-            apiKey: "AIzaSyAmlb3HFiXq18IlV--o1GOC5yofXSZjV48", // Replace with your actual API key if needed
+            apiKey: "AIzaSyAmlb3HFiXq18IlV--o1GOC5yofXSZjV48",
             authDomain: "infotv-50232.firebaseapp.com",
             projectId: "infotv-50232",
             storageBucket: "infotv-50232.appspot.com",
@@ -523,16 +539,15 @@
             measurementId: "G-2V1HZ0RPJK"
         };
 
-        // Initialize Firebase (változatlan)
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
         // --- ImgBB API Key ---
-        // !!! FONTOS: Cseréld le a saját ImgBB API kulcsodra! Szerezz egyet itt: https://api.imgbb.com/
-        const IMGBB_API_KEY = '8f8df6e25ae6f48ebc2beba95085cecd'; // <--- IDE ÍRD BE A KULCSOT!
+        const IMGBB_API_KEY = '8f8df6e25ae6f48ebc2beba95085cecd';
 
-        // --- UI ELEMEK --- (Frissítve: Pinned slide elemek eltávolítva)
+        // --- UI Elements ---
         const loginContainer = document.getElementById('loginContainer');
         const mainAppContent = document.getElementById('mainAppContent');
         const emailForm = document.getElementById('emailForm');
@@ -559,7 +574,7 @@
         const confirmPopup = document.getElementById('confirm-popup');
         const confirmOverlay = document.getElementById('confirm-overlay');
         const notificationElement = document.getElementById('notification');
-        // Képfeltöltés elemei
+        // Image Upload Elements
         const addSlideImageUpload = document.getElementById('slide-image-upload');
         const addImagePreview = document.getElementById('add-image-preview');
         const addUploadIndicator = document.getElementById('add-upload-indicator');
@@ -576,58 +591,57 @@
         const emergencyUploadIndicator = document.getElementById('emergency-upload-indicator');
         const emergencyImageInputGroup = document.getElementById('emergency-image-input-group');
         const emergencyUrlInputGroup = document.getElementById('emergency-url-input-group');
+        // Buttons related to upload
+        const addSlideBtn = document.getElementById('add-slide-btn');
+        const addEmergencyBtn = document.getElementById('add-emergency-btn');
+        const editSaveBtn = document.getElementById('edit-save-btn');
 
-        // --- ÁLLAPOT VÁLTOZÓK --- (Frissítve)
+        // --- State Variables ---
         let currentEditingSlideId = null;
         let currentEditingSlideType = null;
         let sortableInstance = null;
         let notificationTimeoutId = null;
-        const TOTAL_DEVICES = 8; // Teljes eszközszám a százalék számításához
+        const TOTAL_DEVICES = 8;
+        let isUploading = false; // Track upload state
 
-        // --- SEGÉDFÜGGVÉNYEK ---
+        // --- Helper Functions ---
 
-        /** Megjelenít egy üzenetet a felugró ablakban. */
+        /** Shows a message in the popup box. */
         function showMessage(message, isError = false) {
             messageText.textContent = message;
             const boxContent = messageBox.querySelector('div');
-            const defaultBorder = 'border-blue-500';
-            const errorBorder = 'border-red-500';
-            const defaultText = 'text-gray-700';
-            const errorText = 'text-red-700';
-
-            boxContent.classList.remove(isError ? defaultBorder : errorBorder);
-            boxContent.classList.add(isError ? errorBorder : defaultBorder);
-            messageText.classList.remove(isError ? defaultText : errorText);
-            messageText.classList.add(isError ? errorText : defaultText);
-
+            boxContent.classList.toggle('border-blue-500', !isError);
+            boxContent.classList.toggle('border-red-500', isError);
+            messageText.classList.toggle('text-gray-700', !isError);
+            messageText.classList.toggle('text-red-700', isError);
             messageBox.classList.remove('hidden');
         }
 
-        /** Bezárja az üzenetablakot. */
+        /** Closes the message box. */
         function closeMessage() {
             messageBox.classList.add('hidden');
             messageText.textContent = '';
         }
 
-        /** Megjeleníti a hibaüzenetet egy adott mező alatt. */
+        /** Shows a field error message. */
         function showFieldError(errorElement, message) {
             errorElement.textContent = message;
             errorElement.classList.remove('hidden');
         }
 
-        /** Elrejti a hibaüzenetet egy adott mező alól. */
+        /** Hides a field error message. */
         function hideFieldError(errorElement) {
             errorElement.textContent = '';
             errorElement.classList.add('hidden');
         }
 
-        /** Validálja az e-mail címet. */
+        /** Validates an email address. */
         function validateEmail(email) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return emailRegex.test(String(email).toLowerCase());
         }
 
-        /** Létrehozza a Gravatar URL-t. */
+        /** Generates a Gravatar URL. */
         function getGravatarUrl(email) {
             if (!email || typeof email !== 'string') return 'https://placehold.co/150x150/e2e8f0/cbd5e1?text=Hiba';
             const cleanedEmail = email.trim().toLowerCase();
@@ -635,37 +649,31 @@
             return `https://www.gravatar.com/avatar/${hash}?d=mp&s=150`;
         }
 
-        /** Show notification message. */
+        /** Shows a notification message. */
         function showNotification(message, isError = false) {
             notificationElement.textContent = message;
-            notificationElement.classList.remove('hidden', 'notification-leave', 'success', 'error');
-            notificationElement.classList.add(isError ? 'error' : 'success');
-            notificationElement.classList.add('notification-enter'); // Start enter animation
+            notificationElement.className = `notification fixed bottom-4 left-1/2 transform -translate-x-1/2 max-w-md w-[calc(100%-2rem)] text-white px-4 py-3 rounded-md shadow-lg z-[1050] text-center ${isError ? 'error' : 'success'}`;
+            notificationElement.classList.add('notification-enter');
 
-            // Clear existing timeouts
             if (notificationTimeoutId) clearTimeout(notificationTimeoutId);
 
-            // Auto-hide after 5 seconds
             notificationTimeoutId = setTimeout(() => {
                 notificationElement.classList.remove('notification-enter');
                 notificationElement.classList.add('notification-leave');
-                // Ensure hidden class is added after animation
                 setTimeout(() => {
-                    // Check if it's still the same message before hiding
                     if (notificationElement.textContent === message) {
                         notificationElement.classList.add('hidden');
                     }
-                }, 300); // Match animation duration
+                }, 300);
             }, 5000);
         }
 
-         /** Show confirmation popup. */
+         /** Shows a confirmation popup. */
          function showConfirmPopup(message, confirmCallback) {
             document.getElementById('confirm-message').textContent = message;
             confirmPopup.classList.remove('hidden');
             confirmOverlay.classList.remove('hidden');
 
-            // Re-attach listeners to avoid duplicates
             const confirmBtn = document.getElementById('confirmOkBtn');
             const cancelBtn = document.getElementById('confirmCancelBtn');
             const newConfirmBtn = confirmBtn.cloneNode(true);
@@ -684,9 +692,13 @@
             };
         }
 
-        /** Handles image preview for file inputs */
-        function handleImagePreview(fileInput, previewElement) {
+        /** Handles image preview and triggers upload indicator logic. */
+        function handleImagePreview(fileInput, previewElement, indicatorElement, relatedButton) {
             const file = fileInput.files[0];
+            // Reset indicator immediately when file changes
+            setIndicatorState(indicatorElement, 'idle');
+            if (relatedButton) relatedButton.disabled = false; // Re-enable button if file is changed/removed
+
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
@@ -696,27 +708,68 @@
                 reader.readAsDataURL(file);
             } else {
                 previewElement.classList.add('hidden');
-                previewElement.src = '#'; // Reset src
+                previewElement.src = '#';
             }
         }
 
-        /** Updates character counters for contenteditable divs */
+        /** Updates character counters for contenteditable divs. */
         function updateCounter(elementId, counterId, maxLength) {
             const element = document.getElementById(elementId);
             const counter = document.getElementById(counterId);
             if (!element || !counter) return;
-            const currentLength = element.innerText.length; // Use innerText for accurate length
+            const currentLength = element.innerText.length;
             counter.textContent = `${currentLength}/${maxLength} karakter`;
             counter.classList.toggle('text-red-600', currentLength > maxLength);
         }
 
-        // --- ALKALMAZÁS ÁLLAPOT KEZELÉSE ---
+        /** Sets the state of an upload indicator. */
+        function setIndicatorState(indicatorElement, state, message = '') {
+            if (!indicatorElement) return;
+            const textElement = indicatorElement.querySelector('.indicator-text');
+            indicatorElement.classList.remove('uploading', 'success', 'error');
+            if (textElement) textElement.textContent = message;
 
-        /** Megjeleníti a bejelentkezési űrlapot. */
+            switch (state) {
+                case 'uploading':
+                    indicatorElement.classList.add('uploading');
+                    if (textElement) textElement.textContent = message || 'Feltöltés...';
+                    break;
+                case 'success':
+                    indicatorElement.classList.add('success');
+                     if (textElement) textElement.textContent = message || 'Sikeres feltöltés!';
+                    break;
+                case 'error':
+                    indicatorElement.classList.add('error');
+                    if (textElement) textElement.textContent = message || 'Feltöltési hiba!';
+                    break;
+                case 'idle':
+                default:
+                    // Hide the indicator completely when idle
+                    indicatorElement.style.display = 'none';
+                    break;
+            }
+             // Make sure the indicator container is visible when not idle
+             if (state !== 'idle') {
+                 indicatorElement.style.display = 'flex';
+             }
+        }
+
+        /** Generates HTML for a loading spinner container. */
+        function getLoadingIndicatorHTML(text = 'Betöltés...') {
+            return `
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <span>${text}</span>
+                </div>`;
+        }
+
+        // --- Application State Management ---
+
+        /** Shows the login form. */
         function showLogin() {
             loginContainer.style.display = 'block';
             mainAppContent.style.display = 'none';
-            passwordStep.classList.add('hidden-step'); // Use animation class
+            passwordStep.classList.add('hidden-step');
             emailStep.classList.remove('hidden-step');
             loginEmailInput.value = '';
             loginPasswordInput.value = '';
@@ -726,28 +779,24 @@
             loginEmailInput.focus();
         }
 
-        /** Megjeleníti a fő alkalmazás tartalmat. */
+        /** Shows the main application content. */
         function showAppContent() {
             loginContainer.style.display = 'none';
             mainAppContent.style.display = 'block';
-            document.body.className = 'bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100'; // Restore background
+            document.body.className = 'bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100';
             loadAdminData();
         }
 
-        /** Betölti az admin felülethez szükséges adatokat. (Frissítve: Pinned slide funkciók eltávolítva) */
+        /** Loads data required for the admin interface. */
         function loadAdminData() {
              renderSlides();
              renderEmergencySlides();
-             monitorDevices(); // Ez frissíti az eszközlistát és a rendelkezésre állást
+             monitorDevices();
              fetchLogs();
-             // Pinned slide related calls removed:
-             // loadDevicesForPinning();
-             // loadSlidesForPinning();
-             // renderPinnedSlides();
         }
 
 
-        // --- AUTH KEZELÉS ---
+        // --- Authentication Handling ---
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 console.log("User is logged in:", user.email);
@@ -758,9 +807,9 @@
             }
         });
 
-        // --- ESEMÉNYKEZELŐK ---
+        // --- Event Handlers ---
 
-        // Email űrlap
+        // Email form submission
         emailForm.addEventListener('submit', (event) => {
             event.preventDefault();
             const email = loginEmailInput.value;
@@ -777,7 +826,7 @@
             loginPasswordInput.focus();
         });
 
-        // Vissza gomb
+        // Back button on password step
         backButton.addEventListener('click', () => {
             passwordStep.classList.add('hidden-step');
             emailStep.classList.remove('hidden-step');
@@ -786,7 +835,7 @@
             loginEmailInput.focus();
         });
 
-        // Bejelentkezési űrlap
+        // Actual login form submission
         actualLoginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             const email = hiddenEmailInput.value;
@@ -799,7 +848,6 @@
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 await addDoc(collection(db, 'logs'), { eventType: "Bejelentkezés", details: "Sikeres bejelentkezés", user: userCredential.user.email, timestamp: serverTimestamp() });
-                // Sikeres bejelentkezés után az onAuthStateChanged kezeli a UI váltást
             } catch (error) {
                 console.error('Login error:', error.code, error.message);
                 let errorMessage = 'Hibás e-mail cím vagy jelszó.';
@@ -811,7 +859,7 @@
             }
         });
 
-        // Elfelejtett jelszó
+        // Forgot password handler
         async function handleForgotPassword(event) {
              event.preventDefault();
              const currentEmail = passwordStep.classList.contains('hidden-step') ? loginEmailInput.value : hiddenEmailInput.value;
@@ -833,33 +881,41 @@
         forgotPasswordLink.addEventListener('click', handleForgotPassword);
         forgotPasswordLink2.addEventListener('click', handleForgotPassword);
 
-        // Üzenetablak bezárása
+        // Close message box
         closeMessageButton.addEventListener('click', closeMessage);
         messageBox.addEventListener('click', (event) => { if (event.target === messageBox) closeMessage(); });
 
-        // Kijelentkezés
+        // Logout button
         logoutButton.addEventListener('click', async () => {
             try {
                 if (auth.currentUser) {
                     await addDoc(collection(db, 'logs'), { eventType: "Kijelentkezés", details: "Felhasználó kijelentkezett", user: auth.currentUser.email, timestamp: serverTimestamp() });
                 }
                 await signOut(auth);
-                // Az onAuthStateChanged kezeli a UI váltást
             } catch (error) {
                 console.error('Logout error:', error);
                 showNotification('Hiba történt a kijelentkezés során!', true);
             }
         });
 
-        // Image Preview Listeners
-        addSlideImageUpload.addEventListener('change', () => handleImagePreview(addSlideImageUpload, addImagePreview));
-        editSlideImageUpload.addEventListener('change', () => handleImagePreview(editSlideImageUpload, editImagePreview));
-        emergencySlideImageUpload.addEventListener('change', () => handleImagePreview(emergencySlideImageUpload, emergencyImagePreview));
+        // Image Preview Listeners (linking indicator and button)
+        addSlideImageUpload.addEventListener('change', () => handleImagePreview(addSlideImageUpload, addImagePreview, addUploadIndicator, addSlideBtn));
+        editSlideImageUpload.addEventListener('change', () => handleImagePreview(editSlideImageUpload, editImagePreview, editUploadIndicator, editSaveBtn));
+        emergencySlideImageUpload.addEventListener('change', () => handleImagePreview(emergencySlideImageUpload, emergencyImagePreview, emergencyUploadIndicator, addEmergencyBtn));
 
         // --- Drag & Drop Event Listeners ---
         function setupDragDrop(dropZoneElement) {
             const fileInput = document.getElementById(dropZoneElement.dataset.targetInput);
             const previewElement = document.getElementById(dropZoneElement.dataset.targetPreview);
+            // Find the corresponding indicator and button based on the drop zone context
+            let indicatorElement, relatedButton;
+            if (dropZoneElement.id === 'add-image-input-group') {
+                indicatorElement = addUploadIndicator; relatedButton = addSlideBtn;
+            } else if (dropZoneElement.id === 'edit-image-input-group') {
+                indicatorElement = editUploadIndicator; relatedButton = editSaveBtn;
+            } else if (dropZoneElement.id === 'emergency-image-input-group') {
+                indicatorElement = emergencyUploadIndicator; relatedButton = addEmergencyBtn;
+            }
 
             if (!fileInput || !previewElement) {
                 console.error("Drag & Drop setup failed: Target input or preview not found for", dropZoneElement);
@@ -876,27 +932,24 @@
 
             // Highlight drop zone when item is dragged over it
             ['dragenter', 'dragover'].forEach(eventName => {
-                dropZoneElement.addEventListener(eventName, () => {
-                    dropZoneElement.classList.add('dragover');
-                }, false);
+                dropZoneElement.addEventListener(eventName, () => dropZoneElement.classList.add('dragover'), false);
             });
 
             ['dragleave', 'drop'].forEach(eventName => {
-                dropZoneElement.addEventListener(eventName, () => {
-                    dropZoneElement.classList.remove('dragover');
-                }, false);
+                dropZoneElement.addEventListener(eventName, () => dropZoneElement.classList.remove('dragover'), false);
             });
 
             // Handle dropped files
             dropZoneElement.addEventListener('drop', (e) => {
                 const dt = e.dataTransfer;
                 const files = dt.files;
+                setIndicatorState(indicatorElement, 'idle'); // Reset indicator on drop
+                if (relatedButton) relatedButton.disabled = false; // Ensure button is enabled
 
                 if (files.length > 0) {
-                    // Handle only the first file if it's an image
                     if (files[0].type.startsWith('image/')) {
                         fileInput.files = files; // Assign the dropped file(s) to the input
-                        handleImagePreview(fileInput, previewElement); // Update preview
+                        handleImagePreview(fileInput, previewElement, indicatorElement, relatedButton); // Update preview
                     } else {
                         showNotification('Csak képfájlokat lehet behúzni!', true);
                     }
@@ -905,93 +958,60 @@
 
              // Allow clicking the zone to trigger file input
              dropZoneElement.addEventListener('click', (e) => {
-                 // Prevent triggering click if clicking on the input itself (though it's hidden)
-                 if (e.target !== fileInput) {
-                    fileInput.click();
-                 }
+                 if (e.target !== fileInput) { fileInput.click(); }
              });
         }
 
         // Setup drag and drop for all zones
         document.querySelectorAll('.drop-zone').forEach(setupDragDrop);
 
-        // --- GLOBÁLISAN ELÉRHETŐ FÜGGVÉNYEK (onclick miatt) ---
-        // Explicitly attach functions to window object
+        // --- Globally Accessible Functions (for onclick) ---
         window.toggleLogCard = function() {
             const logCard = document.getElementById('log-card');
             logCard.classList.toggle('hidden');
-            if (!logCard.classList.contains('hidden')) fetchLogs(); // Fetch logs when shown
+            if (!logCard.classList.contains('hidden')) fetchLogs();
         };
-        window.refreshLogs = fetchLogs; // Make fetchLogs globally accessible for refresh button
+        window.refreshLogs = fetchLogs;
         window.toggleSlideForm = function() {
             const form = document.getElementById('slide-form');
             const toggleIcon = document.getElementById('slide-form-toggle');
             form.classList.toggle('hidden');
             toggleIcon.classList.toggle('rotate-180', !form.classList.contains('hidden'));
         };
-        window.toggleEmergencyForm = function() { // Reverted
+        window.toggleEmergencyForm = function() {
             const form = document.getElementById('emergency-slide-form');
             const toggleIcon = document.getElementById('emergency-form-toggle');
             form.classList.toggle('hidden');
             toggleIcon.classList.toggle('rotate-180', !form.classList.contains('hidden'));
-            // Reset emergency file input when toggling - REMOVED
-            // emergencySlideImageUpload.value = '';
-            // handleImagePreview(emergencySlideImageUpload, emergencyImagePreview);
         };
         window.toggleSlideTypeFields = function() {
             const slideType = document.getElementById('slide-type').value;
             const regularFields = document.getElementById('regular-slide-fields');
             const aktualisFields = document.getElementById('aktualis-slide-fields');
-
             regularFields.classList.toggle('hidden', slideType === 'aktuális');
             aktualisFields.classList.toggle('hidden', slideType !== 'aktuális');
-
             addImageInputGroup.classList.toggle('hidden', slideType !== 'image');
             addUrlInputGroup.classList.toggle('hidden', slideType !== 'embed');
-
-             // Reset file input when type changes away from image
-             if (slideType !== 'image') {
-                 addSlideImageUpload.value = '';
-                 handleImagePreview(addSlideImageUpload, addImagePreview);
-             }
-             // Reset other inputs when switching types
-             if (slideType !== 'embed') document.getElementById('slide-content').value = '';
-             if (slideType !== 'aktuális') {
-                 document.getElementById('first-line').innerHTML = '';
-                 document.getElementById('slide-text-content').innerHTML = '';
-                 updateFirstLineCounter(); updateCharCounter();
-             }
+            if (slideType !== 'image') { addSlideImageUpload.value = ''; handleImagePreview(addSlideImageUpload, addImagePreview, addUploadIndicator, addSlideBtn); }
+            if (slideType !== 'embed') document.getElementById('slide-content').value = '';
+            if (slideType !== 'aktuális') { document.getElementById('first-line').innerHTML = ''; document.getElementById('slide-text-content').innerHTML = ''; updateFirstLineCounter(); updateCharCounter(); }
         };
         window.toggleEditSlideTypeFields = function() {
             const slideType = document.getElementById('edit-slide-type').value;
             const textContentGroup = document.getElementById('edit-text-content-group');
-
             editImageInputGroup.classList.toggle('hidden', slideType !== 'image');
             editUrlInputGroup.classList.toggle('hidden', slideType !== 'embed');
             textContentGroup.classList.toggle('hidden', slideType !== 'aktuális');
-
-            // Reset edit file input ONLY if switching AWAY from image type
-            if (slideType !== 'image') {
-                editSlideImageUpload.value = '';
-                handleImagePreview(editSlideImageUpload, editImagePreview);
-            }
-            // Reset other inputs when switching types in edit mode
+            if (slideType !== 'image') { editSlideImageUpload.value = ''; handleImagePreview(editSlideImageUpload, editImagePreview, editUploadIndicator, editSaveBtn); }
             if (slideType !== 'embed') document.getElementById('edit-slide-content').value = '';
-            if (slideType !== 'aktuális') {
-                 document.getElementById('edit-first-line').innerHTML = '';
-                 document.getElementById('edit-text-content').innerHTML = '';
-                 editUpdateFirstLineCounter(); editUpdateCharCounter();
-            }
+            if (slideType !== 'aktuális') { document.getElementById('edit-first-line').innerHTML = ''; document.getElementById('edit-text-content').innerHTML = ''; editUpdateFirstLineCounter(); editUpdateCharCounter(); }
         };
-        window.toggleEmergencyInputFields = function() { // Reverted
+        window.toggleEmergencyInputFields = function() {
              const slideType = document.getElementById('emergency-slide-type').value;
              emergencyImageInputGroup.classList.toggle('hidden', slideType !== 'image');
              emergencyUrlInputGroup.classList.toggle('hidden', slideType === 'image');
-             // Reset file input when type changes - REMOVED
-             // emergencySlideImageUpload.value = '';
-             // handleImagePreview(emergencySlideImageUpload, emergencyImagePreview);
-             // Reset URL input if switching to image - REMOVED
-             // if (slideType === 'image') document.getElementById('emergency-slide-content').value = '';
+             if (slideType !== 'image') { emergencySlideImageUpload.value = ''; handleImagePreview(emergencySlideImageUpload, emergencyImagePreview, emergencyUploadIndicator, addEmergencyBtn); }
+             if (slideType !== 'embed') document.getElementById('emergency-slide-content').value = '';
         };
         window.formatText = function(command) { document.execCommand(command, false, null); document.getElementById('slide-text-content').focus(); updateCharCounter(); };
         window.editFormatText = function(command) { document.execCommand(command, false, null); document.getElementById('edit-text-content').focus(); editUpdateCharCounter(); };
@@ -1000,7 +1020,7 @@
         window.updateCharCounter = function() { updateCounter('slide-text-content', 'char-counter', 100); };
         window.editUpdateCharCounter = function() { updateCounter('edit-text-content', 'edit-char-counter', 100); };
         window.addSlide = addSlide;
-        window.addEmergencySlide = addEmergencySlide; // Keep reference, but function body is reverted below
+        window.addEmergencySlide = addEmergencySlide;
         window.toggleReorderMode = toggleReorderMode;
         window.cancelReorder = cancelReorder;
         window.saveReorder = saveReorder;
@@ -1009,33 +1029,30 @@
         window.saveEditedSlide = saveEditedSlide;
         window.toggleSlide = toggleSlide;
         window.deleteSlide = deleteSlide;
-        // Pinned slide functions removed from window scope
-        // window.pinSlideToDevice = pinSlideToDevice;
-        // window.unpinSlide = unpinSlide;
-        window.toggleEmergency = toggleEmergency; // Keep reference, but function body is reverted below
-        window.deleteEmergency = deleteEmergency; // Keep reference, but function body is reverted below
+        window.toggleEmergency = toggleEmergency;
+        window.deleteEmergency = deleteEmergency;
         window.toggleDetails = function(deviceId) {
             const detailsElement = document.getElementById(`details-${deviceId}`);
             if (detailsElement) detailsElement.classList.toggle('hidden');
         };
         window.refreshAllDevices = refreshAllDevices;
         window.refreshDevice = refreshDevice;
-        window.confirmAction = function(confirmed) { // Placeholder for potential future use
-             console.warn("confirmAction called directly - likely unused");
-        };
+        window.confirmAction = function(confirmed) { console.warn("confirmAction called directly"); };
 
-        // --- KÉPFELTÖLTÉS (ImgBB) ---
+        // --- Image Upload (ImgBB) ---
 
-        /** Uploads an image file to ImgBB */
-        async function uploadImageToImgBB(file, indicatorElement) {
+        /** Uploads an image file to ImgBB with state handling. */
+        async function uploadImageToImgBB(file, indicatorElement, relatedButton) {
             if (!IMGBB_API_KEY || IMGBB_API_KEY === 'YOUR_API_KEY_HERE') {
-                throw new Error("Hiányzó ImgBB API kulcs! Kérlek, add meg a kódban.");
+                throw new Error("Hiányzó ImgBB API kulcs!");
             }
             if (!file) {
-                throw new Error("Nincs fájl kiválasztva a feltöltéshez.");
+                throw new Error("Nincs fájl kiválasztva.");
             }
 
-            indicatorElement.style.display = 'flex'; // Show indicator
+            isUploading = true;
+            if (relatedButton) relatedButton.disabled = true; // Disable button during upload
+            setIndicatorState(indicatorElement, 'uploading');
 
             const formData = new FormData();
             formData.append('image', file);
@@ -1048,118 +1065,119 @@
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    console.error("ImgBB API Error:", errorData);
-                    throw new Error(`ImgBB feltöltési hiba: ${errorData?.error?.message || response.statusText}`);
+                    throw new Error(`ImgBB hiba: ${errorData?.error?.message || response.statusText}`);
                 }
 
                 const result = await response.json();
-                console.log("ImgBB Upload Result:", result);
 
                 if (result.success && result.data && result.data.url) {
-                    indicatorElement.style.display = 'none'; // Hide indicator
-                    return result.data.url; // Return the direct image URL
+                    setIndicatorState(indicatorElement, 'success'); // Show success checkmark
+                    // Keep indicator visible for a short time
+                    setTimeout(() => {
+                         setIndicatorState(indicatorElement, 'idle'); // Hide indicator after delay
+                    }, 1500); // 1.5 seconds delay
+                    isUploading = false;
+                    if (relatedButton) relatedButton.disabled = false; // Re-enable button on success
+                    return result.data.url;
                 } else {
-                    throw new Error("ImgBB feltöltés sikertelen vagy érvénytelen válasz.");
+                    throw new Error("ImgBB feltöltés sikertelen.");
                 }
             } catch (error) {
-                indicatorElement.style.display = 'none'; // Hide indicator on error
                 console.error("Error uploading to ImgBB:", error);
-                throw error; // Re-throw the error to be caught by the caller
-            } finally {
-                 indicatorElement.style.display = 'none'; // Ensure indicator is hidden
+                setIndicatorState(indicatorElement, 'error', error.message); // Show error state
+                 // Keep error visible longer? Or hide after delay? Hide for now.
+                 setTimeout(() => {
+                     setIndicatorState(indicatorElement, 'idle');
+                 }, 3000);
+                isUploading = false;
+                if (relatedButton) relatedButton.disabled = false; // Re-enable button on error
+                throw error; // Re-throw the error
             }
         }
 
 
-        // --- ADATKEZELŐ FÜGGVÉNYEK ---
+        // --- Data Handling Functions ---
 
-        /** Új dia hozzáadása (ImgBB integrációval) */
+        /** Adds a new slide with upload handling. */
         async function addSlide() {
             if (!auth.currentUser) return showNotification('Kérlek, jelentkezz be!', true);
+            if (isUploading) return showNotification('Képfeltöltés folyamatban, várj!', true); // Prevent adding while uploading
+
             const type = document.getElementById('slide-type').value;
             let content = '', startDate, endDate, comment, firstLineText = '', textContentText = '';
             let imageUrl = null;
+            const fileInput = addSlideImageUpload;
+
+            addSlideBtn.disabled = true; // Disable button at the start
+            addSlideBtn.textContent = 'Hozzáadás...'; // Indicate processing
 
             try {
-                // Adatok gyűjtése és validálása típus alapján
                 if (type === 'image') {
-                    const fileInput = addSlideImageUpload;
                     if (!fileInput.files || fileInput.files.length === 0) {
-                        return showNotification('Kérjük, válasszon ki egy képet a feltöltéshez!', true);
+                        throw new Error('Kérjük, válasszon ki egy képet!');
                     }
-                    imageUrl = await uploadImageToImgBB(fileInput.files[0], addUploadIndicator);
-                    content = imageUrl; // Assign the URL to content
+                    // Upload image, indicator/button state handled within uploadImageToImgBB
+                    imageUrl = await uploadImageToImgBB(fileInput.files[0], addUploadIndicator, addSlideBtn);
+                    content = imageUrl;
                     startDate = document.getElementById('slide-start-date').value;
                     endDate = document.getElementById('slide-end-date').value;
                     comment = document.getElementById('slide-comment').value;
                 } else if (type === 'aktuális') {
                      firstLineText = document.getElementById('first-line').innerText;
                      textContentText = document.getElementById('slide-text-content').innerText;
-                     if (firstLineText.length > 20) return showNotification('Az aktuális dia első sora max 20 karakter!', true);
-                     if (textContentText.length > 100) return showNotification('Az aktuális dia szövege max 100 karakter!', true);
+                     if (firstLineText.length > 20) throw new Error('Az első sor max 20 karakter!');
+                     if (textContentText.length > 100) throw new Error('A szöveg max 100 karakter!');
                      content = {
                         presetLink: document.getElementById('aktualis-preset-link').value,
-                        firstLine: document.getElementById('first-line').innerHTML, // Store HTML for formatting
-                        text: document.getElementById('slide-text-content').innerHTML, // Store HTML for formatting
-                        style: {} // Placeholder for future styling options
+                        firstLine: document.getElementById('first-line').innerHTML,
+                        text: document.getElementById('slide-text-content').innerHTML,
+                        style: {}
                      };
                      startDate = document.getElementById('aktualis-start-date').value;
                      endDate = document.getElementById('aktualis-end-date').value;
                      comment = document.getElementById('aktualis-comment').value;
                 } else { // embed
                     content = document.getElementById('slide-content').value;
-                    if (!content || !content.trim()) return showNotification('Beágyazott link megadása kötelező!', true);
-                    // Basic URL validation (optional but recommended)
-                    try { new URL(content); } catch (_) { return showNotification('Érvénytelen URL formátum!', true); }
+                    if (!content || !content.trim()) throw new Error('Beágyazott link megadása kötelező!');
+                    try { new URL(content); } catch (_) { throw new Error('Érvénytelen URL formátum!'); }
                     startDate = document.getElementById('slide-start-date').value;
                     endDate = document.getElementById('slide-end-date').value;
                     comment = document.getElementById('slide-comment').value;
                 }
 
-                // Közös validáció
-                if (!startDate || !endDate) return showNotification('Kezdő és végdátum megadása kötelező!', true);
-                if (new Date(startDate) > new Date(endDate)) return showNotification('A kezdő dátum nem lehet későbbi a végdátumnál!', true);
+                if (!startDate || !endDate) throw new Error('Kezdő és végdátum megadása kötelező!');
+                if (new Date(startDate) > new Date(endDate)) throw new Error('A kezdő dátum nem lehet későbbi a végdátumnál!');
 
-                // Logolás és Firestore mentés
+                // --- Firestore Save ---
                 await addDoc(collection(db, 'logs'), { eventType: "Dia létrehozás", details: `Új dia (típus: ${type})`, user: auth.currentUser.email, timestamp: serverTimestamp() });
-
-                // Get the highest current order number to append the new slide
                 const slidesQuery = query(collection(db, 'slides'), orderBy("order", "desc"), limit(1));
                 const slidesSnapshot = await getDocs(slidesQuery);
                 const lastOrder = slidesSnapshot.empty ? -1 : (slidesSnapshot.docs[0].data().order ?? -1);
-
-                // Ensure content is correctly assigned (string for image/embed, stringified JSON for aktuális)
                 const finalContent = type === 'aktuális' ? JSON.stringify(content) : content;
-                const slideData = {
-                    type,
-                    content: finalContent,
-                    startDate,
-                    endDate,
-                    comment: comment.trim(),
-                    active: true,
-                    order: lastOrder + 1,
-                    createdAt: serverTimestamp()
-                };
+                const slideData = { type, content: finalContent, startDate, endDate, comment: comment.trim(), active: true, order: lastOrder + 1, createdAt: serverTimestamp() };
 
                 await addDoc(collection(db, 'slides'), slideData);
+                // --- End Firestore Save ---
+
                 showNotification('Hirdetés sikeresen hozzáadva!');
                 resetSlideForm(type);
-                toggleSlideForm(); // Close the form after adding
-                renderSlides(); // Refresh the list
-                // loadSlidesForPinning(); // Removed
+                toggleSlideForm();
+                renderSlides();
 
             } catch (error) {
                 console.error('Error adding slide:', error);
-                // Handle specific errors like ImgBB upload failure
-                if (error.message.includes("ImgBB")) {
-                     showNotification(`Képfeltöltési hiba: ${error.message}`, true);
-                } else {
-                     showNotification('Hiba történt a hirdetés mentésekor!', true);
-                }
+                showNotification(`Hiba a hozzáadáskor: ${error.message}`, true);
+            } finally {
+                 addSlideBtn.disabled = false; // Re-enable button
+                 addSlideBtn.textContent = 'Hirdetés hozzáadása'; // Restore button text
+                 // Ensure indicator is hidden if addSlide fails before/without upload
+                 if (type !== 'image' || !fileInput.files || fileInput.files.length === 0) {
+                     setIndicatorState(addUploadIndicator, 'idle');
+                 }
             }
         }
 
-        /** Reset slide form fields */
+        /** Resets the slide form fields. */
         function resetSlideForm(type) {
              document.getElementById('slide-start-date').value = '';
              document.getElementById('slide-end-date').value = '';
@@ -1171,60 +1189,69 @@
              document.getElementById('first-line').innerHTML = '';
              document.getElementById('slide-text-content').innerHTML = '';
              addSlideImageUpload.value = '';
-             handleImagePreview(addSlideImageUpload, addImagePreview);
+             handleImagePreview(addSlideImageUpload, addImagePreview, addUploadIndicator, addSlideBtn); // Reset preview and indicator
              updateFirstLineCounter();
              updateCharCounter();
-             // Optionally reset type selector to default
-             // document.getElementById('slide-type').value = 'image';
-             // toggleSlideTypeFields();
         }
 
 
-        /** Új havária dia hozzáadása (ImgBB integrációval) - REVERTED */
+        /** Adds a new emergency slide with upload handling. */
         async function addEmergencySlide() {
              if (!auth.currentUser) return showNotification('Kérlek, jelentkezz be!', true);
+             if (isUploading) return showNotification('Képfeltöltés folyamatban, várj!', true);
+
              const type = document.getElementById('emergency-slide-type').value;
              let content = '';
              const comment = document.getElementById('emergency-slide-comment').value;
              let imageUrl = null;
+             const fileInput = emergencySlideImageUpload;
 
-             if (type === 'image') {
-                 const fileInput = emergencySlideImageUpload;
-                 if (!fileInput.files || fileInput.files.length === 0) {
-                     return showNotification('Kérjük, válasszon ki egy képet a havária diához!', true);
-                 }
-                 try {
-                     imageUrl = await uploadImageToImgBB(fileInput.files[0], emergencyUploadIndicator);
-                     content = imageUrl; // Assign URL to content
-                 } catch (error) {
-                     return showNotification(`Havária képfeltöltési hiba: ${error.message}`, true);
-                 }
-             } else { // embed
-                 content = document.getElementById('emergency-slide-content').value;
-                 if (!content) return showNotification('Beágyazott link megadása kötelező a haváriához!', true);
-             }
+             addEmergencyBtn.disabled = true;
+             addEmergencyBtn.textContent = 'Hozzáadás...';
 
              try {
+                 if (type === 'image') {
+                     if (!fileInput.files || fileInput.files.length === 0) {
+                         throw new Error('Kérjük, válasszon ki egy képet!');
+                     }
+                     imageUrl = await uploadImageToImgBB(fileInput.files[0], emergencyUploadIndicator, addEmergencyBtn);
+                     content = imageUrl;
+                 } else { // embed
+                     content = document.getElementById('emergency-slide-content').value;
+                     if (!content || !content.trim()) throw new Error('Beágyazott link megadása kötelező!');
+                     try { new URL(content); } catch (_) { throw new Error('Érvénytelen URL formátum!'); }
+                 }
+
+                 // --- Firestore Save ---
                  await addDoc(collection(db, 'logs'), { eventType: "Havária létrehozás", details: `Új havária (típus: ${type})`, user: auth.currentUser.email, timestamp: serverTimestamp() });
                  const emergenciesRef = collection(db, 'emergency_slides');
                  const emergenciesSnapshot = await getDocs(emergenciesRef);
-                 // Original logic: Deactivate all existing emergency slides
+                 // Original logic: Deactivate all existing
                  const updates = emergenciesSnapshot.docs.map(doc => updateDoc(doc.ref, { active: false }));
                  await Promise.all(updates);
-                 // Add the new one as active (without 'emergency: true' field)
-                 await addDoc(emergenciesRef, { type, content, comment, active: true, createdAt: serverTimestamp() });
+                 // Add the new one as active
+                 await addDoc(emergenciesRef, { type, content, comment: comment.trim(), active: true, createdAt: serverTimestamp() });
+                 // --- End Firestore Save ---
+
                  showNotification('Havária sikeresen hozzáadva és aktiválva!');
                  // Form reset
                  document.getElementById('emergency-slide-type').value = 'image';
                  document.getElementById('emergency-slide-content').value = '';
                  document.getElementById('emergency-slide-comment').value = '';
                  emergencySlideImageUpload.value = '';
-                 handleImagePreview(emergencySlideImageUpload, emergencyImagePreview);
+                 handleImagePreview(emergencySlideImageUpload, emergencyImagePreview, emergencyUploadIndicator, addEmergencyBtn); // Reset preview and indicator
                  toggleEmergencyForm();
                  renderEmergencySlides();
+
              } catch (error) {
                  console.error('Error adding emergency slide:', error);
-                 showNotification('Hiba történt a havária hozzáadásakor!', true);
+                 showNotification(`Hiba a havária hozzáadásakor: ${error.message}`, true);
+             } finally {
+                 addEmergencyBtn.disabled = false;
+                 addEmergencyBtn.textContent = 'Havária hozzáadása és aktiválása';
+                 if (type !== 'image' || !fileInput.files || fileInput.files.length === 0) {
+                     setIndicatorState(emergencyUploadIndicator, 'idle');
+                 }
              }
         }
 
@@ -1260,8 +1287,10 @@
                     sortableInstance.option("disabled", false); // Enable sorting
                 }
                 // Make handles visible and hide action buttons
-                container.querySelectorAll('.drag-handle').forEach(h => h.classList.remove('opacity-50', 'cursor-default'));
-                container.querySelectorAll('.drag-handle').forEach(h => h.classList.add('cursor-grab'));
+                container.querySelectorAll('.drag-handle').forEach(h => {
+                    h.classList.remove('opacity-50', 'cursor-default');
+                    h.classList.add('cursor-grab');
+                });
                 container.querySelectorAll('.slide-actions, .edit-btn').forEach(el => el.classList.add('hidden'));
             } else { // Exiting reorder mode (cancel implicitly)
                 cancelReorder();
@@ -1291,8 +1320,12 @@
                 const batch = writeBatch(db);
                 slides.forEach((slideElement, index) => {
                     const slideId = slideElement.getAttribute('data-id');
-                    const slideRef = doc(db, 'slides', slideId);
-                    batch.update(slideRef, { order: index });
+                    if (slideId) { // Make sure the element has a data-id
+                        const slideRef = doc(db, 'slides', slideId);
+                        batch.update(slideRef, { order: index });
+                    } else {
+                        console.warn("Slide element found without data-id during reorder save:", slideElement);
+                    }
                 });
                 await batch.commit(); // Execute all updates at once
 
@@ -1315,37 +1348,26 @@
         }
         // --- End Reorder Logic ---
 
-        /** Render slides list */
+        /** Renders the list of slides with loading state. */
         async function renderSlides() {
             const container = document.getElementById('slides-container');
-            container.innerHTML = '<div class="text-center p-4 text-gray-500">Diák betöltése...</div>';
+            container.innerHTML = getLoadingIndicatorHTML('Diák betöltése...'); // Show loading spinner
             try {
-                const slidesQuery = query(collection(db, 'slides'), orderBy("order")); // Order by the 'order' field
+                const slidesQuery = query(collection(db, 'slides'), orderBy("order"));
                 const querySnapshot = await getDocs(slidesQuery);
                 if (querySnapshot.empty) {
                     container.innerHTML = '<div class="text-center p-4 text-gray-500">Nincsenek hirdetések.</div>';
                     return;
                 }
-                container.innerHTML = ''; // Clear loading message
+                container.innerHTML = ''; // Clear loading
 
                 const slidesArray = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                // Check for order inconsistencies (optional, but good for debugging)
-                let needsReorder = slidesArray.some((slide, index) => slide.order !== index);
-                if(needsReorder) {
-                     console.warn("Slide order inconsistency detected vs Firestore index. Rendering based on 'order' field.");
-                     // No need to re-assign locally if Firestore query is ordered correctly.
-                }
-
-                slidesArray.forEach((slide) => {
-                    container.appendChild(createSlideElement(slide));
-                });
+                slidesArray.forEach((slide) => container.appendChild(createSlideElement(slide)));
 
                 // Ensure SortableJS state matches UI state after render
                  const reorderBtn = document.getElementById('reorder-btn');
                  const isReordering = reorderBtn.textContent.includes('Kilépés');
-                 if (sortableInstance) sortableInstance.option("disabled", !isReordering); // Disable/enable SortableJS
-                 // Toggle handle visibility/cursor and action buttons based on reorder mode
+                 if (sortableInstance) sortableInstance.option("disabled", !isReordering);
                  container.querySelectorAll('.drag-handle').forEach(h => {
                      h.classList.toggle('opacity-50', !isReordering);
                      h.classList.toggle('cursor-grab', isReordering);
@@ -1360,12 +1382,10 @@
             }
         }
 
-        /** Create HTML element for a single slide */
+        /** Creates HTML element for a single slide. */
         function createSlideElement(slide) {
              let contentPreview = '', typeLabel = '';
-             const defaultImageUrl = 'https://placehold.co/100x60/fecaca/ef4444?text=Hiba'; // Placeholder for image errors
-
-             // Determine type label and generate preview content
+             const defaultImageUrl = 'https://placehold.co/100x60/fecaca/ef4444?text=Hiba';
              if (slide.type === 'image') {
                  typeLabel = 'Kép';
                  contentPreview = `<img src="${slide.content || defaultImageUrl}" alt="Slide Preview" class="preview-image" loading="lazy" onerror="this.src='${defaultImageUrl}'; this.alt='Kép Hiba'">`;
@@ -1375,88 +1395,47 @@
              } else if (slide.type === 'aktuális') {
                  typeLabel = 'Aktuális';
                  try {
-                     const c = JSON.parse(slide.content || '{}'); // Handle potentially missing content
-                     // Safely extract text content from potentially HTML-formatted strings
+                     const c = JSON.parse(slide.content || '{}');
                      const tempDiv = document.createElement('div');
                      tempDiv.innerHTML = c.firstLine || '';
                      const fL = tempDiv.textContent || tempDiv.innerText || '[Nincs cím]';
                      tempDiv.innerHTML = c.text || '';
                      const mT = tempDiv.textContent || tempDiv.innerText || '[Nincs szöveg]';
-
-                     contentPreview = `<div class="slide-preview-container bg-gray-100 p-2 rounded">
-                                        <div class="font-semibold text-sm truncate" title="${fL}">${fL}</div>
-                                        <div class="slide-preview-text" title="${mT}">${mT}</div>
-                                       </div>`;
-                 } catch (e) {
-                     console.error("Error parsing 'aktuális' preview:", e, "Content:", slide.content);
-                     contentPreview = '<div class="text-gray-500 p-2 bg-red-100 rounded">Formátum hiba</div>';
-                 }
-             } else {
-                 typeLabel = 'Ismeretlen';
-                 contentPreview = '<div class="text-gray-500">?</div>';
-             }
+                     contentPreview = `<div class="slide-preview-container bg-gray-100 p-2 rounded"><div class="font-semibold text-sm truncate" title="${fL}">${fL}</div><div class="slide-preview-text" title="${mT}">${mT}</div></div>`;
+                 } catch (e) { contentPreview = '<div class="text-gray-500 p-2 bg-red-100 rounded">Formátum hiba</div>'; }
+             } else { typeLabel = 'Ismeretlen'; contentPreview = '<div class="text-gray-500">?</div>'; }
 
              const slideElement = document.createElement('div');
              const statusBorder = slide.active ? 'border-blue-500' : 'border-gray-300';
              const statusBg = slide.active ? 'bg-white' : 'bg-gray-100 opacity-70';
-             // Updated styling for better layout and responsiveness
              slideElement.className = `p-4 rounded-lg border ${statusBorder} ${statusBg} flex flex-col sm:flex-row items-start sm:items-center gap-4`;
-             slideElement.setAttribute('data-id', slide.id); // Store Firestore ID
-
-             // Determine status text and color
+             slideElement.setAttribute('data-id', slide.id);
              const statusText = slide.active ? 'Aktív' : 'Inaktív';
              const statusTextColor = slide.active ? 'text-green-600' : 'text-gray-500';
 
              slideElement.innerHTML = `
-                <div class="drag-handle opacity-50 cursor-default self-center sm:self-auto text-gray-400 hover:text-gray-600 transition-colors" title="Átrendezéshez kattints az 'Átrendezés mód' gombra">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </div>
+                <div class="drag-handle opacity-50 cursor-default self-center sm:self-auto text-gray-400 hover:text-gray-600 transition-colors" title="Átrendezéshez kattints az 'Átrendezés mód' gombra"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg></div>
                 <div class="w-full sm:w-1/4 flex-shrink-0">${contentPreview}</div>
-                <div class="flex-grow min-w-0">
-                    <strong>${typeLabel}</strong> <span class="text-xs ${statusTextColor}">(${statusText})</span>
-                    <br>
-                    <small class="text-gray-600">${slide.startDate || '?'} → ${slide.endDate || '?'}</small>
-                    <br>
-                    <small class="text-gray-600 block truncate" title="${slide.comment || ''}">Megjegyzés: ${slide.comment || 'Nincs'}</small>
-                </div>
-                <div class="slide-actions flex flex-col md:flex-row gap-2 self-end sm:self-center flex-shrink-0 mt-2 sm:mt-0">
-                    <button onclick="editSlide('${slide.id}')" class="edit-btn">Szerk.</button>
-                    <button onclick="toggleSlide('${slide.id}')" class="text-white px-2 py-1 rounded text-xs ${slide.active ? 'bg-gray-500 hover:bg-gray-600' : 'bg-green-500 hover:bg-green-600'}">${slide.active ? 'Elrejt' : 'Aktív'}</button>
-                    <button onclick="deleteSlide('${slide.id}')" class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 text-xs">Töröl</button>
-                </div>`;
+                <div class="flex-grow min-w-0"><strong>${typeLabel}</strong> <span class="text-xs ${statusTextColor}">(${statusText})</span><br><small class="text-gray-600">${slide.startDate || '?'} → ${slide.endDate || '?'}</small><br><small class="text-gray-600 block truncate" title="${slide.comment || ''}">Megjegyzés: ${slide.comment || 'Nincs'}</small></div>
+                <div class="slide-actions flex flex-col md:flex-row gap-2 self-end sm:self-center flex-shrink-0 mt-2 sm:mt-0"><button onclick="editSlide('${slide.id}')" class="edit-btn">Szerk.</button><button onclick="toggleSlide('${slide.id}')" class="text-white px-2 py-1 rounded text-xs ${slide.active ? 'bg-gray-500 hover:bg-gray-600' : 'bg-green-500 hover:bg-green-600'}">${slide.active ? 'Elrejt' : 'Aktív'}</button><button onclick="deleteSlide('${slide.id}')" class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 text-xs">Töröl</button></div>`;
              return slideElement;
         }
 
 
-        /** Render emergency slides list - REVERTED */
+        /** Renders the list of emergency slides with loading state. */
         async function renderEmergencySlides() {
             const container = document.getElementById('emergency-slides-container');
-            container.innerHTML = '<div class="text-center p-4 text-gray-500">Haváriák betöltése...</div>'; // Keep loading message
-
+            container.innerHTML = getLoadingIndicatorHTML('Haváriák betöltése...'); // Show loading spinner
             try {
-                // Reverted: No specific ordering
                 const querySnapshot = await getDocs(collection(db, 'emergency_slides'));
-
                 if (querySnapshot.empty) {
                      container.innerHTML = '<div class="text-center p-4 text-gray-500">Nincsenek havária diák.</div>';
                      return;
                 }
-
-                container.innerHTML = ''; // Clear loading message
-                const slidesArray = []; // Array to hold slide data
-                 querySnapshot.forEach((doc) => {
-                     slidesArray.push({ id: doc.id, ...doc.data() });
-                 });
-
-                 // Sort client-side if needed (e.g., by active status, though original didn't specify)
-                 // slidesArray.sort((a, b) => (b.active ? 1 : 0) - (a.active ? 1 : 0)); // Example: Active first
-
-                 slidesArray.forEach((slide) => {
-                     container.appendChild(createEmergencySlideElement(slide));
-                 });
-
+                container.innerHTML = ''; // Clear loading
+                const slidesArray = [];
+                 querySnapshot.forEach((doc) => slidesArray.push({ id: doc.id, ...doc.data() }));
+                 slidesArray.forEach((slide) => container.appendChild(createEmergencySlideElement(slide)));
             } catch (error) {
                 console.error('Error loading emergency slides:', error);
                 container.innerHTML = '<div class="text-center p-4 text-red-500">Hiba a haváriák betöltésekor!</div>';
@@ -1465,40 +1444,26 @@
         }
 
 
-        /** Create HTML element for a single emergency slide - REVERTED */
+        /** Creates HTML element for a single emergency slide. */
         function createEmergencySlideElement(slide) {
             const slideElement = document.createElement('div');
-            // Reverted styling using 'slide-item' class and conditional borders/backgrounds
             slideElement.className = `slide-item ${slide.active ? 'border-l-4 border-red-500 bg-white' : 'border-l-4 border-gray-300 bg-gray-50 opacity-80'} p-4 mb-3 rounded-lg flex justify-between items-center gap-4`;
             slideElement.setAttribute('data-id', slide.id);
-
             let previewHTML = '';
             if (slide.type === 'image') {
                 previewHTML = `<img src="${slide.content}" alt="Havária kép" class="preview-image max-w-[100px] max-h-[60px] object-contain border rounded">`;
             } else if (slide.type === 'embed') {
                 previewHTML = `<div class="text-sm text-gray-500 break-all">🔗 ${slide.content.substring(0,30)}...</div>`;
             }
-
             slideElement.innerHTML = `
-                <div class="flex-1 flex items-center gap-4">
-                     ${previewHTML}
-                     <div>
-                        <strong>HAVÁRIA - ${slide.type === 'image' ? 'Kép' : 'Beágyazott link'}</strong>
-                        ${slide.active ? '<span class="text-red-600 font-bold ml-2">(Aktív)</span>' : ''}
-                        <br>
-                        <small class="text-gray-600">Megjegyzés: ${slide.comment || 'Nincs megjegyzés'}</small>
-                    </div>
-                </div>
-                <div class="slide-actions flex flex-col sm:flex-row gap-2">
-                    <button onclick="toggleEmergency('${slide.id}')" class="text-white px-2 py-1 rounded text-xs ${slide.active ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-600 hover:bg-red-700'}">${slide.active ? 'Deaktivál' : 'Aktivál'}</button>
-                    <button onclick="deleteEmergency('${slide.id}')" class="bg-black text-white px-2 py-1 rounded hover:bg-gray-700 text-xs">Töröl</button>
-                </div>
-            `;
+                <div class="flex-1 flex items-center gap-4">${previewHTML}<div><strong>HAVÁRIA - ${slide.type === 'image' ? 'Kép' : 'Beágyazott link'}</strong>${slide.active ? '<span class="text-red-600 font-bold ml-2">(Aktív)</span>' : ''}<br><small class="text-gray-600">Megjegyzés: ${slide.comment || 'Nincs megjegyzés'}</small></div></div>
+                <div class="slide-actions flex flex-col sm:flex-row gap-2"><button onclick="toggleEmergency('${slide.id}')" class="text-white px-2 py-1 rounded text-xs ${slide.active ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-600 hover:bg-red-700'}">${slide.active ? 'Deaktivál' : 'Aktivál'}</button><button onclick="deleteEmergency('${slide.id}')" class="bg-black text-white px-2 py-1 rounded hover:bg-gray-700 text-xs">Töröl</button></div>`;
             return slideElement;
         }
 
-        /** Edit slide (opens popup with existing data) */
+        /** Opens the edit popup for a slide. */
         async function editSlide(id) {
+            if (isUploading) return showNotification('Képfeltöltés folyamatban, várj!', true);
             try {
                 const slideRef = doc(db, 'slides', id);
                 const slideDoc = await getDoc(slideRef);
@@ -1506,45 +1471,39 @@
 
                 const slideData = slideDoc.data();
                 currentEditingSlideId = id;
-                currentEditingSlideType = slideData.type; // Store original type
+                currentEditingSlideType = slideData.type;
+                setIndicatorState(editUploadIndicator, 'idle'); // Reset indicator on open
+                editSaveBtn.disabled = false; // Ensure save button is enabled
 
-                // Reset previews and inputs first
-                editSlideImageUpload.value = ''; // Clear file input
-                handleImagePreview(editSlideImageUpload, editImagePreview); // Clear preview if any
-                editCurrentImageUrlInput.value = ''; // Clear hidden input for current image URL
+                editSlideImageUpload.value = '';
+                handleImagePreview(editSlideImageUpload, editImagePreview, editUploadIndicator, editSaveBtn);
+                editCurrentImageUrlInput.value = '';
 
                 document.getElementById('edit-slide-type').value = slideData.type;
 
-                // Populate form based on slide type
                 if (slideData.type === 'image') {
-                    editCurrentImageUrlInput.value = slideData.content || ''; // Store current URL
-                    editImagePreview.src = slideData.content || '#'; // Show current image preview
-                    editImagePreview.classList.toggle('hidden', !slideData.content); // Show/hide preview
-                    document.getElementById('edit-slide-content').value = ''; // Clear URL input
+                    editCurrentImageUrlInput.value = slideData.content || '';
+                    editImagePreview.src = slideData.content || '#';
+                    editImagePreview.classList.toggle('hidden', !slideData.content);
+                    document.getElementById('edit-slide-content').value = '';
                 } else if (slideData.type === 'aktuális') {
-                    document.getElementById('edit-slide-content').value = ''; // Clear URL input
+                    document.getElementById('edit-slide-content').value = '';
                     try {
                         const c = JSON.parse(slideData.content || '{}');
                         document.getElementById('edit-first-line').innerHTML = c.firstLine || '';
                         document.getElementById('edit-text-content').innerHTML = c.text || '';
-                    } catch (e) {
-                        document.getElementById('edit-first-line').innerHTML = '';
-                        document.getElementById('edit-text-content').innerHTML = '';
-                        console.error("Error parsing 'aktuális' content for edit:", e, "Content:", slideData.content);
-                        showNotification("Hiba az 'aktuális' tartalom feldolgozásakor.", true);
-                    }
-                    editUpdateFirstLineCounter(); editUpdateCharCounter(); // Update counters
+                    } catch (e) { /* Handle parsing error silently or show notification */ }
+                    editUpdateFirstLineCounter(); editUpdateCharCounter();
                 } else { // embed
                     document.getElementById('edit-slide-content').value = slideData.content || '';
-                    editImagePreview.classList.add('hidden'); // Hide image preview for embed
+                    editImagePreview.classList.add('hidden');
                 }
 
-                // Populate common fields
                 document.getElementById('edit-start-date').value = slideData.startDate || '';
                 document.getElementById('edit-end-date').value = slideData.endDate || '';
                 document.getElementById('edit-comment').value = slideData.comment || '';
 
-                toggleEditSlideTypeFields(); // Show/hide correct input groups based on type
+                toggleEditSlideTypeFields();
                 editPopup.classList.remove('hidden');
                 editOverlay.classList.remove('hidden');
             } catch (error) {
@@ -1553,17 +1512,18 @@
             }
         }
 
-        /** Close edit popup */
+        /** Closes the edit popup. */
         function closeEditPopup() {
+            if (isUploading) return showNotification('Képfeltöltés folyamatban, várj!', true); // Prevent closing during upload
             editPopup.classList.add('hidden');
             editOverlay.classList.add('hidden');
             currentEditingSlideId = null;
             currentEditingSlideType = null;
-            // Reset edit form state
+            // Reset form fields
             editSlideImageUpload.value = '';
-            handleImagePreview(editSlideImageUpload, editImagePreview);
+            handleImagePreview(editSlideImageUpload, editImagePreview, editUploadIndicator, editSaveBtn);
             editCurrentImageUrlInput.value = '';
-            document.getElementById('edit-slide-type').value = 'image'; // Reset to default type maybe?
+            document.getElementById('edit-slide-type').value = 'image';
             document.getElementById('edit-slide-content').value = '';
             document.getElementById('edit-start-date').value = '';
             document.getElementById('edit-end-date').value = '';
@@ -1571,90 +1531,83 @@
             document.getElementById('edit-first-line').innerHTML = '';
             document.getElementById('edit-text-content').innerHTML = '';
             editUpdateFirstLineCounter(); editUpdateCharCounter();
-            toggleEditSlideTypeFields(); // Reset visible fields
+            setIndicatorState(editUploadIndicator, 'idle'); // Explicitly hide indicator
+            toggleEditSlideTypeFields();
         }
 
-        /** Save edited slide (ImgBB integrációval) */
+        /** Saves the edited slide with upload handling. */
         async function saveEditedSlide() {
             if (!currentEditingSlideId || !auth.currentUser) return;
+            if (isUploading) return showNotification('Képfeltöltés folyamatban, várj!', true);
 
             const type = document.getElementById('edit-slide-type').value;
             const startDate = document.getElementById('edit-start-date').value;
             const endDate = document.getElementById('edit-end-date').value;
             const comment = document.getElementById('edit-comment').value;
+            const fileInput = editSlideImageUpload;
 
-            // Common validation
-            if (!startDate || !endDate) return showNotification('Kezdő és végdátum kötelező!', true);
-            if (new Date(startDate) > new Date(endDate)) return showNotification('A kezdő dátum nem lehet későbbi a végdátumnál!', true);
+            editSaveBtn.disabled = true;
+            editSaveBtn.textContent = 'Mentés...';
 
             let updateData = { type, startDate, endDate, comment: comment.trim() };
             let logDetails = `Dia frissítve (ID: ${currentEditingSlideId}, Típus: ${type})`;
             let newImageUrl = null;
 
             try {
-                // Handle content based on type
+                if (!startDate || !endDate) throw new Error('Kezdő és végdátum kötelező!');
+                if (new Date(startDate) > new Date(endDate)) throw new Error('A kezdő dátum nem lehet későbbi a végdátumnál!');
+
                 if (type === 'image') {
-                    const fileInput = editSlideImageUpload;
                     if (fileInput.files && fileInput.files.length > 0) {
-                        // New image selected, upload it
-                        newImageUrl = await uploadImageToImgBB(fileInput.files[0], editUploadIndicator);
+                        newImageUrl = await uploadImageToImgBB(fileInput.files[0], editUploadIndicator, editSaveBtn);
                         updateData.content = newImageUrl;
                         logDetails += `, Tartalom: Új kép feltöltve`;
                     } else {
-                        // No new image, keep the old one (if it exists)
-                        updateData.content = editCurrentImageUrlInput.value || ''; // Use stored URL
+                        updateData.content = editCurrentImageUrlInput.value || '';
                         if (!updateData.content) {
-                             // If the original type was 'image' and now there's no image, it's an issue.
-                             if (currentEditingSlideType === 'image') {
-                                 console.warn("Editing image slide but no current or new image provided.");
-                                 return showNotification('Nem található kép a dia mentéséhez. Válassz ki egy újat vagy válts típust.', true);
-                             } else {
-                                 // If switching TO image type without selecting a file
-                                 return showNotification('Kép típus választva, de nincs kép feltöltve.', true);
-                             }
+                            if (currentEditingSlideType === 'image') throw new Error('Nem található kép a dia mentéséhez.');
+                            else throw new Error('Kép típus választva, de nincs kép feltöltve.');
                         }
                         logDetails += `, Tartalom: Meglévő kép`;
                     }
                 } else if (type === 'aktuális') {
                     const firstLineText = document.getElementById('edit-first-line').innerText;
                     const textContentText = document.getElementById('edit-text-content').innerText;
-                    if (firstLineText.length > 20) return showNotification('Az első sor max 20 karakter!', true);
-                    if (textContentText.length > 100) return showNotification('A szöveg max 100 karakter!', true);
-                    updateData.content = JSON.stringify({
-                        presetLink: "https://i.ibb.co/Hfkcjrct/aktu-lis-sablon-1.png", // Keep preset link consistent
-                        firstLine: document.getElementById('edit-first-line').innerHTML, // Store HTML
-                        text: document.getElementById('edit-text-content').innerHTML, // Store HTML
-                        style: {}
-                    });
+                    if (firstLineText.length > 20) throw new Error('Az első sor max 20 karakter!');
+                    if (textContentText.length > 100) throw new Error('A szöveg max 100 karakter!');
+                    updateData.content = JSON.stringify({ presetLink: "https://i.ibb.co/Hfkcjrct/aktu-lis-sablon-1.png", firstLine: document.getElementById('edit-first-line').innerHTML, text: document.getElementById('edit-text-content').innerHTML, style: {} });
                     logDetails += `, Tartalom: Aktuális`;
                 } else { // embed
                     const content = document.getElementById('edit-slide-content').value;
-                    if (!content || !content.trim()) return showNotification('Beágyazott link megadása kötelező!', true);
-                    try { new URL(content); } catch (_) { return showNotification('Érvénytelen URL formátum!', true); }
+                    if (!content || !content.trim()) throw new Error('Beágyazott link megadása kötelező!');
+                    try { new URL(content); } catch (_) { throw new Error('Érvénytelen URL formátum!'); }
                     updateData.content = content;
                     logDetails += `, Tartalom: Beágyazás`;
                 }
 
-                // Save to Firestore
+                // --- Firestore Save ---
                 await addDoc(collection(db, 'logs'), { eventType: "Dia szerkesztés", details: logDetails, user: auth.currentUser.email, timestamp: serverTimestamp() });
                 await updateDoc(doc(db, 'slides', currentEditingSlideId), updateData);
+                // --- End Firestore Save ---
+
                 showNotification('Dia sikeresen frissítve!');
-                closeEditPopup(); // Close and reset the popup
-                renderSlides(); // Refresh the list
-                // loadSlidesForPinning(); // Removed
+                closeEditPopup();
+                renderSlides();
 
             } catch (error) {
                 console.error('Error saving edited slide:', error);
-                 if (error.message.includes("ImgBB")) {
-                     showNotification(`Képfeltöltési hiba mentéskor: ${error.message}`, true);
-                 } else {
-                    showNotification(`Hiba történt a dia mentésekor: ${error.message}`, true);
+                showNotification(`Hiba a mentéskor: ${error.message}`, true);
+            } finally {
+                 editSaveBtn.disabled = false;
+                 editSaveBtn.textContent = 'Mentés';
+                 if (type !== 'image' || !fileInput.files || fileInput.files.length === 0) {
+                     setIndicatorState(editUploadIndicator, 'idle');
                  }
             }
         }
 
 
-        /** Toggle slide active status */
+        /** Toggles the active status of a slide. */
         async function toggleSlide(id) {
             if (!auth.currentUser) return showNotification('Kérlek, jelentkezz be!', true);
             try {
@@ -1675,7 +1628,7 @@
             }
         }
 
-        /** Delete slide */
+        /** Deletes a slide after confirmation. */
         function deleteSlide(id) {
             if (!auth.currentUser) return showNotification('Kérlek, jelentkezz be!', true);
             showConfirmPopup('Biztosan törlöd ezt a hirdetést? Ez a művelet nem vonható vissza.', async () => {
@@ -1685,8 +1638,6 @@
                     await deleteDoc(doc(db, 'slides', id));
                     showNotification('Hirdetés törölve!');
                     renderSlides(); // Refresh the list
-                    // loadSlidesForPinning(); // Removed
-                    // renderPinnedSlides(); // Removed - Check if it was pinned is no longer needed
                 } catch (error) {
                     console.error('Error deleting slide:', error);
                     showNotification('Hiba a dia törlésekor!', true);
@@ -1694,11 +1645,7 @@
             });
         }
 
-        // --- PINNED SLIDE FUNCTIONS REMOVED ---
-        // pinSlideToDevice, renderPinnedSlides, unpinSlide,
-        // loadDevicesForPinning, loadSlidesForPinning functions are removed.
-
-        /** Toggle emergency slide status - REVERTED */
+        /** Toggles the active status of an emergency slide. */
         async function toggleEmergency(id) {
              if (!auth.currentUser) return showNotification('Kérlek, jelentkezz be!', true);
              try {
@@ -1708,10 +1655,11 @@
                 const newStatus = !slideDoc.data().active;
                 await addDoc(collection(db, 'logs'), { eventType: "Havária állapot", details: `Havária ${newStatus ? 'aktiválva' : 'deaktiválva'} (ID: ${id})`, user: auth.currentUser.email, timestamp: serverTimestamp() });
 
-                if (newStatus) { // Activate this one, deactivate others (Original logic)
+                if (newStatus) { // Activate this one, deactivate others
                      const emergenciesRef = collection(db, 'emergency_slides');
                      const emergenciesSnapshot = await getDocs(emergenciesRef);
-                     const updates = emergenciesSnapshot.docs.map(d => updateDoc(d.ref, { active: d.id === id })); // Set active based on ID match
+                     // Original logic: Set active based on ID match
+                     const updates = emergenciesSnapshot.docs.map(d => updateDoc(d.ref, { active: d.id === id }));
                      await Promise.all(updates);
                      showNotification('Havária aktiválva! A többi automatikusan deaktiválva lett.');
                 } else { // Deactivate this one
@@ -1725,7 +1673,7 @@
              }
         }
 
-        /** Delete emergency slide */
+        /** Deletes an emergency slide after confirmation. */
         function deleteEmergency(id) {
             if (!auth.currentUser) return showNotification('Kérlek, jelentkezz be!', true);
             showConfirmPopup('Biztosan törlöd ezt a haváriát? Ez a művelet nem vonható vissza.', async () => {
@@ -1742,57 +1690,48 @@
             });
         }
 
-        /** Monitor devices status and calculate availability */
+        /** Monitors device status and updates the list and availability percentage. */
         function monitorDevices() {
             const devicesRef = collection(db, 'devices');
-            // Use onSnapshot for real-time updates
+            const devicesListElement = document.getElementById('devices-list');
+            // Initial loading state set in HTML
+
             onSnapshot(devicesRef, (snapshot) => {
                 const onlineCountElement = document.getElementById('online-count');
                 const availabilityElement = document.getElementById('availability-percentage');
-                const devicesListElement = document.getElementById('devices-list');
                 let onlineCount = 0;
-                devicesListElement.innerHTML = ''; // Clear list before repopulating
+                devicesListElement.innerHTML = ''; // Clear previous list or loading indicator
 
                 if (snapshot.empty) {
                     devicesListElement.innerHTML = '<div class="p-3 text-gray-500">Nincsenek regisztrált eszközök.</div>';
                     onlineCountElement.textContent = 0;
-                    availabilityElement.textContent = '0%'; // Show 0% if no devices
+                    availabilityElement.textContent = '0%';
                     return;
                 }
 
-                // Iterate through devices to count online ones and build the list
                 snapshot.forEach((doc) => {
                     const device = doc.data();
                     const deviceId = doc.id;
                     const lastHeartbeat = device.lastHeartbeat?.toDate();
-                    // Consider a device online if heartbeat was within the last 2 minutes
                     const isOnline = lastHeartbeat && (Date.now() - lastHeartbeat.getTime()) < 2 * 60 * 1000;
-
-                    if (isOnline) {
-                        onlineCount++;
-                    }
-                    // Add device element to the list
+                    if (isOnline) onlineCount++;
                     devicesListElement.appendChild(createDeviceElement(deviceId, device, isOnline, lastHeartbeat));
                 });
 
-                // Update the online count display
                 onlineCountElement.textContent = onlineCount;
-
-                // Calculate and update availability percentage based on TOTAL_DEVICES
                 const availabilityPercent = TOTAL_DEVICES > 0 ? Math.round((onlineCount / TOTAL_DEVICES) * 100) : 0;
                 availabilityElement.textContent = `${availabilityPercent}%`;
 
             }, (error) => {
-                 // Handle errors during monitoring
                  console.error("Error monitoring devices:", error);
-                 devicesListElement.innerHTML = '<div class="p-3 text-red-500">Hiba az eszközök figyelésekor. Ellenőrizd a konzolt.</div>';
-                 onlineCountElement.textContent = '?';
-                 availabilityElement.textContent = '?%';
+                 devicesListElement.innerHTML = '<div class="p-3 text-red-500">Hiba az eszközök figyelésekor.</div>';
+                 document.getElementById('online-count').textContent = '?';
+                 document.getElementById('availability-percentage').textContent = '?%';
                  showNotification("Hiba az eszközök figyelésekor!", true);
             });
         }
 
-         /** Create HTML element for a single device in the list */
+         /** Creates HTML element for a single device. */
          function createDeviceElement(deviceId, device, isOnline, lastHeartbeat) {
              const deviceElement = document.createElement('div');
              // Use Tailwind classes for device item styling
@@ -1819,7 +1758,7 @@
          }
 
 
-        /** Refresh all devices by sending a command via Firestore */
+        /** Refreshes all devices via Firestore command. */
         async function refreshAllDevices() {
              if (!auth.currentUser) return showNotification('Kérlek, jelentkezz be!', true);
              try {
@@ -1844,7 +1783,7 @@
              }
         }
 
-        /** Refresh single device by sending a command via Firestore */
+        /** Refreshes a single device via Firestore command. */
         async function refreshDevice(deviceId) {
              if (!auth.currentUser) return showNotification('Kérlek, jelentkezz be!', true);
              if (!deviceId) return showNotification('Érvénytelen eszköz ID.', true);
@@ -1863,35 +1802,29 @@
              }
         }
 
-        /** Fetch and display logs (all entries, ordered by time) */
+        /** Fetches and displays logs with loading state. */
         async function fetchLogs() {
             const logEntriesContainer = document.getElementById('log-entries');
-            // Show loading indicator
-            logEntriesContainer.innerHTML = `<div class="p-3 text-center text-gray-500"><div class="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-blue-500 mb-2"></div><div>Naplók betöltése...</div></div>`;
+            logEntriesContainer.innerHTML = getLoadingIndicatorHTML('Naplóbejegyzések betöltése...'); // Show loading spinner
             try {
-                // Query all logs, ordered by timestamp descending (newest first)
                 const q = query(collection(db, 'logs'), orderBy("timestamp", "desc"));
                 const querySnapshot = await getDocs(q);
-                console.log(`Logs snapshot size: ${querySnapshot.size}`); // Log how many entries were fetched
 
                 if (querySnapshot.empty) {
                     logEntriesContainer.innerHTML = '<div class="p-3 text-center text-gray-500">Nincsenek naplóbejegyzések.</div>';
                     return;
                 }
-                // Generate HTML for each log entry and join them
                 const logEntriesHTML = querySnapshot.docs.map(doc => createLogEntryElement(doc.data())).join('');
-                logEntriesContainer.innerHTML = logEntriesHTML; // Display the logs
-
+                logEntriesContainer.innerHTML = logEntriesHTML;
             } catch (error) {
                 console.error('Error loading logs:', error);
-                // Display error message in the log container
-                logEntriesContainer.innerHTML = `<div class="p-3 text-red-600 bg-red-50 rounded">Hiba a naplók betöltésekor. Részletek a konzolban.<br><small>${error.message}</small></div>`;
+                logEntriesContainer.innerHTML = `<div class="p-3 text-red-600 bg-red-50 rounded">Hiba a naplók betöltésekor.</div>`;
                 showNotification('Hiba a naplók betöltésekor!', true);
             }
         }
 
 
-        /** Create HTML element for a single log entry */
+        /** Creates HTML element for a single log entry. */
         function createLogEntryElement(logData) {
             const timestamp = logData.timestamp?.toDate();
             // Format timestamp for Hungarian locale
@@ -1912,13 +1845,10 @@
                 </div>`;
         }
 
-        // --- INICIALIZÁLÁS ---
-        // Initial setup for add/edit/emergency forms based on default type
+        // --- Initialization ---
         toggleSlideTypeFields();
-        toggleEditSlideTypeFields(); // Ensure edit form is correct initially (though hidden)
-        toggleEmergencyInputFields(); // Ensure emergency form is correct initially
-
-        // No need to attach removed pinned slide functions to window
+        toggleEditSlideTypeFields();
+        toggleEmergencyInputFields();
 
     </script>
 
