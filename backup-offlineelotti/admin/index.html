@@ -2,7 +2,7 @@
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <title>InfoTV Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
@@ -16,16 +16,7 @@
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
             background: linear-gradient(to bottom right, #E0F2FE, #EDE9FE, #FCE7F3); /* Tailwind: from-blue-100 via-purple-100 to-pink-100 */
-            /* Add padding for small screens to prevent login box touching edges */
-            padding: 1rem; /* p-4 */
         }
-        /* Apply padding only when main content is hidden (login screen) */
-        body:has(#mainAppContent[style*="display: none"]) {
-             display: flex;
-             align-items: center;
-             justify-content: center;
-        }
-
 
         /* Login form step animációk */
         .form-step { transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; width: 100%; }
@@ -40,12 +31,12 @@
         /* Rich text editor - Jost font */
         .rich-text-content { font-family: 'Jost', sans-serif; }
 
-        /* Scrollbar styling (apply only on md and larger screens for device list) */
-        .md\:scrollbar-thin { scrollbar-width: thin; scrollbar-color: #a0aec0 #edf2f7; }
-        .md\:scrollbar-thin::-webkit-scrollbar { width: 8px; }
-        .md\:scrollbar-thin::-webkit-scrollbar-track { background: #edf2f7; border-radius: 10px; }
-        .md\:scrollbar-thin::-webkit-scrollbar-thumb { background-color: #a0aec0; border-radius: 10px; border: 2px solid #edf2f7; }
-        .md\:scrollbar-thin::-webkit-scrollbar-thumb:hover { background-color: #718096; }
+        /* Scrollbar styling */
+        .scrollbar-thin { scrollbar-width: thin; scrollbar-color: #a0aec0 #edf2f7; }
+        .scrollbar-thin::-webkit-scrollbar { width: 8px; }
+        .scrollbar-thin::-webkit-scrollbar-track { background: #edf2f7; border-radius: 10px; }
+        .scrollbar-thin::-webkit-scrollbar-thumb { background-color: #a0aec0; border-radius: 10px; border: 2px solid #edf2f7; }
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover { background-color: #718096; }
 
         /* SortableJS ghost class */
         .sortable-ghost { background-color: #dbeafe; opacity: 0.7; }
@@ -93,33 +84,10 @@
         }
 
         /* Slide Preview Styling */
-        .preview-image-container { /* New container for image centering */
-             width: 100%; /* Take full width of its column */
-             display: flex;
-             justify-content: center; /* Center image horizontally */
-             margin-bottom: 4px;
-        }
         .preview-image {
-            /* Mobile first: wider image */
-            max-width: 80%; /* Adjust as needed, nearly full width */
-            height: auto; /* Maintain aspect ratio */
-            max-height: 100px; /* Optional max height */
-            object-fit: contain;
-            border-radius: 4px;
-            border: 1px solid #e5e7eb;
-            display: block;
+            max-width: 100px; max-height: 60px; object-fit: contain;
+            border-radius: 4px; border: 1px solid #e5e7eb; display: block; margin-bottom: 4px;
         }
-        @media (min-width: 640px) { /* sm breakpoint */
-            .preview-image {
-                /* Revert to original size on larger screens */
-                max-width: 100px;
-                max-height: 60px;
-            }
-            .preview-image-container {
-                justify-content: flex-start; /* Align left on larger screens */
-            }
-        }
-
         .slide-preview-container { max-width: 150px; overflow: hidden; }
         .slide-preview-text {
             font-size: 0.75rem; line-height: 1.2; color: #4b5563; max-height: 3.6em;
@@ -184,7 +152,7 @@
 
     </style>
 </head>
-<body class="p-4">
+<body class="flex items-center justify-center min-h-screen">
 
     <div id="loginContainer" class="bg-white p-8 md:p-12 rounded-xl shadow-2xl w-full max-w-md relative overflow-hidden">
         <div id="emailStep" class="form-step">
@@ -287,15 +255,13 @@
                 <label for="edit-slide-content" class="block text-sm font-medium text-gray-700 mb-1">Beágyazott link</label>
                 <input type="text" id="edit-slide-content" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="https://...">
             </div>
-            <div class="flex flex-row gap-4">
-                 <div class="flex-1">
-                     <label for="edit-start-date" class="block text-sm font-medium text-gray-700 mb-1">Kezdő dátum</label>
-                     <input type="date" id="edit-start-date" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                 </div>
-                 <div class="flex-1">
-                     <label for="edit-end-date" class="block text-sm font-medium text-gray-700 mb-1">Végdátum</label>
-                     <input type="date" id="edit-end-date" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                 </div>
+            <div>
+                <label for="edit-start-date" class="block text-sm font-medium text-gray-700 mb-1">Kezdő dátum</label>
+                <input type="date" id="edit-start-date" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label for="edit-end-date" class="block text-sm font-medium text-gray-700 mb-1">Végdátum</label>
+                <input type="date" id="edit-end-date" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div id="edit-text-content-group" class="hidden space-y-2">
                 <div>
@@ -328,7 +294,8 @@
     <div id="edit-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-60 backdrop-blur-sm z-[1030] hidden"></div>
 
 
-    <div id="mainAppContent" class="w-full px-4 py-8 hidden"> <div id="admin-content" class="max-w-7xl mx-auto">
+    <div id="mainAppContent" class="w-full px-4 py-8 hidden">
+        <div id="admin-content" class="max-w-7xl mx-auto">
             <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4 px-4 py-5 bg-white rounded-xl shadow-lg">
                 <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">InfoTV Admin</h1>
                 <div class="flex flex-wrap gap-2 sm:gap-4">
@@ -353,7 +320,8 @@
                     </div>
                     <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
                         <h2 class="text-xl font-semibold mb-4 text-gray-700">Eszközök listája</h2>
-                        <div id="devices-list" class="overflow-y-auto md:max-h-48 md:scrollbar-thin"> <div class="loading-container">
+                        <div id="devices-list" class="overflow-y-auto max-h-48 scrollbar-thin">
+                             <div class="loading-container">
                                 <div class="loading-spinner"></div>
                                 <span>Eszközök betöltése...</span>
                             </div>
@@ -395,7 +363,7 @@
                                  <label for="slide-content" class="block text-sm font-medium text-gray-700 mb-1">Beágyazott link</label>
                                  <input type="text" id="slide-content" placeholder="https://..." class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                              </div>
-                             <div class="flex flex-row gap-4">
+                             <div class="flex flex-col sm:flex-row gap-4">
                                  <div class="flex-1">
                                      <label for="slide-start-date" class="block text-sm font-medium text-gray-700 mb-1">Kezdő dátum</label>
                                      <input type="date" id="slide-start-date" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
@@ -428,7 +396,7 @@
                                 <div id="slide-text-content" contenteditable="true" class="rich-text-content bg-white w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 min-h-[100px]" oninput="updateCharCounter()"></div>
                                 <div id="char-counter" class="text-xs text-right text-gray-500 mt-1">0/100 karakter</div>
                             </div>
-                            <div class="flex flex-row gap-4">
+                            <div class="flex flex-col sm:flex-row gap-4">
                                  <div class="flex-1">
                                      <label for="aktualis-start-date" class="block text-sm font-medium text-gray-700 mb-1">Kezdő dátum</label>
                                      <input type="date" id="aktualis-start-date" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
@@ -807,7 +775,7 @@
             loginPasswordInput.value = '';
             hideFieldError(emailError);
             hideFieldError(passwordError);
-            // Body class is handled by CSS :has selector now
+            document.body.className = 'bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 flex items-center justify-center min-h-screen';
             loginEmailInput.focus();
         }
 
@@ -815,7 +783,7 @@
         function showAppContent() {
             loginContainer.style.display = 'none';
             mainAppContent.style.display = 'block';
-            // Body class is handled by CSS :has selector now
+            document.body.className = 'bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100';
             loadAdminData();
         }
 
@@ -1305,9 +1273,7 @@
             reorderControls.classList.toggle('hidden', isReordering);
 
             if (!isReordering) { // Entering reorder mode
-                originalSlideOrder = Array.from(container.children)
-                                        .map(el => el.getAttribute('data-id'))
-                                        .filter(id => id); // Filter out potential null IDs if loading indicator is present
+                originalSlideOrder = Array.from(container.children).map(el => el.getAttribute('data-id'));
                 if (!sortableInstance) {
                     sortableInstance = Sortable.create(container, {
                         handle: '.drag-handle', // Class for the drag handle element
@@ -1422,8 +1388,7 @@
              const defaultImageUrl = 'https://placehold.co/100x60/fecaca/ef4444?text=Hiba';
              if (slide.type === 'image') {
                  typeLabel = 'Kép';
-                 // Added preview-image-container for centering
-                 contentPreview = `<div class="preview-image-container"><img src="${slide.content || defaultImageUrl}" alt="Slide Preview" class="preview-image" loading="lazy" onerror="this.src='${defaultImageUrl}'; this.alt='Kép Hiba'"></div>`;
+                 contentPreview = `<img src="${slide.content || defaultImageUrl}" alt="Slide Preview" class="preview-image" loading="lazy" onerror="this.src='${defaultImageUrl}'; this.alt='Kép Hiba'">`;
              } else if (slide.type === 'embed') {
                  typeLabel = 'Beágyazás';
                  contentPreview = `<div class="text-sm text-gray-500 p-2 bg-gray-100 rounded break-all">🔗 ${slide.content ? slide.content.substring(0, 50) + (slide.content.length > 50 ? '...' : '') : '[Hiányzó URL]' }</div>`;
@@ -1443,7 +1408,6 @@
              const slideElement = document.createElement('div');
              const statusBorder = slide.active ? 'border-blue-500' : 'border-gray-300';
              const statusBg = slide.active ? 'bg-white' : 'bg-gray-100 opacity-70';
-             // Adjusted flex direction for mobile first
              slideElement.className = `p-4 rounded-lg border ${statusBorder} ${statusBg} flex flex-col sm:flex-row items-start sm:items-center gap-4`;
              slideElement.setAttribute('data-id', slide.id);
              const statusText = slide.active ? 'Aktív' : 'Inaktív';
@@ -1452,12 +1416,8 @@
              slideElement.innerHTML = `
                 <div class="drag-handle opacity-50 cursor-default self-center sm:self-auto text-gray-400 hover:text-gray-600 transition-colors" title="Átrendezéshez kattints az 'Átrendezés mód' gombra"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg></div>
                 <div class="w-full sm:w-1/4 flex-shrink-0">${contentPreview}</div>
-                <div class="flex-grow min-w-0 w-full sm:w-auto"><strong>${typeLabel}</strong> <span class="text-xs ${statusTextColor}">(${statusText})</span><br><small class="text-gray-600">${slide.startDate || '?'} → ${slide.endDate || '?'}</small><br><small class="text-gray-600 block truncate" title="${slide.comment || ''}">Megjegyzés: ${slide.comment || 'Nincs'}</small></div>
-                <div class="slide-actions flex flex-row flex-wrap gap-2 self-end sm:self-center flex-shrink-0 mt-2 sm:mt-0 w-full sm:w-auto justify-end">
-                    <button onclick="editSlide('${slide.id}')" class="edit-btn">Szerk.</button>
-                    <button onclick="toggleSlide('${slide.id}')" class="text-white px-2 py-1 rounded text-xs ${slide.active ? 'bg-gray-500 hover:bg-gray-600' : 'bg-green-500 hover:bg-green-600'}">${slide.active ? 'Elrejt' : 'Aktív'}</button>
-                    <button onclick="deleteSlide('${slide.id}')" class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 text-xs">Töröl</button>
-                </div>`;
+                <div class="flex-grow min-w-0"><strong>${typeLabel}</strong> <span class="text-xs ${statusTextColor}">(${statusText})</span><br><small class="text-gray-600">${slide.startDate || '?'} → ${slide.endDate || '?'}</small><br><small class="text-gray-600 block truncate" title="${slide.comment || ''}">Megjegyzés: ${slide.comment || 'Nincs'}</small></div>
+                <div class="slide-actions flex flex-col md:flex-row gap-2 self-end sm:self-center flex-shrink-0 mt-2 sm:mt-0"><button onclick="editSlide('${slide.id}')" class="edit-btn">Szerk.</button><button onclick="toggleSlide('${slide.id}')" class="text-white px-2 py-1 rounded text-xs ${slide.active ? 'bg-gray-500 hover:bg-gray-600' : 'bg-green-500 hover:bg-green-600'}">${slide.active ? 'Elrejt' : 'Aktív'}</button><button onclick="deleteSlide('${slide.id}')" class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 text-xs">Töröl</button></div>`;
              return slideElement;
         }
 
@@ -1487,28 +1447,17 @@
         /** Creates HTML element for a single emergency slide. */
         function createEmergencySlideElement(slide) {
             const slideElement = document.createElement('div');
-            // Adjusted flex direction for mobile first
-            slideElement.className = `slide-item ${slide.active ? 'border-l-4 border-red-500 bg-white' : 'border-l-4 border-gray-300 bg-gray-50 opacity-80'} p-4 mb-3 rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4`;
+            slideElement.className = `slide-item ${slide.active ? 'border-l-4 border-red-500 bg-white' : 'border-l-4 border-gray-300 bg-gray-50 opacity-80'} p-4 mb-3 rounded-lg flex justify-between items-center gap-4`;
             slideElement.setAttribute('data-id', slide.id);
             let previewHTML = '';
             if (slide.type === 'image') {
-                // Use preview-image-container for centering
-                previewHTML = `<div class="preview-image-container w-full sm:w-auto"><img src="${slide.content}" alt="Havária kép" class="preview-image max-w-[80%] sm:max-w-[100px] max-h-[100px] sm:max-h-[60px] object-contain border rounded"></div>`;
+                previewHTML = `<img src="${slide.content}" alt="Havária kép" class="preview-image max-w-[100px] max-h-[60px] object-contain border rounded">`;
             } else if (slide.type === 'embed') {
-                previewHTML = `<div class="text-sm text-gray-500 break-all w-full sm:w-auto">🔗 ${slide.content.substring(0,30)}...</div>`;
+                previewHTML = `<div class="text-sm text-gray-500 break-all">🔗 ${slide.content.substring(0,30)}...</div>`;
             }
             slideElement.innerHTML = `
-                <div class="flex-1 flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
-                     ${previewHTML}
-                     <div class="w-full sm:w-auto">
-                        <strong>HAVÁRIA - ${slide.type === 'image' ? 'Kép' : 'Beágyazott link'}</strong>${slide.active ? '<span class="text-red-600 font-bold ml-2">(Aktív)</span>' : ''}<br>
-                        <small class="text-gray-600">Megjegyzés: ${slide.comment || 'Nincs megjegyzés'}</small>
-                    </div>
-                </div>
-                <div class="slide-actions flex flex-row flex-wrap gap-2 self-end sm:self-center flex-shrink-0 mt-2 sm:mt-0 w-full sm:w-auto justify-end">
-                    <button onclick="toggleEmergency('${slide.id}')" class="text-white px-2 py-1 rounded text-xs ${slide.active ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-600 hover:bg-red-700'}">${slide.active ? 'Deaktivál' : 'Aktivál'}</button>
-                    <button onclick="deleteEmergency('${slide.id}')" class="bg-black text-white px-2 py-1 rounded hover:bg-gray-700 text-xs">Töröl</button>
-                </div>`;
+                <div class="flex-1 flex items-center gap-4">${previewHTML}<div><strong>HAVÁRIA - ${slide.type === 'image' ? 'Kép' : 'Beágyazott link'}</strong>${slide.active ? '<span class="text-red-600 font-bold ml-2">(Aktív)</span>' : ''}<br><small class="text-gray-600">Megjegyzés: ${slide.comment || 'Nincs megjegyzés'}</small></div></div>
+                <div class="slide-actions flex flex-col sm:flex-row gap-2"><button onclick="toggleEmergency('${slide.id}')" class="text-white px-2 py-1 rounded text-xs ${slide.active ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-600 hover:bg-red-700'}">${slide.active ? 'Deaktivál' : 'Aktivál'}</button><button onclick="deleteEmergency('${slide.id}')" class="bg-black text-white px-2 py-1 rounded hover:bg-gray-700 text-xs">Töröl</button></div>`;
             return slideElement;
         }
 
