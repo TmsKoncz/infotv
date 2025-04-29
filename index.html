@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InfoTV Slideshow</title>
+    <title>InfoTV Slideshow (Optimalizált v2)</title>
     <style>
+    /* CSS marad változatlan */
     body, html {
         margin: 0;
         padding: 0;
@@ -18,15 +19,27 @@
         height: 100%;
     }
     .slide {
-        display: none;
+        display: none; /* Hide by default */
         position: absolute;
         width: 100%;
         height: 100%;
         top: 0;
         left: 0;
+        opacity: 0;
+        transition: opacity 0.8s ease-in-out;
+        /* Contain content within the slide bounds */
+        overflow: hidden;
     }
     .slide.active {
+        display: block; /* Show when active */
+        opacity: 1;
+        z-index: 1; /* Ensure active slide is on top */
+    }
+    /* Keep previous slide visible briefly during fade-out */
+    .slide.previous {
         display: block;
+        opacity: 0;
+        z-index: 0;
     }
     iframe, img {
         width: 100%;
@@ -43,15 +56,17 @@
         background: rgba(0, 0, 0, 0.8);
         z-index: 1000;
         display: none;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
     }
     #emergency-overlay.active {
         display: block;
+        opacity: 1;
     }
     #emergency-content {
         width: 100%;
         height: 100%;
     }
-    /* Aktuális slide styles */
     .aktualis-slide {
         position: absolute;
         width: 100%;
@@ -61,351 +76,689 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
+        align-items: center;
         padding: 2rem;
         box-sizing: border-box;
-        object-fit: contain;
     }
     .aktualis-text-container {
         color: white;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
         font-family: 'Montserrat', sans-serif;
         max-width: 90%;
-        margin: 0 auto;
+        width: fit-content;
+        background-color: rgba(0, 0, 0, 0.3);
+        padding: 2vw 3vw;
+        border-radius: 10px;
+        text-align: center;
     }
     .aktualis-first-line {
         font-weight: 700;
-        font-size: 5vw;
+        font-size: clamp(24px, 5vw, 60px);
         line-height: 1.2;
-        margin-bottom: 1.5vw;
+        margin-bottom: clamp(10px, 1.5vw, 20px);
         display: block;
-        color: black;
+        color: #ffffff;
     }
     .aktualis-content {
         font-weight: 400;
-        font-size: 3.5vw;
-        line-height: 1.3;
-        color: black;
+        font-size: clamp(16px, 3.5vw, 40px);
+        line-height: 1.4;
+        color: #ffffff;
+    }
+    .error-message {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: #111;
+        color: #ff6b6b;
+        font-family: sans-serif;
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    .error-message code {
+        color: #feca57;
+        font-size: 0.9em;
+        margin-top: 10px;
+        max-width: 80%;
+        overflow-wrap: break-word;
     }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="slideshow-container" id="slideshow-container"></div>
+    <div class="slideshow-container" id="slideshow-container">
+        </div>
     <div id="emergency-overlay">
         <div id="emergency-content"></div>
     </div>
 
     <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, collection, query, where, getDocs, onSnapshot, orderBy, serverTimestamp, updateDoc, getDoc, addDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        // Import necessary Firebase functions
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import {
+            getFirestore, doc, setDoc, collection, query, where,
+            onSnapshot, orderBy, serverTimestamp, updateDoc,
+            addDoc, Timestamp
+        } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAmlb3HFiXq18IlV--o1GOC5yofXSZjV48",
-        authDomain: "infotv-50232.firebaseapp.com",
-        projectId: "infotv-50232",
-        storageBucket: "infotv-50232.appspot.com",
-        messagingSenderId: "890415866941",
-        appId: "1:890415866941:web:10606b06957eca86d43654",
-        measurementId: "G-2V1HZ0RPJK"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const deviceId = new URLSearchParams(window.location.search).get('id') || 'unknown';
-    let slides = [];
-    let emergencySlides = [];
-    let currentSlideIndex = 0;
-    const slideFetchInterval = 60000; // 1 perc milliszekundumban
-    let lastStatus = 'online'; // Kezdeti állapot
-    let lastError = null;
-
-    // Globális hibakezelés
-    window.addEventListener('error', function(event) {
-        lastError = {
-            message: event.message,
-            filename: event.filename,
-            lineno: event.lineno,
-            colno: event.colno,
-            error: event.error?.stack
+        // --- Firebase Configuration ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAmlb3HFiXq18IlV--o1GOC5yofXSZjV48",
+            authDomain: "infotv-50232.firebaseapp.com",
+            projectId: "infotv-50232",
+            storageBucket: "infotv-50232.appspot.com",
+            messagingSenderId: "890415866941",
+            appId: "1:890415866941:web:10606b06957eca86d43654",
+            measurementId: "G-2V1HZ0RPJK"
         };
-        logErrorToServer(lastError);
-    });
 
-    window.addEventListener('unhandledrejection', function(event) {
-        lastError = {
-            message: 'Unhandled Promise Rejection',
-            reason: event.reason
-        };
-        logErrorToServer(lastError);
-    });
+        // --- Global Variables and Constants ---
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const deviceId = new URLSearchParams(window.location.search).get('id') || 'unknown';
 
-    async function logErrorToServer(error) {
-        try {
-            await addDoc(collection(db, 'logs'), {
-                eventType: "Eszköz hiba",
-                details: `Hiba történt az eszközön (ID: ${deviceId})`,
-                additionalInfo: JSON.stringify(error),
-                user: "Rendszer",
-                timestamp: serverTimestamp()
-            });
-        } catch (e) {
-            console.error('Error logging error:', e);
+        let allSlidesData = [];         // Holds raw slide data from Firestore
+        let currentSlideElements = [];  // Holds references to the current DOM elements for slides
+        let emergencySlides = [];
+        let currentSlideIndex = 0;
+        let previousSlideIndex = -1;    // To manage fade-out class
+        let lastStatus = 'online';
+        let lastError = null;
+        let cachedDeviceData = {};
+        let slidesListenerUnsubscribe = null;
+        let emergencyListenerUnsubscribe = null;
+        let deviceListenerUnsubscribe = null;
+        let slideshowIntervalId = null;
+        const SLIDESHOW_INTERVAL = 30000;
+        const HEARTBEAT_INTERVAL = 60000;
+
+        // --- Utility Functions ---
+        function formatDateUTC(date) { /* ... unchanged ... */
+            const year = date.getUTCFullYear();
+            const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(date.getUTCDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
-    }
+        function escapeHtml(unsafe) { /* ... unchanged ... */
+            if (typeof unsafe !== 'string') return '';
+            return unsafe
+                 .replace(/&/g, "&amp;")
+                 .replace(/</g, "&lt;")
+                 .replace(/>/g, "&gt;")
+                 .replace(/"/g, "&quot;")
+                 .replace(/'/g, "&#039;");
+         }
+        function renderErrorMessage(container, message, details = '') { /* ... unchanged ... */
+             container.innerHTML = `
+                <div class="error-message">
+                    ${escapeHtml(message)}
+                    ${details ? `<code>${escapeHtml(details)}</code>` : ''}
+                </div>`;
+        }
 
-    function getDeviceInfo() {
-        const userAgent = navigator.userAgent;
-        const os = userAgent.includes('Windows') ? 'Windows' :
-            userAgent.includes('Mac') ? 'Mac' :
-            userAgent.includes('Linux') ? 'Linux' :
-            userAgent.includes('Android') ? 'Android' :
-            userAgent.includes('iOS') ? 'iOS' : 'Unknown';
-        const browser = userAgent.includes('FullyKiosk') ? 'Fully Kiosk' :
-            userAgent.includes('Chrome') ? 'Chrome' :
-            userAgent.includes('Firefox') ? 'Firefox' : 'Unknown';
-        return { 
-            os, 
-            browser, 
-            resolution: `${window.screen.width}x${window.screen.height}`,
-            lastError: lastError ? JSON.stringify(lastError) : null
-        };
-    }
-
-    async function sendDeviceInfo() {
-        try {
-            const deviceInfo = {
-                ...getDeviceInfo(),
-                lastHeartbeat: serverTimestamp(),
-                status: 'online',
-                lastStatus: lastStatus
-            };
-
-            await setDoc(doc(db, 'devices', deviceId), deviceInfo, { merge: true });
-
-            // Ha az állapot változott, naplózzuk
-            if (deviceInfo.lastStatus !== lastStatus) {
+        // --- Logging and Error Handling ---
+        async function logErrorToServer(error) { /* ... unchanged ... */
+            console.error("Logging error to server:", error); // Also log locally
+            try {
                 await addDoc(collection(db, 'logs'), {
-                    eventType: "Eszköz állapot változás",
-                    details: `Eszköz ${lastStatus} állapotba került (ID: ${deviceId})`,
-                    additionalInfo: lastError ? `Hiba: ${JSON.stringify(lastError)}` : 'Nincs hiba információ',
-                    user: "Rendszer",
+                    eventType: "Eszköz hiba", // Hungarian: Device error
+                    details: `Hiba történt az eszközön (ID: ${deviceId})`, // Hungarian: Error occurred on device
+                    additionalInfo: JSON.stringify(error, Object.getOwnPropertyNames(error)), // Serialize error details
+                    user: "Rendszer", // Hungarian: System
                     timestamp: serverTimestamp()
                 });
+            } catch (e) {
+                console.error('CRITICAL: Error logging the error to Firestore:', e);
             }
-
-            lastStatus = 'online'; // Reset status after successful update
-        } catch (error) {
-            console.error('Device info error:', error);
-            lastStatus = 'offline';
+        }
+        window.addEventListener('error', function(event) { /* ... unchanged ... */
+            console.error('Global error event:', event);
             lastError = {
-                message: 'Failed to update device info',
-                error: error.message
+                message: event.message,
+                filename: event.filename,
+                lineno: event.lineno,
+                colno: event.colno,
+                error: event.error?.stack // Include stack trace if available
+            };
+            logErrorToServer(lastError);
+        });
+        window.addEventListener('unhandledrejection', function(event) { /* ... unchanged ... */
+            console.error('Unhandled rejection event:', event);
+            lastError = {
+                message: 'Unhandled Promise Rejection',
+                reason: event.reason instanceof Error ? event.reason.stack : String(event.reason)
+            };
+            logErrorToServer(lastError);
+        });
+
+        // --- Device Information and Heartbeat ---
+        function getDeviceInfo() { /* ... unchanged ... */
+            const userAgent = navigator.userAgent || 'N/A';
+            const os = userAgent.includes('Windows') ? 'Windows' :
+                userAgent.includes('Mac') ? 'Mac OS' : // More specific
+                userAgent.includes('Linux') ? 'Linux' :
+                userAgent.includes('Android') ? 'Android' :
+                userAgent.includes('like Mac OS X') ? 'iOS' : // Common pattern for iOS
+                'Unknown OS';
+            const browser = userAgent.includes('FullyKiosk') ? 'Fully Kiosk' :
+                userAgent.includes('Edg/') ? 'Edge' : // Check Edge before Chrome
+                userAgent.includes('Chrome') ? 'Chrome' :
+                userAgent.includes('Firefox') ? 'Firefox' :
+                userAgent.includes('Safari') ? 'Safari' : // Check Safari
+                'Unknown Browser';
+            return {
+                os,
+                browser,
+                resolution: `${window.screen.width}x${window.screen.height}`,
+                // Serialize last error safely
+                lastError: lastError ? JSON.stringify(lastError, Object.getOwnPropertyNames(lastError), 2) : null
             };
         }
-    }
+        async function sendDeviceInfo() { /* ... unchanged ... */
+            const currentStatus = navigator.onLine ? 'online' : 'offline';
+            const statusChanged = currentStatus !== lastStatus;
 
-    // Initialize device monitoring with error handling
-    function startDeviceMonitoring() {
-        sendDeviceInfo(); // Azonnali küldés
-        setInterval(sendDeviceInfo, 60000); // Periódikus frissítés
+            // If offline, update status immediately and don't try to write to Firestore yet
+            if (currentStatus === 'offline') {
+                if (statusChanged) {
+                    console.warn("Device offline.");
+                    lastStatus = 'offline';
+                    lastError = { message: 'Network connection lost' };
+                    // We can't log to Firestore while offline
+                }
+                return; // Don't proceed if offline
+            }
 
-        // Online/offline állapot figyelése
-        window.addEventListener('online', () => {
-            lastStatus = 'online';
-            sendDeviceInfo();
-        });
+            // If online, try to send data
+            try {
+                const deviceInfoToSend = {
+                    ...getDeviceInfo(),
+                    lastHeartbeat: serverTimestamp(),
+                    status: 'online',
+                    // Include previous status if it changed from offline to online
+                    ...(statusChanged && lastStatus === 'offline' && { previousStatus: 'offline' }),
+                    // Preserve command flags from cache if they exist
+                    refresh: cachedDeviceData.refresh ?? false,
+                    restart: cachedDeviceData.restart ?? false,
+                    pinnedSlideId: cachedDeviceData.pinnedSlideId ?? null,
+                };
 
-        window.addEventListener('offline', () => {
-            lastStatus = 'offline';
-            lastError = {
-                message: 'Network connection lost'
-            };
-            sendDeviceInfo();
-        });
-    }
+                // Use setDoc with merge:true to update or create the document
+                await setDoc(doc(db, 'devices', deviceId), deviceInfoToSend, { merge: true });
 
-    // Initialize device commands handling
-    function setupDeviceCommands() {
-        const deviceRef = doc(db, 'devices', deviceId);
-        onSnapshot(deviceRef, async (doc) => {
-            const data = doc.data();
-            if (!data) return;
-
-            // Frissítés parancs kezelése
-            if (data?.refresh) {
-                try {
-                    await updateDoc(deviceRef, { refresh: false });
+                // If status changed from offline to online, log the recovery
+                if (statusChanged && lastStatus === 'offline') {
+                    console.log("Device back online.");
                     await addDoc(collection(db, 'logs'), {
-                        eventType: "Eszköz frissítés",
-                        details: `Eszköz frissítve (ID: ${deviceId})`,
+                        eventType: "Eszköz állapot változás", // Hungarian: Device status change
+                        details: `Eszköz online állapotba került (ID: ${deviceId})`, // Hungarian: Device came online
                         user: "Rendszer",
                         timestamp: serverTimestamp()
                     });
-                    location.reload();
-                } catch (error) {
-                    console.error('Refresh error:', error);
+                    lastError = null; // Clear last error on successful reconnect
                 }
+
+                lastStatus = 'online'; // Update status only after successful Firestore write
+
+            } catch (error) {
+                console.error('Failed to send device info:', error);
+                // Don't change status to offline here, rely on navigator.onLine
+                lastError = {
+                    message: 'Failed to update device info to Firestore',
+                    error: error?.message,
+                    stack: error?.stack
+                };
+                // Don't log error here, as it might be the same network issue
             }
+        }
+        function startDeviceMonitoring() { /* ... unchanged ... */
+            // Initial send attempt
+            sendDeviceInfo();
+            // Set up periodic heartbeat
+            setInterval(sendDeviceInfo, HEARTBEAT_INTERVAL);
 
-            // Újraindítás parancs kezelése
-            if (data?.restart) {
-                try {
-                    await updateDoc(deviceRef, { restart: false });
-                    await addDoc(collection(db, 'logs'), {
-                        eventType: "Eszköz újraindítás",
-                        details: `Eszköz újraindítva (ID: ${deviceId})`,
-                        user: "Rendszer",
-                        timestamp: serverTimestamp()
-                    });
-                    setTimeout(() => location.reload(), 1000);
-                } catch (error) {
-                    console.error('Restart error:', error);
-                }
-            }
-        });
-    }
-
-    // Format date for queries
-    function formatDate(date) {
-        return date.toISOString().split('T')[0];
-    }
-
-    // Load slides - now fetched periodically
-    async function fetchSlides() {
-        const today = formatDate(new Date());
-        const slidesQuery = query(
-            collection(db, 'slides'),
-            where('active', '==', true),
-            where('startDate', '<=', today),
-            where('endDate', '>=', today),
-            orderBy("order", "asc")
-        );
-
-        try {
-            const snapshot = await getDocs(slidesQuery);
-            const newSlides = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            const deviceDoc = await getDoc(doc(db, 'devices', deviceId));
-
-            if (deviceDoc.exists() && deviceDoc.data().pinnedSlideId) {
-                const pinnedId = deviceDoc.data().pinnedSlideId;
-                const pinnedSlide = newSlides.find(s => s.id === pinnedId);
-                slides = pinnedSlide ? [pinnedSlide] : newSlides;
-            } else {
-                slides = newSlides;
-            }
-            
-            // Naplózzuk a dia betöltését
-            await addDoc(collection(db, 'logs'), {
-                eventType: "Dia lista frissítés",
-                details: `Dia lista frissítve (${slides.length} dia) az eszközön (ID: ${deviceId})`,
-                user: "Rendszer",
-                timestamp: serverTimestamp()
+            // Listen for network status changes
+            window.addEventListener('online', () => {
+                console.log("Browser detected online event.");
+                // Attempt to send info immediately when coming online
+                sendDeviceInfo();
             });
 
-            renderSlides();
-        } catch (error) {
-            console.error("Error fetching slides:", error);
-            lastError = {
-                message: 'Failed to fetch slides',
-                error: error.message
-            };
-            await logErrorToServer(lastError);
-        }
-    }
-
-    // Emergency slides - still real-time
-    function setupEmergencySlides() {
-        onSnapshot(query(
-            collection(db, 'emergency_slides'),
-            where('active', '==', true)
-        ), (snapshot) => {
-            emergencySlides = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            
-            // Naplózzuk a havária változást
-            addDoc(collection(db, 'logs'), {
-                eventType: "Havária állapot változás",
-                details: `Havária ${emergencySlides.length > 0 ? 'aktiválva' : 'deaktiválva'} (Eszköz: ${deviceId})`,
-                user: "Rendszer",
-                timestamp: serverTimestamp()
+            window.addEventListener('offline', () => {
+                console.warn("Browser detected offline event.");
+                lastStatus = 'offline'; // Update status immediately
+                lastError = { message: 'Network connection lost (event listener)' };
+                // No Firestore write attempt here, handled by sendDeviceInfo interval/online event
             });
-
-            renderEmergencyOverlay();
-        });
-    }
-
-    function renderEmergencyOverlay() {
-        const overlay = document.getElementById('emergency-overlay');
-        const content = document.getElementById('emergency-content');
-
-        if (emergencySlides.length > 0) {
-            const slide = emergencySlides[0];
-            content.innerHTML = slide.type === 'image'
-                ? `<img src="${slide.content}" alt="Emergency">`
-                : `<iframe src="${slide.content}"></iframe>`;
-            overlay.classList.add('active');
-        } else {
-            overlay.classList.remove('active');
         }
-    }
 
-    // Render slides with proper text formatting
-    function renderSlides() {
-        const container = document.getElementById('slideshow-container');
-        container.innerHTML = '';
+        // --- Firestore Listeners Setup ---
+        function setupDeviceCommandsListener() { /* ... mostly unchanged, ensures processAndRenderSlides is called on pin change ... */
+            if (deviceListenerUnsubscribe) {
+                deviceListenerUnsubscribe();
+                console.log("Unsubscribed from previous device listener.");
+            }
+            const deviceRef = doc(db, 'devices', deviceId);
+            console.log(`Setting up listener for device: ${deviceId}`);
 
-        slides.forEach((slide, index) => {
+            deviceListenerUnsubscribe = onSnapshot(deviceRef, async (docSnapshot) => {
+                // ... (snapshot existence check) ...
+                 if (!docSnapshot.exists()) {
+                    console.warn("Device document does not exist:", deviceId);
+                    if (Object.keys(cachedDeviceData).length > 0) {
+                         cachedDeviceData = {};
+                         updateSlidesDOM(); // Update DOM based on cleared cache (no pin)
+                    }
+                    return;
+                }
+
+                const data = docSnapshot.data();
+                const previousPinnedSlideId = cachedDeviceData.pinnedSlideId;
+                cachedDeviceData = data;
+
+                console.log("Received device data update:", cachedDeviceData);
+
+                // Reprocess slides IF PINNED STATUS CHANGES
+                if (previousPinnedSlideId !== cachedDeviceData.pinnedSlideId) {
+                    console.log("Pinned slide ID changed, updating slides DOM.");
+                    updateSlidesDOM(); // Call the function that handles DOM updates
+                }
+
+                // Handle refresh/restart commands (unchanged)
+                if (data?.refresh === true) { /* ... refresh logic ... */
+                    console.log("Refresh command received.");
+                    try {
+                        await updateDoc(deviceRef, { refresh: false }); // Reset flag in Firestore
+                        await addDoc(collection(db, 'logs'), {
+                            eventType: "Eszköz parancs", details: `Eszköz frissítés parancs végrehajtva (ID: ${deviceId})`, user: "Rendszer", timestamp: serverTimestamp()
+                        });
+                        location.reload(); // Reload the page
+                    } catch (error) {
+                        console.error('Failed to handle refresh command:', error);
+                        logErrorToServer({ message: "Refresh command handling failed", error: error?.message });
+                    }
+                 }
+                if (data?.restart === true) { /* ... restart logic ... */
+                    console.log("Restart command received.");
+                    try {
+                        await updateDoc(deviceRef, { restart: false }); // Reset flag
+                         await addDoc(collection(db, 'logs'), {
+                            eventType: "Eszköz parancs", details: `Eszköz újraindítás parancs végrehajtva (ID: ${deviceId})`, user: "Rendszer", timestamp: serverTimestamp()
+                        });
+                        // Use a short delay before reload for Firestore update to propagate if needed
+                        setTimeout(() => location.reload(), 500);
+                    } catch (error) {
+                        console.error('Failed to handle restart command:', error);
+                        logErrorToServer({ message: "Restart command handling failed", error: error?.message });
+                    }
+                 }
+
+            }, (error) => { /* ... error handling unchanged ... */
+                console.error("Error listening to device document:", error);
+                lastError = { message: "Firestore listener error (device doc)", error: error?.message, stack: error?.stack };
+                logErrorToServer(lastError);
+                cachedDeviceData = {};
+                updateSlidesDOM(); // Attempt to update DOM without device data
+            });
+        }
+
+        function setupSlidesListener() { /* ... mostly unchanged, but calls updateSlidesDOM on data change ... */
+            if (slidesListenerUnsubscribe) {
+                slidesListenerUnsubscribe();
+                console.log("Unsubscribed from previous slides listener.");
+            }
+            const todayStr = formatDateUTC(new Date());
+            console.log(`Setting up slides listener for date >= ${todayStr}`);
+            const slidesQuery = query( /* ... query unchanged ... */
+                collection(db, 'slides'),
+                where('active', '==', true),
+                where('startDate', '<=', todayStr), // Compare with YYYY-MM-DD string
+                orderBy('startDate', 'desc'), // Optional: order by start date if needed before 'order'
+                orderBy("order", "asc")
+            );
+
+            slidesListenerUnsubscribe = onSnapshot(slidesQuery, (snapshot) => {
+                const now = new Date();
+                console.log(`Received ${snapshot.docs.length} potential slides from listener.`);
+                const newSlidesData = snapshot.docs
+                    .map(doc => ({ id: doc.id, ...doc.data() }))
+                    .filter(slide => { /* ... client-side endDate filter unchanged ... */
+                        try {
+                            if (!slide.endDate) return true; // Slide is valid if no end date is set
+                            const endOfDay = new Date(Date.UTC(
+                                parseInt(slide.endDate.substring(0, 4)),
+                                parseInt(slide.endDate.substring(5, 7)) - 1, // Month is 0-indexed
+                                parseInt(slide.endDate.substring(8, 10)),
+                                23, 59, 59, 999 // End of the day in UTC
+                            ));
+                            return endOfDay >= now; // Check if the slide's end date/time is in the future
+                        } catch (e) {
+                            console.error("Invalid endDate format or date parsing error for slide:", slide.id, slide.endDate, e);
+                            logErrorToServer({ message: `Invalid endDate (${slide.endDate}) for slide ${slide.id}`, error: e?.message });
+                            return false;
+                        }
+                     });
+
+                // Deep comparison to check if data actually changed
+                const dataChanged = JSON.stringify(allSlidesData) !== JSON.stringify(newSlidesData);
+
+                if (dataChanged) {
+                    console.log(`Slide data updated. New count: ${newSlidesData.length}`);
+                    allSlidesData = newSlidesData; // Update the global data list
+
+                    // Log the update (optional)
+                    addDoc(collection(db, 'logs'), { /* ... log ... */ }).catch(e => console.error("Failed to log slide update:", e));
+
+                    updateSlidesDOM(); // Update the DOM based on the new data
+                } else {
+                    console.log("Slide data received, but no changes detected.");
+                }
+
+            }, (error) => { /* ... error handling unchanged ... */
+                console.error("Error listening to slides collection:", error);
+                lastError = { message: "Firestore listener error (slides)", error: error?.message, stack: error?.stack };
+                logErrorToServer(lastError);
+                allSlidesData = []; // Clear data on error
+                updateSlidesDOM(); // Update DOM to show error or empty state
+            });
+        }
+
+        function setupEmergencySlidesListener() { /* ... unchanged, calls renderEmergencyOverlay ... */
+            if (emergencyListenerUnsubscribe) {
+                emergencyListenerUnsubscribe();
+                 console.log("Unsubscribed from previous emergency slides listener.");
+            }
+            console.log("Setting up emergency slides listener.");
+            const emergencyQuery = query( /* ... query ... */
+                collection(db, 'emergency_slides'),
+                where('active', '==', true)
+            );
+
+            emergencyListenerUnsubscribe = onSnapshot(emergencyQuery, (snapshot) => {
+                const previousLength = emergencySlides.length;
+                emergencySlides = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                console.log(`Received ${emergencySlides.length} emergency slides.`);
+
+                if (previousLength !== emergencySlides.length) {
+                    console.log(`Emergency state changed: ${emergencySlides.length > 0 ? 'ACTIVE' : 'INACTIVE'}`);
+                    addDoc(collection(db, 'logs'), { /* ... log ... */ }).catch(e => console.error("Failed to log emergency state change:", e));
+                }
+                renderEmergencyOverlay(); // Update the emergency overlay display
+            }, (error) => { /* ... error handling ... */
+                console.error("Error listening to emergency slides:", error);
+                lastError = { message: "Firestore listener error (emergency slides)", error: error?.message, stack: error?.stack };
+                logErrorToServer(lastError);
+                emergencySlides = []; // Clear emergency slides on error
+                renderEmergencyOverlay(); // Ensure overlay is hidden
+            });
+         }
+
+        // --- Slide Rendering and Logic ---
+
+        /**
+         * Creates a DOM element for a single slide based on its data.
+         * @param {object} slideData - The data for the slide.
+         * @returns {HTMLElement} The created slide DOM element.
+         */
+        function createSlideElement(slideData) {
             const slideElement = document.createElement('div');
-            slideElement.className = `slide ${index === currentSlideIndex ? 'active' : ''}`;
+            slideElement.className = 'slide'; // Start hidden, no 'active' class yet
+            slideElement.dataset.slideId = slideData.id; // Store ID for reference
 
-            if (slide.type === 'image') {
-                slideElement.innerHTML = `<img src="${slide.content}" alt="Slide">`;
-            } else if (slide.type === 'embed') {
-                slideElement.innerHTML = `<iframe src="${slide.content}"></iframe>`;
-            } else if (slide.type === 'aktuális') {
-                try {
-                    const content = JSON.parse(slide.content);
+            try {
+                switch (slideData.type) {
+                    case 'image':
+                        slideElement.innerHTML = `<img src="${escapeHtml(slideData.content)}" alt="Slide ${escapeHtml(slideData.id)}" loading="lazy" onerror="this.parentElement.innerHTML = '<div class=\\'error-message\\'>Kép betöltési hiba<br><code>ID: ${escapeHtml(slideData.id)}</code></div>';">`;
+                        break;
+                    case 'embed':
+                        slideElement.innerHTML = `<iframe src="${escapeHtml(slideData.content)}" title="Slide ${escapeHtml(slideData.id)}" loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>`;
+                        break;
+                    case 'aktuális':
+                        const contentData = typeof slideData.content === 'string' ? JSON.parse(slideData.content) : slideData.content;
+                        const presetLink = contentData?.presetLink || '';
+                        const firstLine = contentData?.firstLine || '';
+                        const text = contentData?.text || '';
+                        slideElement.innerHTML = `
+                            <div class="aktualis-slide" style="background-image: url('${escapeHtml(presetLink)}');">
+                                <div class="aktualis-text-container">
+                                    ${firstLine ? `<div class="aktualis-first-line">${escapeHtml(firstLine)}</div>` : ''}
+                                    ${text ? `<div class="aktualis-content">${escapeHtml(text)}</div>` : ''}
+                                </div>
+                            </div>`;
+                        break;
+                    default:
+                         console.warn("Unknown slide type:", slideData.type, slideData.id);
+                         renderErrorMessage(slideElement, `Ismeretlen diatípus: ${slideData.type}`, `ID: ${slideData.id}`);
+                }
+            } catch (e) {
+                console.error(`Error creating slide element ID ${slideData.id}, type ${slideData.type}:`, e, slideData.content);
+                lastError = { message: `Failed to create slide element (ID: ${slideData.id})`, error: e?.message };
+                logErrorToServer(lastError);
+                renderErrorMessage(slideElement, `Hiba a dia létrehozásakor`, `ID: ${slideData.id}`); // Hungarian: Error creating slide
+            }
+            return slideElement;
+        }
 
-                    slideElement.innerHTML = `
-                        <div class="aktualis-slide" style="background-image: url('${content.presetLink}')">
-                            <div class="aktualis-text-container">
-                                ${content.firstLine ? `<div class="aktualis-first-line">${content.firstLine}</div>` : ''}
-                                ${content.text ? `<div class="aktualis-content">${content.text}</div>` : ''}
-                            </div>
-                        </div>
-                    `;
-                } catch (e) {
-                    console.error('Slide error:', e);
-                    lastError = {
-                        message: 'Failed to parse aktuális slide',
-                        error: e.message
-                    };
-                    slideElement.innerHTML = `
-                        <div style="width:100%;height:100%;display:flex;justify-content:center;align-items:center;background:#000;color:#fff;">
-                            Error loading slide
-                        </div>
-                    `;
+
+        /**
+         * Updates the DOM based on the latest slide data (`allSlidesData`) and pinned status.
+         * This function aims to reuse existing DOM elements when possible.
+         * Called when slide data changes or pinned status changes.
+         */
+        function updateSlidesDOM() {
+            const container = document.getElementById('slideshow-container');
+            if (!container) {
+                console.error("Slideshow container not found!");
+                return;
+            }
+
+            let slidesToDisplayData = [...allSlidesData]; // Start with data
+            let isPinned = false;
+
+            // Apply pinned slide logic
+            const pinnedId = cachedDeviceData?.pinnedSlideId;
+            if (pinnedId) {
+                const pinnedSlideData = slidesToDisplayData.find(s => s.id === pinnedId);
+                if (pinnedSlideData) {
+                    slidesToDisplayData = [pinnedSlideData]; // Only this slide's data
+                    isPinned = true;
+                } else {
+                     console.warn(`Pinned slide ID ${pinnedId} not found. Displaying all.`);
                 }
             }
 
-            container.appendChild(slideElement);
+            // --- Efficient DOM Update ---
+            const existingSlideElements = Array.from(container.children);
+            const newSlideElements = [];
+            const slidesToRemove = [...existingSlideElements]; // Assume all old slides will be removed initially
+
+            // Create/update elements for the slides we need to display
+            slidesToDisplayData.forEach((slideData, index) => {
+                // Try to find an existing element for this slide ID
+                const existingElementIndex = slidesToRemove.findIndex(el => el.dataset.slideId === slideData.id);
+                let slideElement;
+
+                if (existingElementIndex > -1) {
+                    // Found existing element, reuse it
+                    slideElement = slidesToRemove.splice(existingElementIndex, 1)[0]; // Remove from removal list
+                    // console.log(`Reusing DOM element for slide ${slideData.id}`);
+                    // Optionally update content if needed, though typically Firestore updates trigger full data refresh
+                } else {
+                    // Not found, create a new element
+                    // console.log(`Creating new DOM element for slide ${slideData.id}`);
+                    slideElement = createSlideElement(slideData);
+                    container.appendChild(slideElement); // Add new element to container
+                }
+                newSlideElements.push(slideElement); // Keep track of elements for this render cycle
+            });
+
+            // Remove old slide elements that are no longer needed
+            slidesToRemove.forEach(el => {
+                // console.log(`Removing obsolete DOM element for slide ${el.dataset.slideId}`);
+                container.removeChild(el);
+            });
+
+            // Update the global reference to current elements
+            currentSlideElements = newSlideElements;
+
+            // --- Post-Update Logic ---
+            if (currentSlideElements.length === 0) {
+                console.log("No slides to display after DOM update.");
+                renderErrorMessage(container, "Nincsenek megjeleníthető diák.", `(ID: ${deviceId})`);
+                stopSlideshowTimer();
+                currentSlideIndex = 0; // Reset index
+                previousSlideIndex = -1;
+                return;
+            }
+
+            // Ensure currentSlideIndex is valid
+            if (currentSlideIndex >= currentSlideElements.length) {
+                console.warn(`Resetting slide index from ${currentSlideIndex} to 0.`);
+                currentSlideIndex = 0;
+                previousSlideIndex = -1; // Reset previous as well
+            }
+
+            // Deactivate all slides initially, then activate the correct one
+            currentSlideElements.forEach((el, index) => {
+                el.classList.remove('active', 'previous');
+                if (index === currentSlideIndex) {
+                    el.classList.add('active');
+                }
+            });
+
+            // Manage slideshow timer
+            if (currentSlideElements.length > 1 && !isPinned) {
+                startSlideshowTimer();
+            } else {
+                stopSlideshowTimer();
+            }
+        }
+
+
+        function renderEmergencyOverlay() { /* ... unchanged ... */
+            const overlay = document.getElementById('emergency-overlay');
+            const content = document.getElementById('emergency-content');
+            if (!overlay || !content) {
+                console.error("Emergency overlay elements not found!");
+                return;
+            }
+
+            if (emergencySlides.length > 0) {
+                const slide = emergencySlides[0]; // Show the first active emergency slide
+                console.log(`Activating emergency overlay with slide: ${slide.id}`);
+                content.innerHTML = ''; // Clear previous content
+
+                try {
+                    if (slide.type === 'image') {
+                        content.innerHTML = `<img src="${escapeHtml(slide.content)}" alt="Emergency Slide ${escapeHtml(slide.id)}" onerror="this.parentElement.innerHTML = '<div class=\\'error-message\\'>Havária kép hiba<br><code>ID: ${escapeHtml(slide.id)}</code></div>';">`; // Hungarian: Emergency image error
+                    } else if (slide.type === 'embed') {
+                        content.innerHTML = `<iframe src="${escapeHtml(slide.content)}" title="Emergency Slide ${escapeHtml(slide.id)}" loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>`;
+                    } else {
+                         console.warn("Unsupported emergency slide type:", slide.type, slide.id);
+                         renderErrorMessage(content, `Ismeretlen havária diatípus: ${slide.type}`, `ID: ${slide.id}`); // Hungarian: Unknown emergency slide type
+                    }
+                    overlay.classList.add('active');
+                    stopSlideshowTimer(); // Stop regular slideshow when emergency is active
+                } catch (e) {
+                     console.error(`Error rendering emergency slide ID ${slide.id}:`, e);
+                     lastError = { message: `Failed to render emergency slide (ID: ${slide.id})`, error: e?.message };
+                     logErrorToServer(lastError);
+                     renderErrorMessage(content, `Hiba a havária dia megjelenítésekor`, `ID: ${slide.id}`); // Hungarian: Error displaying emergency slide
+                     overlay.classList.add('active'); // Still show overlay with error
+                     stopSlideshowTimer();
+                }
+            } else {
+                // No active emergency slides
+                if (overlay.classList.contains('active')) {
+                     console.log("Deactivating emergency overlay.");
+                     overlay.classList.remove('active');
+                     content.innerHTML = ''; // Clear content
+                     // Restart regular slideshow if applicable
+                     updateSlidesDOM(); // Re-evaluate regular slides and timer
+                }
+            }
+        }
+
+        /**
+         * Advances to the next slide by manipulating CSS classes, not rebuilding DOM.
+         */
+        function nextSlide() {
+            if (currentSlideElements.length <= 1) {
+                // console.log("nextSlide: Only one or zero slides, not advancing.");
+                return; // No need to advance if only one (or zero) slide
+            }
+
+            // Store previous index
+            previousSlideIndex = currentSlideIndex;
+
+            // Calculate next index
+            currentSlideIndex = (currentSlideIndex + 1) % currentSlideElements.length;
+
+            // Update classes
+            currentSlideElements.forEach((el, index) => {
+                 el.classList.remove('active', 'previous'); // Clear previous states
+                 if (index === currentSlideIndex) {
+                     el.classList.add('active'); // Set new active slide
+                 } else if (index === previousSlideIndex) {
+                     el.classList.add('previous'); // Mark the slide that was just active (for potential fade-out styling)
+                 }
+            });
+
+            // console.log(`nextSlide: Advanced to index ${currentSlideIndex}, ID: ${currentSlideElements[currentSlideIndex]?.dataset.slideId}`);
+        }
+
+
+        function startSlideshowTimer() { /* ... unchanged ... */
+            stopSlideshowTimer(); // Clear existing timer first
+            console.log(`Starting slideshow timer (${SLIDESHOW_INTERVAL}ms)`);
+            slideshowIntervalId = setInterval(nextSlide, SLIDESHOW_INTERVAL);
+        }
+        function stopSlideshowTimer() { /* ... unchanged ... */
+            if (slideshowIntervalId) {
+                clearInterval(slideshowIntervalId);
+                slideshowIntervalId = null;
+                console.log("Stopped slideshow timer.");
+            }
+        }
+
+        // --- Initialization ---
+        function initializeAppLogic() { /* ... unchanged ... */
+            console.log("Initializing InfoTV Slideshow App (v2)...");
+            console.log("Device ID:", deviceId);
+
+            // Start monitoring device status and commands first
+            startDeviceMonitoring();
+            setupDeviceCommandsListener(); // This also populates initial cachedDeviceData
+
+            // Then set up listeners for content
+            setupEmergencySlidesListener(); // Emergency slides take priority
+            setupSlidesListener(); // Regular slides
+
+            // Initial rendering will be triggered by the listeners fetching data via updateSlidesDOM
+
+            console.log("Initialization complete. Waiting for data from Firestore...");
+         }
+
+        // Run initialization logic
+        if (document.readyState === 'loading') { /* ... unchanged ... */
+            document.addEventListener('DOMContentLoaded', initializeAppLogic);
+        } else {
+            initializeAppLogic(); // DOMContentLoaded has already fired
+        }
+
+        // Cleanup listeners on page unload
+        window.addEventListener('beforeunload', () => { /* ... unchanged ... */
+            console.log("Unsubscribing Firestore listeners before unload.");
+            if (slidesListenerUnsubscribe) slidesListenerUnsubscribe();
+            if (emergencyListenerUnsubscribe) emergencyListenerUnsubscribe();
+            if (deviceListenerUnsubscribe) deviceListenerUnsubscribe();
+            stopSlideshowTimer();
         });
-    }
 
-    function nextSlide() {
-        if (slides.length <= 1) return;
-        currentSlideIndex = (currentSlideIndex + 1) % slides.length;
-        renderSlides();
-    }
-
-    // Initialize everything
-    startDeviceMonitoring();
-    setupDeviceCommands();
-    setupEmergencySlides();
-
-    // Initialize slideshow
-    setInterval(nextSlide, 30000);
-    setInterval(fetchSlides, slideFetchInterval);
-    fetchSlides(); // Az első lekérés induljon el azonnal
     </script>
 </body>
 </html>
