@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SZAG InfoTablet ebéd</title>
+    <style>
+        body, html {
+            margin: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Adjust as needed: cover, contain, etc. */
+        }
+    </style>
+</head>
+<body>
+    <img id="dailyPhoto" alt="Daily Photo">
+    <script>
+        // Get the current date
+        const today = new Date();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const day = String(today.getDate()).padStart(2, '0');
+        
+        // Construct the image filename based on the current date
+        const imagePath = `../img/e${month}${day}.png`;
+        
+        // Set the image source
+        document.getElementById('dailyPhoto').src = imagePath;
+        
+// Idő lekérdezése az oldal időzített lefrissítéséhez
+function refreshAt(hours, minutes, seconds) {
+    var now = new Date();
+    var then = new Date();
+
+    if(now.getHours() > hours ||
+        (now.getHours() == hours && now.getMinutes() > minutes) ||
+        now.getHours() == hours && now.getMinutes() == minutes && now.getSeconds() >= seconds) {
+        then.setDate(now.getDate() + 1);
+    }
+    then.setHours(hours);
+    then.setMinutes(minutes);
+    then.setSeconds(seconds);
+
+    var timeout = (then.getTime() - now.getTime());
+    setTimeout(function() { window.location.reload(true); }, timeout);
+}
+
+// Oldal lefrissítése az alábbi időpontokban - új időpontnál figyeljünk, hogy órán legyen, mert szünetben gagyi
+refreshAt(06,00,56);
+refreshAt(12,25,56);
+    </script>
+</body>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, onSnapshot, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+  // Firebase konfiguráció
+  const firebaseConfig = {
+    apiKey: "AIzaSyAmlb3HFiXq18IlV--o1GOC5yofXSZjV48",
+    authDomain: "infotv-50232.firebaseapp.com",
+    projectId: "infotv-50232",
+    storageBucket: "infotv-50232.appspot.com",
+    messagingSenderId: "890415866941",
+    appId: "1:890415866941:web:10606b06957eca86d43654",
+    measurementId: "G-2V1HZ0RPJK"
+  };
+
+  // Firebase inicializálása
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Fix eszköz azonosító
+  const deviceId = "ebedlo2";
+  const deviceRef = doc(db, 'devices', deviceId);
+
+  // Eszköz információk összegyűjtése
+  function getDeviceInfo() {
+    const userAgent = navigator.userAgent;
+    const resolution = `${window.screen.width}x${window.screen.height}`;
+    
+    return {
+      os: navigator.platform,
+      browser: userAgent.split(') ').pop().split(' ')[0],
+      resolution: resolution,
+      page: window.location.href,
+      lastUpdated: new Date().toISOString()
+    };
+  }
+
+  // Adatküldés Firebase-be
+  async function sendDeviceInfo() {
+    const deviceInfo = getDeviceInfo();
+    try {
+      await setDoc(deviceRef, {
+        ...deviceInfo,
+        lastHeartbeat: serverTimestamp(),
+        status: 'online'
+      }, { merge: true });
+    } catch (error) {
+      console.error('Hiba az adatküldéskor:', error);
+    }
+  }
+
+  // Távoli vezérlés figyelése
+  onSnapshot(deviceRef, async (doc) => {
+    const deviceData = doc.data();
+    if (deviceData) {
+      // Távoli oldal frissítése
+      if (deviceData.refresh) {
+        await updateDoc(deviceRef, { refresh: false });
+        console.log('Távoli frissítés végrehajtva');
+        location.reload();
+      }
+
+      // Távoli újraindítás
+      if (deviceData.restart) {
+        await updateDoc(deviceRef, { restart: false });
+        console.log('Távoli újraindítás végrehajtva');
+        setTimeout(() => location.reload(), 1000);
+      }
+    }
+  });
+
+  // Indítás
+  sendDeviceInfo(); // Azonnali küldés
+  setInterval(sendDeviceInfo, 60000); // Szívverés percenként
+
+  console.log('Ebédlő2 monitor aktív, eszköz ID: ' + deviceId);
+</script>
+</html>
