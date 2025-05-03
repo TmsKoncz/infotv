@@ -129,6 +129,41 @@
             padding: 1rem; color: #6b7280;
         }
         .loading-container span { margin-top: 0.5rem; }
+
+        /* Dropdown Menu Styles */
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #ffffff; /* white */
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 10; /* Dropdown legyen felül */
+            border-radius: 0.375rem; /* rounded-md */
+            padding-top: 0.25rem; /* py-1 */
+            padding-bottom: 0.25rem;
+        }
+        .dropdown-content a, .dropdown-content button {
+            color: black;
+            padding: 0.75rem 1rem; /* px-4 py-3 */
+            text-decoration: none;
+            display: block;
+            font-size: 0.875rem; /* text-sm */
+            text-align: left;
+            width: 100%;
+        }
+        .dropdown-content a:hover, .dropdown-content button:hover { background-color: #f1f1f1; }
+        .dropdown:hover .dropdown-content { display: block; }
+        .dropdown button svg { /* Arrow icon */
+            width: 1em; height: 1em; margin-left: 0.25rem; vertical-align: middle;
+        }
+        /* Aktív nav gomb stílus */
+        .admin-nav-button.active {
+            background-color: #eef2ff; /* indigo-50 */
+            font-weight: 600; /* font-semibold */
+            color: #4338ca; /* indigo-700 */
+        }
+
     </style>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -136,10 +171,41 @@
     <header id="app-header" class="bg-indigo-600 text-white p-4 shadow-md sticky top-0 z-30">
         <div class="container mx-auto flex flex-wrap justify-between items-center gap-y-2">
             <div class="flex items-center space-x-3">
+                <img src="./logo.png" alt="InfoTV Logo" class="h-8 w-8 rounded-full" onerror="this.style.display='none'">
                 <h1 class="text-xl font-bold">InfoTV Admin</h1>
             </div>
             <nav class="flex items-center space-x-2 sm:space-x-4">
-                <div id="nav-links" class="flex items-center space-x-2 sm:space-x-4"></div>
+                <div id="admin-navigation" class="hidden md:flex items-center space-x-1">
+                    <div class="dropdown">
+                        <button class="hover:bg-indigo-700 px-3 py-2 rounded text-sm font-medium inline-flex items-center">
+                            Eszközkezelés
+                            <svg class="fill-current h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </button>
+                        <div class="dropdown-content">
+                            <button data-section="eszkozok-section" class="admin-nav-button">Eszközök Állapota</button>
+                            </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="hover:bg-indigo-700 px-3 py-2 rounded text-sm font-medium inline-flex items-center">
+                            Hirdetéskezelés
+                             <svg class="fill-current h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </button>
+                        <div class="dropdown-content">
+                            <button data-section="hirdetesek-section" class="admin-nav-button">Normál Hirdetések</button>
+                            <button data-section="havaria-section" class="admin-nav-button">Havária Mód</button>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="hover:bg-indigo-700 px-3 py-2 rounded text-sm font-medium inline-flex items-center">
+                            Admin
+                             <svg class="fill-current h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </button>
+                        <div class="dropdown-content">
+                            <button data-section="hibaelharitas-section" class="admin-nav-button">Hibaelhárítás</button>
+                            <button data-section="logok-section" class="admin-nav-button">Naplók</button>
+                            </div>
+                    </div>
+                </div>
                 <div id="user-status" class="flex items-center space-x-2">
                     <span class="text-sm text-indigo-200">Betöltés...</span>
                 </div>
@@ -154,222 +220,227 @@
         </div>
         <div id="error-view" class="hidden p-4 text-center text-red-700 bg-red-100 rounded-lg"></div>
 
-        <div id="admin-view" class="hidden space-y-8">
-            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
-                 <h1 class="text-2xl font-bold mb-6 text-gray-800">Eszközök állapota</h1>
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                     <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 space-y-4">
-                         <div>
-                             <h2 class="text-xl font-semibold mb-2 text-gray-700">Online eszközök</h2>
-                             <p class="text-4xl font-bold text-green-600" id="online-count">0</p>
-                         </div>
-                         <div>
-                             <h2 class="text-xl font-semibold mb-2 text-gray-700">Rendelkezésre állás</h2>
-                             <p class="text-4xl font-bold text-blue-600" id="availability-percentage">-%</p>
-                         </div>
-                     </div>
-                     <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
-                         <h2 class="text-xl font-semibold mb-4 text-gray-700">Eszközök listája</h2>
-                         <div id="devices-list" class="overflow-y-auto md:max-h-48">
-                             <div class="loading-container">
-                                 <div class="spinner spinner-sm"></div>
-                                 <span>Eszközök betöltése...</span>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-            </div>
+        <div id="admin-content-wrapper" class="hidden space-y-8">
 
-            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
-                <h1 class="text-2xl font-bold mb-6 text-gray-800">Hirdetéskezelés</h1>
-                 <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-8">
-                     <div id="toggle-slide-form-trigger" class="flex justify-between items-center cursor-pointer">
-                         <h2 class="text-xl font-semibold text-gray-700">Új hirdetés hozzáadása</h2>
-                         <span id="slide-form-toggle" class="text-gray-500 text-xl transition-transform duration-300">▼</span>
-                     </div>
-                     <div id="slide-form" class="mt-4 hidden space-y-4">
-                         <div>
-                             <label for="slide-type" class="block text-sm font-medium text-gray-700 mb-1">Típus</label>
-                             <select id="slide-type" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" onchange="toggleSlideTypeFields()">
-                                 <option value="image">Kép</option>
-                                 <option value="embed">Beágyazott link</option>
-                                 <option value="aktuális">Aktuális</option>
-                             </select>
-                         </div>
-                         <div id="regular-slide-fields" class="space-y-4">
-                             <div id="add-image-input-group" class="drop-zone" data-target-input="slide-image-upload" data-target-preview="add-image-preview">
-                                 <label for="slide-image-upload" class="block text-sm font-medium text-gray-700 mb-1 cursor-pointer">Kép feltöltése</label>
-                                 <input type="file" id="slide-image-upload" accept="image/*" class="hidden">
-                                 <p class="text-xs text-gray-500 mb-2">Kattints vagy húzz ide egy képet!</p>
-                                 <img id="add-image-preview" src="#" alt="Kép előnézet" class="image-preview hidden mx-auto">
-                                 <div id="add-upload-indicator" class="upload-indicator">
-                                      <div class="spinner-icon spinner spinner-sm"></div>
-                                      <svg class="checkmark h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-                                      <svg class="crossmark h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-                                      <span class="indicator-text">Feltöltés...</span>
-                                  </div>
-                             </div>
-                             <div id="add-url-input-group" class="hidden">
-                                 <label for="slide-content" class="block text-sm font-medium text-gray-700 mb-1">Beágyazott link</label>
-                                 <input type="text" id="slide-content" placeholder="https://..." class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                             </div>
-                             <div class="flex flex-col sm:flex-row gap-4">
-                                 <div class="flex-1">
-                                     <label for="slide-start-date" class="block text-sm font-medium text-gray-700 mb-1">Kezdő dátum</label>
-                                     <input type="date" id="slide-start-date" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                 </div>
-                                 <div class="flex-1">
-                                     <label for="slide-end-date" class="block text-sm font-medium text-gray-700 mb-1">Végdátum</label>
-                                     <input type="date" id="slide-end-date" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                 </div>
+            <section id="eszkozok-section" class="admin-section hidden">
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                     <h1 class="text-2xl font-bold mb-6 text-gray-800">Eszközök állapota</h1>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                         <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 space-y-4">
+                             <div>
+                                 <h2 class="text-xl font-semibold mb-2 text-gray-700">Online eszközök</h2>
+                                 <p class="text-4xl font-bold text-green-600" id="online-count">0</p>
                              </div>
                              <div>
-                                 <label for="slide-comment" class="block text-sm font-medium text-gray-700 mb-1">Megjegyzés (admin)</label>
-                                 <textarea id="slide-comment" placeholder="Adminisztratív megjegyzés..." class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" rows="2"></textarea>
+                                 <h2 class="text-xl font-semibold mb-2 text-gray-700">Rendelkezésre állás</h2>
+                                 <p class="text-4xl font-bold text-blue-600" id="availability-percentage">-%</p>
                              </div>
                          </div>
-                         <div id="aktualis-slide-fields" class="hidden space-y-4">
-                              <input type="hidden" id="aktualis-preset-link" value="https://i.ibb.co/Hfkcjrct/aktu-lis-sablon-1.png">
-                              <div>
-                                  <label class="block text-sm font-medium text-gray-700 mb-1">Első sor (max 20 karakter):</label>
-                                  <div id="first-line" contenteditable="true" class="w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 min-h-[40px]" oninput="updateFirstLineCounter()"></div>
-                                  <div id="first-line-counter" class="text-xs text-right text-gray-500 mt-1">0/20 karakter</div>
-                              </div>
-                              <div>
-                                  <label class="block text-sm font-medium text-gray-700 mb-1">Szöveg (max 100 karakter):</label>
-                                  <div class="flex flex-wrap gap-1 border-b pb-2 mb-2">
-                                      <button type="button" id="format-bold-btn" class="px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"><b>B</b></button>
-                                      <button type="button" id="format-italic-btn" class="px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"><i>I</i></button>
-                                      <button type="button" id="format-underline-btn" class="px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"><u>U</u></button>
-                                      <button type="button" id="format-linebreak-btn" class="px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm">↵</button>
-                                  </div>
-                                  <div id="slide-text-content" contenteditable="true" class="rich-text-content bg-white w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 min-h-[100px]" oninput="updateCharCounter()"></div>
-                                  <div id="char-counter" class="text-xs text-right text-gray-500 mt-1">0/100 karakter</div>
-                              </div>
-                             <div class="flex flex-col sm:flex-row gap-4">
-                                 <div class="flex-1">
-                                     <label for="aktualis-start-date" class="block text-sm font-medium text-gray-700 mb-1">Kezdő dátum</label>
-                                     <input type="date" id="aktualis-start-date" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                 </div>
-                                 <div class="flex-1">
-                                     <label for="aktualis-end-date" class="block text-sm font-medium text-gray-700 mb-1">Végdátum</label>
-                                     <input type="date" id="aktualis-end-date" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                         <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                             <h2 class="text-xl font-semibold mb-4 text-gray-700">Eszközök listája</h2>
+                             <div id="devices-list" class="overflow-y-auto md:max-h-48">
+                                 <div class="loading-container">
+                                     <div class="spinner spinner-sm"></div>
+                                     <span>Eszközök betöltése...</span>
                                  </div>
                              </div>
-                              <div>
-                                  <label for="aktualis-comment" class="block text-sm font-medium text-gray-700 mb-1">Megjegyzés (admin)</label>
-                                  <textarea id="aktualis-comment" placeholder="Adminisztratív megjegyzés..." class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" rows="2"></textarea>
-                              </div>
-                          </div>
-                         <button id="add-slide-btn" class="w-full bg-blue-600 text-white p-2.5 rounded-md hover:bg-blue-700 transition duration-200 font-medium">Hirdetés hozzáadása</button>
-                     </div>
-                 </div>
-                 <div class="bg-white p-6 rounded-lg border border-gray-200 mt-6">
-                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
-                         <h2 class="text-xl font-semibold text-gray-700">Hirdetések listája (sorrend húzással módosítható)</h2>
-                         <button id="reorder-btn" class="w-full sm:w-auto bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition duration-200 text-sm font-medium">
-                             Átrendezés mód
-                         </button>
-                     </div>
-                     <div id="slides-container" class="space-y-3">
-                         <div class="loading-container">
-                             <div class="spinner spinner-sm"></div>
-                             <span>Diák betöltése...</span>
                          </div>
                      </div>
-                     <div id="reorder-controls" class="hidden mt-4 flex flex-col sm:flex-row justify-end gap-3">
-                         <button id="cancel-reorder-btn" class="w-full sm:w-auto px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition duration-200">Mégse</button>
-                         <button id="save-reorder-btn" class="w-full sm:w-auto px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200">Sorrend mentése</button>
-                     </div>
-                 </div>
-            </div>
+                </div>
+            </section>
 
-            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg border-l-4 border-red-500">
-                <h1 class="text-2xl font-bold mb-6 text-red-700">Havária mód</h1>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-red-50 p-6 rounded-lg border border-red-200">
-                         <div id="toggle-emergency-form-trigger" class="flex justify-between items-center cursor-pointer">
-                             <h2 class="text-xl font-semibold text-red-800">Új havária hozzáadása</h2>
-                             <span id="emergency-form-toggle" class="text-red-600 text-xl transition-transform duration-300">▼</span>
+            <section id="hirdetesek-section" class="admin-section hidden">
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                    <h1 class="text-2xl font-bold mb-6 text-gray-800">Normál Hirdetések Kezelése</h1>
+                     <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-8">
+                         <div id="toggle-slide-form-trigger" class="flex justify-between items-center cursor-pointer">
+                             <h2 class="text-xl font-semibold text-gray-700">Új hirdetés hozzáadása</h2>
+                             <span id="slide-form-toggle" class="text-gray-500 text-xl transition-transform duration-300">▼</span>
                          </div>
-                         <div id="emergency-slide-form" class="mt-4 hidden space-y-4">
+                         <div id="slide-form" class="mt-4 hidden space-y-4">
                              <div>
-                                 <label for="emergency-slide-type" class="block text-sm font-medium text-gray-700 mb-1">Típus</label>
-                                 <select id="emergency-slide-type" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500" onchange="toggleEmergencyInputFields()">
+                                 <label for="slide-type" class="block text-sm font-medium text-gray-700 mb-1">Típus</label>
+                                 <select id="slide-type" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                                      <option value="image">Kép</option>
                                      <option value="embed">Beágyazott link</option>
+                                     <option value="aktuális">Aktuális</option>
                                  </select>
                              </div>
-                             <div id="emergency-image-input-group" class="drop-zone drop-zone-emergency" data-target-input="emergency-slide-image-upload" data-target-preview="emergency-image-preview">
-                                 <label for="emergency-slide-image-upload" class="block text-sm font-medium text-gray-700 mb-1 cursor-pointer">Kép feltöltése (Havária)</label>
-                                 <input type="file" id="emergency-slide-image-upload" accept="image/*" class="hidden">
-                                 <p class="text-xs text-gray-500 mb-2">Kattints vagy húzz ide egy képet!</p>
-                                  <img id="emergency-image-preview" src="#" alt="Havária kép előnézet" class="image-preview hidden mx-auto">
-                                  <div id="emergency-upload-indicator" class="upload-indicator">
-                                      <div class="spinner-icon spinner spinner-sm text-red-600"></div>
-                                      <svg class="checkmark h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-                                      <svg class="crossmark h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-                                      <span class="indicator-text">Feltöltés...</span>
+                             <div id="regular-slide-fields" class="space-y-4">
+                                 <div id="add-image-input-group" class="drop-zone" data-target-input="slide-image-upload" data-target-preview="add-image-preview">
+                                     <label for="slide-image-upload" class="block text-sm font-medium text-gray-700 mb-1 cursor-pointer">Kép feltöltése</label>
+                                     <input type="file" id="slide-image-upload" accept="image/*" class="hidden">
+                                     <p class="text-xs text-gray-500 mb-2">Kattints vagy húzz ide egy képet!</p>
+                                     <img id="add-image-preview" src="#" alt="Kép előnézet" class="image-preview hidden mx-auto">
+                                     <div id="add-upload-indicator" class="upload-indicator">
+                                          <div class="spinner-icon spinner spinner-sm"></div>
+                                          <svg class="checkmark h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                                          <svg class="crossmark h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                                          <span class="indicator-text">Feltöltés...</span>
+                                      </div>
+                                 </div>
+                                 <div id="add-url-input-group" class="hidden">
+                                     <label for="slide-content" class="block text-sm font-medium text-gray-700 mb-1">Beágyazott link</label>
+                                     <input type="text" id="slide-content" placeholder="https://..." class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                 </div>
+                                 <div class="flex flex-col sm:flex-row gap-4">
+                                     <div class="flex-1">
+                                         <label for="slide-start-date" class="block text-sm font-medium text-gray-700 mb-1">Kezdő dátum</label>
+                                         <input type="date" id="slide-start-date" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                     </div>
+                                     <div class="flex-1">
+                                         <label for="slide-end-date" class="block text-sm font-medium text-gray-700 mb-1">Végdátum</label>
+                                         <input type="date" id="slide-end-date" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                     </div>
+                                 </div>
+                                 <div>
+                                     <label for="slide-comment" class="block text-sm font-medium text-gray-700 mb-1">Megjegyzés (admin)</label>
+                                     <textarea id="slide-comment" placeholder="Adminisztratív megjegyzés..." class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" rows="2"></textarea>
+                                 </div>
+                             </div>
+                             <div id="aktualis-slide-fields" class="hidden space-y-4">
+                                  <input type="hidden" id="aktualis-preset-link" value="https://i.ibb.co/Hfkcjrct/aktu-lis-sablon-1.png">
+                                  <div>
+                                      <label class="block text-sm font-medium text-gray-700 mb-1">Első sor (max 20 karakter):</label>
+                                      <div id="first-line" contenteditable="true" class="w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 min-h-[40px]"></div>
+                                      <div id="first-line-counter" class="text-xs text-right text-gray-500 mt-1">0/20 karakter</div>
+                                  </div>
+                                  <div>
+                                      <label class="block text-sm font-medium text-gray-700 mb-1">Szöveg (max 100 karakter):</label>
+                                      <div class="flex flex-wrap gap-1 border-b pb-2 mb-2">
+                                          <button type="button" data-format="bold" class="format-button px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"><b>B</b></button>
+                                          <button type="button" data-format="italic" class="format-button px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"><i>I</i></button>
+                                          <button type="button" data-format="underline" class="format-button px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"><u>U</u></button>
+                                          <button type="button" data-format="insertLineBreak" class="format-button px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm">↵</button>
+                                      </div>
+                                      <div id="slide-text-content" contenteditable="true" class="rich-text-content bg-white w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 min-h-[100px]"></div>
+                                      <div id="char-counter" class="text-xs text-right text-gray-500 mt-1">0/100 karakter</div>
+                                  </div>
+                                 <div class="flex flex-col sm:flex-row gap-4">
+                                     <div class="flex-1">
+                                         <label for="aktualis-start-date" class="block text-sm font-medium text-gray-700 mb-1">Kezdő dátum</label>
+                                         <input type="date" id="aktualis-start-date" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                     </div>
+                                     <div class="flex-1">
+                                         <label for="aktualis-end-date" class="block text-sm font-medium text-gray-700 mb-1">Végdátum</label>
+                                         <input type="date" id="aktualis-end-date" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                     </div>
+                                 </div>
+                                  <div>
+                                      <label for="aktualis-comment" class="block text-sm font-medium text-gray-700 mb-1">Megjegyzés (admin)</label>
+                                      <textarea id="aktualis-comment" placeholder="Adminisztratív megjegyzés..." class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" rows="2"></textarea>
                                   </div>
                               </div>
-                             <div id="emergency-url-input-group" class="hidden">
-                                 <label for="emergency-slide-content" class="block text-sm font-medium text-gray-700 mb-1">Beágyazott link (Havária)</label>
-                                 <input type="text" id="emergency-slide-content" placeholder="https://..." class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500">
-                             </div>
-                             <div>
-                                 <label for="emergency-slide-comment" class="block text-sm font-medium text-gray-700 mb-1">Megjegyzés (admin)</label>
-                                 <textarea id="emergency-slide-comment" placeholder="Adminisztratív megjegyzés..." class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500" rows="2"></textarea>
-                             </div>
-                             <button id="add-emergency-btn" class="w-full bg-red-600 text-white p-2.5 rounded-md hover:bg-red-700 transition duration-200 font-medium">Havária hozzáadása és aktiválása</button>
+                             <button id="add-slide-btn" class="w-full bg-blue-600 text-white p-2.5 rounded-md hover:bg-blue-700 transition duration-200 font-medium">Hirdetés hozzáadása</button>
                          </div>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg border border-gray-200">
-                         <h2 class="text-xl font-semibold mb-4 text-gray-700">Haváriák listája</h2>
-                         <div id="emergency-slides-container" class="space-y-3">
-                              <div class="loading-container">
+                     </div>
+                     <div class="bg-white p-6 rounded-lg border border-gray-200 mt-6">
+                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+                             <h2 class="text-xl font-semibold text-gray-700">Hirdetések listája (sorrend húzással módosítható)</h2>
+                             <button id="reorder-btn" class="w-full sm:w-auto bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition duration-200 text-sm font-medium">
+                                 Átrendezés mód
+                             </button>
+                         </div>
+                         <div id="slides-container" class="space-y-3">
+                             <div class="loading-container">
                                  <div class="spinner spinner-sm"></div>
-                                 <span>Haváriák betöltése...</span>
+                                 <span>Diák betöltése...</span>
                              </div>
                          </div>
+                         <div id="reorder-controls" class="hidden mt-4 flex flex-col sm:flex-row justify-end gap-3">
+                             <button id="cancel-reorder-btn" class="w-full sm:w-auto px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition duration-200">Mégse</button>
+                             <button id="save-reorder-btn" class="w-full sm:w-auto px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200">Sorrend mentése</button>
+                         </div>
+                     </div>
+                </div>
+            </section>
+
+            <section id="havaria-section" class="admin-section hidden">
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg border-l-4 border-red-500">
+                    <h1 class="text-2xl font-bold mb-6 text-red-700">Havária mód</h1>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-red-50 p-6 rounded-lg border border-red-200">
+                             <div id="toggle-emergency-form-trigger" class="flex justify-between items-center cursor-pointer">
+                                 <h2 class="text-xl font-semibold text-red-800">Új havária hozzáadása</h2>
+                                 <span id="emergency-form-toggle" class="text-red-600 text-xl transition-transform duration-300">▼</span>
+                             </div>
+                             <div id="emergency-slide-form" class="mt-4 hidden space-y-4">
+                                 <div>
+                                     <label for="emergency-slide-type" class="block text-sm font-medium text-gray-700 mb-1">Típus</label>
+                                     <select id="emergency-slide-type" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500">
+                                         <option value="image">Kép</option>
+                                         <option value="embed">Beágyazott link</option>
+                                     </select>
+                                 </div>
+                                 <div id="emergency-image-input-group" class="drop-zone drop-zone-emergency" data-target-input="emergency-slide-image-upload" data-target-preview="emergency-image-preview">
+                                     <label for="emergency-slide-image-upload" class="block text-sm font-medium text-gray-700 mb-1 cursor-pointer">Kép feltöltése (Havária)</label>
+                                     <input type="file" id="emergency-slide-image-upload" accept="image/*" class="hidden">
+                                     <p class="text-xs text-gray-500 mb-2">Kattints vagy húzz ide egy képet!</p>
+                                      <img id="emergency-image-preview" src="#" alt="Havária kép előnézet" class="image-preview hidden mx-auto">
+                                      <div id="emergency-upload-indicator" class="upload-indicator">
+                                          <div class="spinner-icon spinner spinner-sm text-red-600"></div>
+                                          <svg class="checkmark h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                                          <svg class="crossmark h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                                          <span class="indicator-text">Feltöltés...</span>
+                                      </div>
+                                  </div>
+                                 <div id="emergency-url-input-group" class="hidden">
+                                     <label for="emergency-slide-content" class="block text-sm font-medium text-gray-700 mb-1">Beágyazott link (Havária)</label>
+                                     <input type="text" id="emergency-slide-content" placeholder="https://..." class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500">
+                                 </div>
+                                 <div>
+                                     <label for="emergency-slide-comment" class="block text-sm font-medium text-gray-700 mb-1">Megjegyzés (admin)</label>
+                                     <textarea id="emergency-slide-comment" placeholder="Adminisztratív megjegyzés..." class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500" rows="2"></textarea>
+                                 </div>
+                                 <button id="add-emergency-btn" class="w-full bg-red-600 text-white p-2.5 rounded-md hover:bg-red-700 transition duration-200 font-medium">Havária hozzáadása és aktiválása</button>
+                             </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                             <h2 class="text-xl font-semibold mb-4 text-gray-700">Haváriák listája</h2>
+                             <div id="emergency-slides-container" class="space-y-3">
+                                  <div class="loading-container">
+                                     <div class="spinner spinner-sm"></div>
+                                     <span>Haváriák betöltése...</span>
+                                 </div>
+                             </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-8">
-                 <h1 class="text-2xl font-bold mb-6 text-gray-800">Hibaelhárítás</h1>
-                 <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
-                     <h2 class="text-xl font-semibold mb-4 text-gray-700">Eszközök és Naplók</h2>
-                     <div id="troubleshooting-actions" class="space-y-4">
-                         <button id="refresh-all-devices-btn" class="w-full bg-blue-600 text-white p-2.5 rounded-md hover:bg-blue-700 transition duration-200 font-medium hidden">
-                             Összes eszköz oldalának frissítése
-                         </button>
-                         <button id="toggle-log-card-btn" class="w-full bg-gray-600 text-white p-2.5 rounded-md hover:bg-gray-700 transition duration-200 font-medium hidden">
-                             Naplók megtekintése / elrejtése
-                         </button>
-                         <p id="troubleshooting-no-access" class="text-gray-500 italic hidden">Ezek a funkciók csak adminisztrátorok számára elérhetők.</p>
+            <section id="hibaelharitas-section" class="admin-section hidden">
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-8">
+                     <h1 class="text-2xl font-bold mb-6 text-gray-800">Hibaelhárítás</h1>
+                     <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                         <h2 class="text-xl font-semibold mb-4 text-gray-700">Eszközök Frissítése</h2>
+                         <div id="troubleshooting-actions" class="space-y-4">
+                             <button id="refresh-all-devices-btn" class="w-full bg-blue-600 text-white p-2.5 rounded-md hover:bg-blue-700 transition duration-200 font-medium">
+                                 Összes eszköz oldalának frissítése
+                             </button>
+                             <p id="troubleshooting-no-access" class="text-gray-500 italic hidden">Ez a funkció csak adminisztrátorok számára elérhető.</p>
+                         </div>
+                     </div>
+                </div>
+            </section>
+
+             <section id="logok-section" class="admin-section hidden">
+                 <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                     <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-2">
+                         <h2 class="text-xl font-semibold text-gray-700">Naplóbejegyzések (összes)</h2>
+                         <div class="flex gap-2 w-full sm:w-auto">
+                             <button id="refresh-logs-btn" class="w-full sm:w-auto bg-blue-600 text-white px-3 py-1.5 rounded-md hover:bg-blue-700 transition duration-200 text-sm">
+                                 Frissítés
+                             </button>
+                         </div>
+                     </div>
+                     <div id="log-entries" class="overflow-y-auto max-h-96 border rounded p-2 bg-gray-50">
+                          <div class="loading-container">
+                            <div class="spinner spinner-sm"></div>
+                            <span>Naplóbejegyzések betöltése...</span>
+                        </div>
                      </div>
                  </div>
-            </div>
-
-             <div id="log-card" class="bg-white p-6 md:p-8 rounded-xl shadow-lg hidden">
-                  <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-2">
-                      <h2 class="text-xl font-semibold text-gray-700">Naplóbejegyzések (összes)</h2>
-                      <div class="flex gap-2 w-full sm:w-auto">
-                          <button id="refresh-logs-btn" class="w-full sm:w-auto bg-blue-600 text-white px-3 py-1.5 rounded-md hover:bg-blue-700 transition duration-200 text-sm">
-                              Frissítés
-                          </button>
-                          <button id="close-log-card-btn" class="w-full sm:w-auto bg-gray-500 text-white px-3 py-1.5 rounded-md hover:bg-gray-600 transition duration-200 text-sm">
-                              Bezárás
-                          </button>
-                      </div>
-                  </div>
-                  <div id="log-entries" class="overflow-y-auto max-h-96 border rounded p-2 bg-gray-50">
-                       <div class="loading-container">
-                         <div class="spinner spinner-sm"></div>
-                         <span>Naplóbejegyzések betöltése...</span>
-                     </div>
-                  </div>
-             </div>
+             </section>
 
         </div>
 
@@ -412,7 +483,7 @@
             <div class="space-y-4">
                 <div>
                     <label for="edit-slide-type" class="block text-sm font-medium text-gray-700 mb-1">Típus</label>
-                    <select id="edit-slide-type" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" onchange="toggleEditSlideTypeFields()">
+                    <select id="edit-slide-type" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                         <option value="image">Kép</option>
                         <option value="embed">Beágyazott link</option>
                         <option value="aktuális">Aktuális</option>
@@ -447,18 +518,18 @@
                 <div id="edit-text-content-group" class="hidden space-y-2">
                      <div>
                          <label for="edit-first-line" class="block text-sm font-medium text-gray-700 mb-1">Első sor (max 20 karakter):</label>
-                         <div id="edit-first-line" contenteditable="true" class="w-full p-2 border border-gray-300 rounded-md bg-gray-50 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 min-h-[40px]" oninput="editUpdateFirstLineCounter()"></div>
+                         <div id="edit-first-line" contenteditable="true" class="w-full p-2 border border-gray-300 rounded-md bg-gray-50 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 min-h-[40px]"></div>
                          <div id="edit-first-line-counter" class="text-xs text-right text-gray-500 mt-1">0/20 karakter</div>
                      </div>
                      <div>
                          <label class="block text-sm font-medium text-gray-700 mb-1">Szöveg (max 100 karakter):</label>
                          <div class="flex flex-wrap gap-1 border-b pb-2 mb-2">
-                             <button type="button" id="edit-format-bold-btn" class="px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"><b>B</b></button>
-                             <button type="button" id="edit-format-italic-btn" class="px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"><i>I</i></button>
-                             <button type="button" id="edit-format-underline-btn" class="px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"><u>U</u></button>
-                             <button type="button" id="edit-format-linebreak-btn" class="px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm">↵</button>
+                             <button type="button" data-format="bold" class="edit-format-button px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"><b>B</b></button>
+                             <button type="button" data-format="italic" class="edit-format-button px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"><i>I</i></button>
+                             <button type="button" data-format="underline" class="edit-format-button px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"><u>U</u></button>
+                             <button type="button" data-format="insertLineBreak" class="edit-format-button px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm">↵</button>
                          </div>
-                         <div id="edit-text-content" contenteditable="true" class="rich-text-content w-full p-2 border border-gray-300 rounded-md bg-gray-50 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 min-h-[100px]" oninput="editUpdateCharCounter()"></div>
+                         <div id="edit-text-content" contenteditable="true" class="rich-text-content w-full p-2 border border-gray-300 rounded-md bg-gray-50 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 min-h-[100px]"></div>
                          <div id="edit-char-counter" class="text-xs text-right text-gray-500 mt-1">0/100 karakter</div>
                      </div>
                  </div>
@@ -502,8 +573,8 @@
         let googleProvider;
         let currentUser = undefined;
         let allowedUsers = [];
+        let pendingUsers = []; // Hozzáadva a pendingUsers tárolásához
         let unsubscribeAdminListeners = [];
-
         const IMGBB_API_KEY = '8f8df6e25ae6f48ebc2beba95085cecd';
         let currentEditingSlideId = null;
         let currentEditingSlideType = null;
@@ -516,7 +587,8 @@
         // --- DOM Elemek Referenciái ---
         const loadingView = document.getElementById('loading-view');
         const errorView = document.getElementById('error-view');
-        const adminViewDiv = document.getElementById('admin-view');
+        const adminContentWrapper = document.getElementById('admin-content-wrapper');
+        const adminNavigation = document.getElementById('admin-navigation');
         const loginPopup = document.getElementById('login-popup');
         const googleLoginButton = document.getElementById('google-login-button');
         const loginButtonText = document.getElementById('login-button-text');
@@ -524,9 +596,7 @@
         const loginPopupCloseButton = document.getElementById('login-popup-close');
         const loginPopupMessage = document.getElementById('login-popup-message');
         const userStatusDiv = document.getElementById('user-status');
-        const navLinksDiv = document.getElementById('nav-links');
         const mainContent = document.getElementById('main-content');
-
         const onlineCountElement = document.getElementById('online-count');
         const availabilityElement = document.getElementById('availability-percentage');
         const devicesListElement = document.getElementById('devices-list');
@@ -534,13 +604,11 @@
         const reorderBtn = document.getElementById('reorder-btn');
         const reorderControls = document.getElementById('reorder-controls');
         const emergencySlidesContainer = document.getElementById('emergency-slides-container');
-        const logCard = document.getElementById('log-card');
         const logEntriesContainer = document.getElementById('log-entries');
         const troubleshootingActionsDiv = document.getElementById('troubleshooting-actions');
         const refreshAllDevicesBtn = document.getElementById('refresh-all-devices-btn');
-        const toggleLogCardBtn = document.getElementById('toggle-log-card-btn');
+        // const toggleLogCardBtn = document.getElementById('toggle-log-card-btn'); // Eltávolítva
         const troubleshootingNoAccess = document.getElementById('troubleshooting-no-access');
-
         const messageBox = document.getElementById('messageBox');
         const messageText = document.getElementById('messageText');
         const closeMessageButton = document.getElementById('closeMessageButton');
@@ -552,7 +620,6 @@
         const editSaveBtn = document.getElementById('edit-save-btn');
         const editCancelBtn = document.getElementById('edit-cancel-btn');
         const notificationElement = document.getElementById('notification');
-
         const addSlideImageUpload = document.getElementById('slide-image-upload');
         const addImagePreview = document.getElementById('add-image-preview');
         const addUploadIndicator = document.getElementById('add-upload-indicator');
@@ -571,7 +638,6 @@
         const emergencyUrlInputGroup = document.getElementById('emergency-url-input-group');
         const addSlideBtn = document.getElementById('add-slide-btn');
         const addEmergencyBtn = document.getElementById('add-emergency-btn');
-
 
         // --- Inicializálás ---
         function initializeApp() {
@@ -599,16 +665,41 @@
              console.log(`Switching view to: ${viewId}`);
              loadingView.classList.add('hidden');
              errorView.classList.add('hidden');
-             adminViewDiv.classList.add('hidden');
-             const viewElement = document.getElementById(`${viewId}-view`);
-             if (viewElement) {
-                 viewElement.classList.remove('hidden');
-             } else if (viewId !== 'loading' && viewId !== 'error') {
-                 console.error(`View element not found: ${viewId}-view`);
-                 showError(`A kért nézet (${viewId}) nem található.`);
+             adminContentWrapper.classList.add('hidden');
+
+             if (viewId === 'admin') {
+                 adminContentWrapper.classList.remove('hidden');
+                 showAdminSection('eszkozok-section'); // Alapértelmezett admin nézet
+             } else if (viewId === 'loading') {
+                 loadingView.classList.remove('hidden');
+             } else if (viewId === 'error') {
+                 errorView.classList.remove('hidden');
              }
-             updateNavLinks();
+             // updateNavLinks(); // Ezt most az updateUIBasedOnAuthState kezeli
         }
+
+        // --- Admin Szekció Váltás ---
+        function showAdminSection(sectionId) {
+            console.log(`Showing admin section: ${sectionId}`);
+            document.querySelectorAll('.admin-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            const sectionToShow = document.getElementById(sectionId);
+            if (sectionToShow) {
+                sectionToShow.classList.remove('hidden');
+                // Adatok betöltése csak ha szükséges (pl. logok)
+                if (sectionId === 'logok-section') {
+                    fetchLogs();
+                }
+                // Aktív gomb jelölése
+                document.querySelectorAll('#admin-navigation .admin-nav-button').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.section === sectionId);
+                });
+            } else {
+                console.error(`Admin section not found: ${sectionId}`);
+            }
+        }
+
 
         // --- Hiba Megjelenítés ---
         function showError(message) {
@@ -634,18 +725,17 @@
         function showConfirmPopup(message, confirmCallback) {
             confirmMessage.textContent = message;
             confirmPopup.classList.add('active');
-            const newConfirmBtn = confirmOkBtn.cloneNode(true);
-            const newCancelBtn = confirmCancelBtn.cloneNode(true);
-            confirmOkBtn.parentNode.replaceChild(newConfirmBtn, confirmOkBtn);
-            confirmCancelBtn.parentNode.replaceChild(newCancelBtn, confirmCancelBtn);
-            newConfirmBtn.onclick = async () => {
+            const currentOkBtn = document.getElementById('confirmOkBtn');
+            const currentCancelBtn = document.getElementById('confirmCancelBtn');
+            currentOkBtn.onclick = async () => {
                 confirmPopup.classList.remove('active');
                 if (confirmCallback) await confirmCallback();
             };
-            newCancelBtn.onclick = () => {
+            currentCancelBtn.onclick = () => {
                 confirmPopup.classList.remove('active');
             };
         }
+
 
         function openEditPopup() { editPopup.classList.add('active'); }
         function closeEditPopup() {
@@ -759,7 +849,7 @@
                  </div>`;
          }
 
-        // --- Firebase Hitelesítés ---
+        // --- Firebase Hitelesítés (pendingUsers logikával) ---
         function setupAuthListener() {
              console.log("setupAuthListener() called");
              if (!auth) return showError("Auth szolgáltatás nem inicializálódott.");
@@ -778,10 +868,25 @@
                                  const userData = userDoc.data();
                                  resolvedUser = { uid: user.uid, displayName: user.displayName, email: user.email, isAdmin: userData.isAdmin === true, nickname: userData.nickname || null };
                              } else {
-                                 console.warn(`User ${user.email} (${user.uid}) is authenticated but not found in allowedUsers collection. Denying access.`);
-                                 showNotification("Nincs jogosultságod az admin felülethez.", true);
-                                 await auth.signOut();
-                                 resolvedUser = null;
+                                 console.log("User not in allowedUsers, checking pendingUsers for email:", user.email.toLowerCase());
+                                 const pendingUserDocRef = firestore.collection('pendingUsers').doc(user.email.toLowerCase());
+                                 const pendingDoc = await pendingUserDocRef.get();
+                                 if (pendingDoc.exists) {
+                                     console.log("User found in pendingUsers. Data:", pendingDoc.data());
+                                     const pendingData = pendingDoc.data();
+                                     resolvedUser = { uid: user.uid, displayName: user.displayName, email: user.email, isAdmin: pendingData.isAdmin === true, nickname: pendingData.nickname || null };
+                                     const batch = firestore.batch();
+                                     batch.set(userDocRef, { email: user.email.toLowerCase(), isAdmin: resolvedUser.isAdmin, nickname: resolvedUser.nickname });
+                                     batch.delete(pendingUserDocRef);
+                                     console.log("Attempting to commit batch: add to allowedUsers, delete from pendingUsers");
+                                     await batch.commit();
+                                     console.log("User successfully migrated from pending to allowed.");
+                                 } else {
+                                     console.warn(`User ${user.email} (${user.uid}) is authenticated but not found in allowedUsers or pendingUsers. Denying access.`);
+                                     showNotification("Nincs jogosultságod az admin felülethez. Kérj meghívót.", true);
+                                     await auth.signOut();
+                                     resolvedUser = null;
+                                 }
                              }
                          } catch (error) {
                              console.error("Error checking user authorization:", error);
@@ -842,6 +947,7 @@
         function updateUIBasedOnAuthState(user) {
              console.log("updateUIBasedOnAuthState called with user:", user ? user.uid : null, "isAdmin:", user?.isAdmin);
              const isAdmin = user?.isAdmin === true;
+             adminNavigation?.classList.toggle('hidden', !isAdmin);
 
              if (user) {
                  loginPopup.classList.add('hidden');
@@ -856,16 +962,9 @@
                  if(isAdmin) {
                     switchView('admin');
                     loadAdminData();
-                    refreshAllDevicesBtn?.classList.remove('hidden');
-                    toggleLogCardBtn?.classList.remove('hidden');
-                    troubleshootingNoAccess?.classList.add('hidden');
                  } else {
                     switchView('error');
                     errorView.textContent = "Nincs jogosultságod az admin felület megtekintéséhez.";
-                    refreshAllDevicesBtn?.classList.add('hidden');
-                    toggleLogCardBtn?.classList.add('hidden');
-                    troubleshootingNoAccess?.classList.remove('hidden');
-                    logCard?.classList.add('hidden');
                  }
 
              } else {
@@ -874,20 +973,9 @@
                  switchView('loading');
                  loadingView.innerHTML = `<p class="text-xl text-gray-600 p-10 text-center">Az admin felület használatához kérjük, jelentkezzen be a Google fiókjával.</p>`;
                  loadingView.classList.remove('hidden');
-                 adminViewDiv.classList.add('hidden');
-                 refreshAllDevicesBtn?.classList.add('hidden');
-                 toggleLogCardBtn?.classList.add('hidden');
-                 troubleshootingNoAccess?.classList.add('hidden');
-                 logCard?.classList.add('hidden');
              }
-             updateNavLinks();
+             // updateNavLinks(); // Már nem kell, az admin nav láthatósága kezeli
          }
-
-        function updateNavLinks() {
-            navLinksDiv.innerHTML = currentUser?.isAdmin ? `
-                <button onclick="switchView('admin')" class="hover:bg-indigo-700 px-2 py-1 sm:px-3 rounded text-sm sm:text-base ${adminViewDiv.classList.contains('hidden') ? '' : 'bg-indigo-800 font-semibold'}">Admin Kezelőfelület</button>
-            ` : '';
-        }
 
         // --- Admin Specifikus Firestore Listenerek ---
         function setupAdminSpecificListeners(user) {
@@ -901,9 +989,19 @@
                      console.log("Admin: Allowed users updated:", allowedUsers.length);
                  }, (error) => { console.error("Error fetching allowed users:", error); });
                 unsubscribeAdminListeners.push(unsubAllowedUsers);
+                // Pending users figyelése
+                 const pendingUsersRef = firestore.collection('pendingUsers');
+                 const unsubPendingUsers = pendingUsersRef.onSnapshot((snapshot) => {
+                     pendingUsers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                     console.log("Admin: Pending users updated:", pendingUsers.length);
+                     // TODO: Frissíteni kellene az Admin->Felhasználók részt, ha az látható és tartalmazza a pending usereket
+                 }, (error) => { console.error("Error fetching pending users:", error); });
+                 unsubscribeAdminListeners.push(unsubPendingUsers);
+
             } else {
                 console.log("Skipping or stopping admin listeners (not admin or no firestore).");
                 allowedUsers = [];
+                pendingUsers = [];
             }
         }
 
@@ -917,6 +1015,7 @@
             renderSlides();
             renderEmergencySlides();
             monitorDevices();
+            fetchLogs();
         }
 
         async function addSlide() {
@@ -1148,15 +1247,14 @@
              slideElement.setAttribute('data-id', slide.id);
              const statusText = slide.active ? 'Aktív' : 'Inaktív';
              const statusTextColor = slide.active ? 'text-green-600' : 'text-gray-500';
-             // Az onclick eseménykezelők itt maradnak, mert a handleAdminViewClicks delegálással kezeli őket
              slideElement.innerHTML = `
                  <div class="drag-handle opacity-50 cursor-default self-center sm:self-auto text-gray-400 hover:text-gray-600 transition-colors" title="Átrendezéshez kattints az 'Átrendezés mód' gombra"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg></div>
                  <div class="w-full sm:w-1/4 flex-shrink-0">${contentPreview}</div>
                  <div class="flex-grow min-w-0 w-full sm:w-auto"><strong>${typeLabel}</strong> <span class="text-xs ${statusTextColor}">(${statusText})</span><br><small class="text-gray-600">${slide.startDate || '?'} → ${slide.endDate || '?'}</small><br><small class="text-gray-600 block truncate" title="${slide.comment || ''}">Megjegyzés: ${slide.comment || 'Nincs'}</small></div>
                  <div class="slide-actions flex flex-row flex-wrap gap-2 self-end sm:self-center flex-shrink-0 mt-2 sm:mt-0 w-full sm:w-auto justify-end">
-                     <button class="edit-btn">Szerk.</button>
-                     <button class="text-white px-2 py-1 rounded text-xs ${slide.active ? 'bg-gray-500 hover:bg-gray-600' : 'bg-green-500 hover:bg-green-600'}">${slide.active ? 'Elrejt' : 'Aktív'}</button>
-                     <button class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 text-xs">Töröl</button>
+                     <button data-action="edit-slide" class="edit-btn">Szerk.</button>
+                     <button data-action="toggle-slide" class="text-white px-2 py-1 rounded text-xs ${slide.active ? 'bg-gray-500 hover:bg-gray-600' : 'bg-green-500 hover:bg-green-600'}">${slide.active ? 'Elrejt' : 'Aktív'}</button>
+                     <button data-action="delete-slide" class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 text-xs">Töröl</button>
                  </div>`;
              return slideElement;
          }
@@ -1186,7 +1284,6 @@
              let previewHTML = '';
              if (slide.type === 'image') { previewHTML = `<div class="preview-image-container w-full sm:w-auto"><img src="${slide.content}" alt="Havária kép" class="preview-image max-w-[80%] sm:max-w-[100px] max-h-[100px] sm:max-h-[60px] object-contain border rounded"></div>`; }
              else if (slide.type === 'embed') { previewHTML = `<div class="text-sm text-gray-500 break-all w-full sm:w-auto">🔗 ${slide.content.substring(0,30)}...</div>`; }
-             // Az onclick eseménykezelők itt maradnak, mert a handleAdminViewClicks delegálással kezeli őket
              slideElement.innerHTML = `
                  <div class="flex-1 flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
                      ${previewHTML}
@@ -1196,8 +1293,8 @@
                      </div>
                  </div>
                  <div class="slide-actions flex flex-row flex-wrap gap-2 self-end sm:self-center flex-shrink-0 mt-2 sm:mt-0 w-full sm:w-auto justify-end">
-                     <button class="text-white px-2 py-1 rounded text-xs ${slide.active ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-600 hover:bg-red-700'}">${slide.active ? 'Deaktivál' : 'Aktivál'}</button>
-                     <button class="bg-black text-white px-2 py-1 rounded hover:bg-gray-700 text-xs">Töröl</button>
+                     <button data-action="toggle-emergency" class="text-white px-2 py-1 rounded text-xs ${slide.active ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-600 hover:bg-red-700'}">${slide.active ? 'Deaktivál' : 'Aktivál'}</button>
+                     <button data-action="delete-emergency" class="bg-black text-white px-2 py-1 rounded hover:bg-gray-700 text-xs">Töröl</button>
                  </div>`;
              return slideElement;
          }
@@ -1208,7 +1305,7 @@
              try {
                  const slideRef = firestore.collection('slides').doc(id);
                  const slideDoc = await slideRef.get();
-                 if (!slideDoc.exists()) return showNotification("A dia nem található.", true);
+                 if (!slideDoc.exists) return showNotification("A dia nem található.", true);
                  const slideData = slideDoc.data();
                  currentEditingSlideId = id;
                  currentEditingSlideType = slideData.type;
@@ -1292,7 +1389,7 @@
              try {
                  const slideRef = firestore.collection('slides').doc(id);
                  const slideDoc = await slideRef.get();
-                 if (!slideDoc.exists()) return showNotification('A dia nem található.', true);
+                 if (!slideDoc.exists) return showNotification('A dia nem található.', true);
                  const newStatus = !slideDoc.data().active;
                  await firestore.collection('logs').add({ eventType: "Dia állapot", details: `Dia ${newStatus ? 'aktíválva' : 'elrejtve'} (ID: ${id})`, user: currentUser.email, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
                  await slideRef.update({ active: newStatus });
@@ -1321,7 +1418,7 @@
              try {
                  const slideRef = firestore.collection('emergency_slides').doc(id);
                  const slideDoc = await slideRef.get();
-                 if (!slideDoc.exists()) return showNotification('A havária dia nem található.', true);
+                 if (!slideDoc.exists) return showNotification('A havária dia nem található.', true);
                  const newStatus = !slideDoc.data().active;
                  await firestore.collection('logs').add({ eventType: "Havária állapot", details: `Havária ${newStatus ? 'aktiválva' : 'deaktiválva'} (ID: ${id})`, user: currentUser.email, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
                  const batch = firestore.batch();
@@ -1385,14 +1482,14 @@
         function createDeviceElement(deviceId, device, isOnline, lastHeartbeat) {
              const deviceElement = document.createElement('div');
              deviceElement.className = `p-3 mb-2 rounded border-l-4 ${isOnline ? 'bg-green-50 border-green-500' : 'bg-red-50 border-red-500'}`;
+             deviceElement.setAttribute('data-device-id', deviceId);
              const formattedHeartbeat = lastHeartbeat ? lastHeartbeat.toLocaleString('hu-HU', { dateStyle: 'short', timeStyle: 'medium'}) : 'Soha';
              const canRefresh = currentUser?.isAdmin === true;
-             // Az onclick itt marad, mert a handleAdminViewClicks delegálással kezeli
              deviceElement.innerHTML = `
                  <div class="flex flex-wrap justify-between items-center gap-2">
                      <span class="font-semibold break-all" title="${escapeHtml(device.name || deviceId)}">${escapeHtml(device.name || deviceId)}</span>
                      <span class="text-xs font-medium px-2 py-0.5 rounded-full ${isOnline ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}">${isOnline ? 'Online' : 'Offline'}</span>
-                     <button onclick="toggleDetails('${deviceId}')" class="text-blue-600 hover:text-blue-800 text-sm underline focus:outline-none">Részletek</button>
+                     <button data-action="toggle-details" class="text-blue-600 hover:text-blue-800 text-sm underline focus:outline-none">Részletek</button>
                  </div>
                  <div id="details-${deviceId}" class="hidden mt-2 text-sm text-gray-700 space-y-1 border-t pt-2">
                      <p><strong>ID:</strong> <span class="break-all">${escapeHtml(deviceId)}</span></p>
@@ -1400,7 +1497,7 @@
                      <p><strong>Böngésző:</strong> ${escapeHtml(device.browser || 'N/A')}</p>
                      <p><strong>Felbontás:</strong> ${escapeHtml(device.resolution || 'N/A')}</p>
                      <p><strong>Utolsó ping:</strong> ${formattedHeartbeat}</p>
-                     ${canRefresh ? `<button onclick="refreshDevice('${deviceId}')" class="mt-2 w-full sm:w-auto bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 text-xs focus:outline-none focus:ring-2 focus:ring-blue-300">Oldal frissítése</button>` : ''}
+                     ${canRefresh ? `<button data-action="refresh-device" class="mt-2 w-full sm:w-auto bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 text-xs focus:outline-none focus:ring-2 focus:ring-blue-300">Oldal frissítése</button>` : ''}
                  </div>`;
              return deviceElement;
          }
@@ -1442,11 +1539,7 @@
                      </div>
                  </div>`;
          }
-        function toggleLogCard() {
-            if (!currentUser?.isAdmin) return;
-            logCard.classList.toggle('hidden');
-            if (!logCard.classList.contains('hidden')) { fetchLogs(); }
-        }
+         // toggleLogCard már nem szükséges, a showAdminSection kezeli a logok szekció megjelenítését
          function refreshLogs() {
              if (!currentUser?.isAdmin) return;
              fetchLogs();
@@ -1515,79 +1608,142 @@
              messageBox?.addEventListener('click', (event) => { if (event.target === messageBox) closeMessage(); });
              confirmCancelBtn?.addEventListener('click', () => confirmPopup.classList.remove('active'));
              editCancelBtn?.addEventListener('click', closeEditPopup);
-             editSaveBtn?.addEventListener('click', saveEditedSlide); // Hozzáadva
-
-             // Statikus gombok az admin felületen
-             document.getElementById('toggle-slide-form-trigger')?.addEventListener('click', toggleSlideForm);
-             document.getElementById('toggle-emergency-form-trigger')?.addEventListener('click', toggleEmergencyForm);
-             document.getElementById('add-slide-btn')?.addEventListener('click', addSlide);
-             document.getElementById('add-emergency-btn')?.addEventListener('click', addEmergencySlide);
-             document.getElementById('reorder-btn')?.addEventListener('click', toggleReorderMode);
+             editSaveBtn?.addEventListener('click', saveEditedSlide);
+             addSlideBtn?.addEventListener('click', addSlide);
+             addEmergencyBtn?.addEventListener('click', addEmergencySlide);
+             reorderBtn?.addEventListener('click', toggleReorderMode);
              document.getElementById('cancel-reorder-btn')?.addEventListener('click', cancelReorder);
              document.getElementById('save-reorder-btn')?.addEventListener('click', saveReorder);
              document.getElementById('refresh-all-devices-btn')?.addEventListener('click', refreshAllDevices);
-             document.getElementById('toggle-log-card-btn')?.addEventListener('click', toggleLogCard);
+             // document.getElementById('toggle-log-card-btn')?.addEventListener('click', toggleLogCard); // Eltávolítva
              document.getElementById('refresh-logs-btn')?.addEventListener('click', refreshLogs);
-             document.getElementById('close-log-card-btn')?.addEventListener('click', toggleLogCard); // Bezárás gomb is a toggle-t hívja
+             // document.getElementById('close-log-card-btn')?.addEventListener('click', toggleLogCard); // Eltávolítva
 
-             // Formázó gombok
-             document.getElementById('format-bold-btn')?.addEventListener('click', () => formatText('bold'));
-             document.getElementById('format-italic-btn')?.addEventListener('click', () => formatText('italic'));
-             document.getElementById('format-underline-btn')?.addEventListener('click', () => formatText('underline'));
-             document.getElementById('format-linebreak-btn')?.addEventListener('click', () => formatText('insertLineBreak'));
-             document.getElementById('edit-format-bold-btn')?.addEventListener('click', () => editFormatText('bold'));
-             document.getElementById('edit-format-italic-btn')?.addEventListener('click', () => editFormatText('italic'));
-             document.getElementById('edit-format-underline-btn')?.addEventListener('click', () => editFormatText('underline'));
-             document.getElementById('edit-format-linebreak-btn')?.addEventListener('click', () => editFormatText('insertLineBreak'));
+             const slideFormTrigger = document.getElementById('toggle-slide-form-trigger');
+             slideFormTrigger?.addEventListener('click', toggleSlideForm);
+             const emergencyFormTrigger = document.getElementById('toggle-emergency-form-trigger');
+             emergencyFormTrigger?.addEventListener('click', toggleEmergencyForm);
 
-             // Dinamikus elemek kezelése delegálással
-             const adminView = document.getElementById('admin-view');
+             document.getElementById('slide-type')?.addEventListener('change', toggleSlideTypeFields);
+             document.getElementById('edit-slide-type')?.addEventListener('change', toggleEditSlideTypeFields);
+             document.getElementById('emergency-slide-type')?.addEventListener('change', toggleEmergencyInputFields);
+
+             document.getElementById('first-line')?.addEventListener('input', updateFirstLineCounter);
+             document.getElementById('slide-text-content')?.addEventListener('input', updateCharCounter);
+             document.getElementById('edit-first-line')?.addEventListener('input', editUpdateFirstLineCounter);
+             document.getElementById('edit-text-content')?.addEventListener('input', editUpdateCharCounter);
+
+             document.getElementById('slide-form')?.addEventListener('click', handleFormatButtonClick);
+             document.getElementById('edit-popup')?.addEventListener('click', handleFormatButtonClick);
+
+             const adminView = document.getElementById('admin-content-wrapper'); // Figyeljük a wrapper-t
              if(adminView) { adminView.addEventListener('click', handleAdminViewClicks); }
+
+             const devicesList = document.getElementById('devices-list');
+             if(devicesList) { devicesList.addEventListener('click', handleDeviceListClicks); }
+
+             const adminNav = document.getElementById('admin-navigation');
+             if (adminNav) {
+                 adminNav.addEventListener('click', (event) => {
+                     const button = event.target.closest('.admin-nav-button');
+                     if (button && button.dataset.section) {
+                         showAdminSection(button.dataset.section);
+                     }
+                 });
+             }
 
              console.log("Base event listeners attached.");
          }
 
-        // Esemény delegálás az Admin nézeten belüli dinamikus gombokhoz
+         // --- Eseménykezelő Delegálás (Admin Nézet) ---
         function handleAdminViewClicks(event) {
             const target = event.target;
             const button = target.closest('button');
             if (!button) return;
 
-            // Slide Action Buttons
-             const slideItem = button.closest('.slide-item[data-id]');
-             if (slideItem && slideItem.closest('#slides-container')) { // Csak a normál diák listájában
+            const slideItem = button.closest('.slide-item[data-id]');
+             if (slideItem) {
                 const slideId = slideItem.dataset.id;
-                if (button.classList.contains('edit-btn')) { editSlide(slideId); return; }
-                // A toggle és delete gombokhoz specifikusabb selector kell, mert a class alapján nehéz megkülönböztetni
-                if (button.textContent.includes('Elrejt') || button.textContent.includes('Aktív')) { toggleSlide(slideId); return; }
-                if (button.textContent.includes('Töröl') && !button.closest('#emergency-slides-container')) { deleteSlide(slideId); return; } // Megkülönböztetés
+                const action = button.dataset.action;
+                if (action === 'edit-slide') { editSlide(slideId); return; }
+                if (action === 'toggle-slide') { toggleSlide(slideId); return; }
+                if (action === 'delete-slide') { deleteSlide(slideId); return; }
              }
-
-             // Emergency Slide Action Buttons
              const emergencySlideItem = button.closest('.slide-item[data-id]');
              if (emergencySlideItem && emergencySlideItem.closest('#emergency-slides-container')) {
                 const slideId = emergencySlideItem.dataset.id;
-                if (button.textContent.includes('Deaktivál') || button.textContent.includes('Aktivál')) { toggleEmergency(slideId); return; }
-                if (button.textContent.includes('Töröl')) { deleteEmergency(slideId); return; }
+                const action = button.dataset.action;
+                if (action === 'toggle-emergency') { toggleEmergency(slideId); return; }
+                if (action === 'delete-emergency') { deleteEmergency(slideId); return; }
              }
-
-            // Device Details/Refresh
-             const detailsContainer = button.closest('[id^="details-"]');
-             if(detailsContainer) {
-                 const deviceId = detailsContainer.id.replace('details-', '');
-                 if (button.textContent.includes('Oldal frissítése')) { refreshDevice(deviceId); return; }
-             }
-             if (button.textContent.includes('Részletek')) {
-                 const deviceItem = button.closest('div.p-3'); // Megkeressük a szülő div-et
-                 const detailsDiv = deviceItem?.querySelector('[id^="details-"]');
-                 if(detailsDiv) {
-                     const deviceId = detailsDiv.id.replace('details-', '');
-                     toggleDetails(deviceId); return;
-                 }
-             }
+             // Más gombok (pl. rich text) már máshol kezelve
         }
 
-        // --- InfoTV Init Függvények ---
+        // --- Eseménykezelő Delegálás (Device Lista) ---
+        function handleDeviceListClicks(event) {
+            const target = event.target;
+            const button = target.closest('button');
+            if (!button) return;
+
+            const deviceItem = button.closest('[data-device-id]');
+            if (!deviceItem) return;
+            const deviceId = deviceItem.dataset.deviceId;
+
+            const action = button.dataset.action;
+            if (action === 'toggle-details') {
+                toggleDetails(deviceId);
+                return;
+            }
+            if (action === 'refresh-device') {
+                refreshDevice(deviceId);
+                return;
+            }
+        }
+
+
+         // --- Format Gombok Kezelése ---
+         function handleFormatButtonClick(event) {
+            const button = event.target.closest('.format-button, .edit-format-button');
+            if (!button) return;
+            const command = button.dataset.format;
+            const editorId = button.closest('#slide-form') ? 'slide-text-content' : 'edit-text-content';
+            const editorElement = document.getElementById(editorId);
+
+            if (command && editorElement) {
+                document.execCommand(command, false, null);
+                editorElement.focus();
+                if (editorId === 'slide-text-content') updateCharCounter();
+                else if (editorId === 'edit-text-content') editUpdateCharCounter();
+            }
+        }
+
+
+        // --- Drag & Drop Listener Beállítása ---
+        function setupDragDropListeners() {
+            document.querySelectorAll('.drop-zone').forEach(setupDragDrop);
+        }
+        function setupDragDrop(dropZoneElement) {
+             const fileInput = document.getElementById(dropZoneElement.dataset.targetInput);
+             const previewElement = document.getElementById(dropZoneElement.dataset.targetPreview);
+             let indicatorElement, relatedButton;
+             if (dropZoneElement.id === 'add-image-input-group') { indicatorElement = addUploadIndicator; relatedButton = addSlideBtn; }
+             else if (dropZoneElement.id === 'edit-image-input-group') { indicatorElement = editUploadIndicator; relatedButton = editSaveBtn; }
+             else if (dropZoneElement.id === 'emergency-image-input-group') { indicatorElement = emergencyUploadIndicator; relatedButton = addEmergencyBtn; }
+             if (!fileInput || !previewElement) { console.error("Drag & Drop setup failed for", dropZoneElement); return; }
+             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => { dropZoneElement.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }, false); });
+             ['dragenter', 'dragover'].forEach(eventName => { dropZoneElement.addEventListener(eventName, () => dropZoneElement.classList.add('dragover'), false); });
+             ['dragleave', 'drop'].forEach(eventName => { dropZoneElement.addEventListener(eventName, () => dropZoneElement.classList.remove('dragover'), false); });
+             dropZoneElement.addEventListener('drop', (e) => {
+                 const files = e.dataTransfer.files;
+                 setIndicatorState(indicatorElement, 'idle');
+                 if (relatedButton) relatedButton.disabled = false;
+                 if (files.length > 0 && files[0].type.startsWith('image/')) { fileInput.files = files; handleImagePreview(fileInput, previewElement, indicatorElement, relatedButton); }
+                 else if (files.length > 0) { showNotification('Csak képfájlokat lehet behúzni!', true); }
+             }, false);
+             dropZoneElement.addEventListener('click', (e) => { if (e.target !== fileInput) { fileInput.click(); } });
+        }
+
+        // --- Függvények definíciói ---
         function toggleSlideForm() {
             const form = document.getElementById('slide-form');
             const toggleIcon = document.getElementById('slide-form-toggle');
@@ -1653,30 +1809,6 @@
              const detailsElement = document.getElementById(`details-${deviceId}`);
              detailsElement?.classList.toggle('hidden');
          };
-
-        function setupDragDropListeners() {
-            document.querySelectorAll('.drop-zone').forEach(setupDragDrop);
-        }
-        function setupDragDrop(dropZoneElement) {
-             const fileInput = document.getElementById(dropZoneElement.dataset.targetInput);
-             const previewElement = document.getElementById(dropZoneElement.dataset.targetPreview);
-             let indicatorElement, relatedButton;
-             if (dropZoneElement.id === 'add-image-input-group') { indicatorElement = addUploadIndicator; relatedButton = addSlideBtn; }
-             else if (dropZoneElement.id === 'edit-image-input-group') { indicatorElement = editUploadIndicator; relatedButton = editSaveBtn; }
-             else if (dropZoneElement.id === 'emergency-image-input-group') { indicatorElement = emergencyUploadIndicator; relatedButton = addEmergencyBtn; }
-             if (!fileInput || !previewElement) { console.error("Drag & Drop setup failed for", dropZoneElement); return; }
-             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => { dropZoneElement.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }, false); });
-             ['dragenter', 'dragover'].forEach(eventName => { dropZoneElement.addEventListener(eventName, () => dropZoneElement.classList.add('dragover'), false); });
-             ['dragleave', 'drop'].forEach(eventName => { dropZoneElement.addEventListener(eventName, () => dropZoneElement.classList.remove('dragover'), false); });
-             dropZoneElement.addEventListener('drop', (e) => {
-                 const files = e.dataTransfer.files;
-                 setIndicatorState(indicatorElement, 'idle');
-                 if (relatedButton) relatedButton.disabled = false;
-                 if (files.length > 0 && files[0].type.startsWith('image/')) { fileInput.files = files; handleImagePreview(fileInput, previewElement, indicatorElement, relatedButton); }
-                 else if (files.length > 0) { showNotification('Csak képfájlokat lehet behúzni!', true); }
-             }, false);
-             dropZoneElement.addEventListener('click', (e) => { if (e.target !== fileInput) { fileInput.click(); } });
-        }
 
         function showLoginPopup(message = "Ehhez a művelethez bejelentkezés szükséges.") {
              loginPopupMessage.textContent = message;
