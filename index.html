@@ -146,7 +146,7 @@
         import {
             getFirestore, doc, setDoc, collection, query, where,
             onSnapshot, orderBy, serverTimestamp, updateDoc,
-            addDoc, Timestamp
+            addDoc, Timestamp, getDocs
         } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
         // --- Firebase Configuration ---
@@ -178,7 +178,7 @@
         let slideshowIntervalId = null;
         let isHandlingError = false;
         const SLIDESHOW_INTERVAL = 30000;
-        const HEARTBEAT_INTERVAL = 60000;
+        const HEARTBEAT_INTERVAL = 600000;
         const RELOAD_DELAY = 5000;
 
         // --- Utility Functions ---
@@ -259,8 +259,6 @@
 
             // Stop ongoing processes
             stopSlideshowTimer();
-            if (slidesListenerUnsubscribe) slidesListenerUnsubscribe();
-            if (emergencyListenerUnsubscribe) emergencyListenerUnsubscribe();
             if (deviceListenerUnsubscribe) deviceListenerUnsubscribe();
 
             // Display user-friendly error message
@@ -829,21 +827,113 @@
         /**
          * Initializes the application logic, sets up listeners, and starts monitoring.
          */
-        function initializeAppLogic() {
+         const SLIDES_POLLING_INTERVAL = 10 * 60 * 1000; // 10 minutes in milliseconds
+        const EMERGENCY_POLLING_INTERVAL = 5 * 60 * 1000; // 5 minutes in milliseconds (for quicker emergency updates)
+        
+        // --- Polling Functions for Data Fetching ---
+
+        /**
+         * Fetches and renders slides by polling the Firestore database.
+         */
+        async function fetchAndRenderSlides() {
              try {
-                console.log("Initializing InfoTV Slideshow App (v4.5 - No Aktuális BG)..."); // Version bump
+                console.log("Fetching slides from Firestore...");
+                const todayStr = formatDateUTC(new Date());
+
+                const slidesQuery = query(
+                     collection(db, 'slides'),
+                    where('active', '==', true),
+                    where('startDate', '<=', todayStr),
+                    orderBy('startDate', 'desc'),
+                    orderBy("order", "asc")
+                );
+
+                const snapshot = await getDocs(slidesQuery); // Use getDocs for one-time read
+
+                const newSlidesData = snapshot.docs
+                    .map(doc => ({ id: doc.id, ...doc.data() }))
+                    .filter(slide => {
+                        const now = new Date();
+                        try {
+                            const startDate = new Date(Date.UTC(parseInt(slide.startDate.substring(0, 4)), parseInt(slide.startDate.substring(5, 7)) - 1, parseInt(slide.startDate.substring(8, 10)), 0, 0, 0, 0));
+                            if (startDate > now) return false;
+                        } catch(e) { console.error("Invalid startDate:", slide.id, slide.startDate, e); return false; }
+                        if (slide.endDate) {
+                            try {
+                                const endOfDay = new Date(Date.UTC(parseInt(slide.endDate.substring(0, 4)), parseInt(slide.endDate.substring(5, 7)) - 1, parseInt(slide.endDate.substring(8, 10)), 23, 59, 59, 999));
+                                if (endOfDay < now) return false;
+                            } catch (e) { console.error("Invalid endDate:", slide.id, slide.endDate, e); return false; }
+                        }
+                        return true;
+                    });
+                
+                const dataChanged = JSON.stringify(allSlidesData) !== JSON.stringify(newSlidesData);
+
+                if (dataChanged) {
+                    console.log(`Slide data updated. New count: ${newSlidesData.length}. Rebuilding DOM.`);
+                    allSlidesData = newSlidesData;
+                    rebuildSlidesDOM();
+                    addDoc(collection(db, 'logs'), { eventType: "Dia lista frissítés (polling)", details: `Dia lista frissült (${allSlidesData.length} aktív dia), DOM újraépítés. Eszköz: ${deviceId}`, user: "Rendszer", timestamp: serverTimestamp() }).catch(e => console.error("Failed to log slide update:", e));
+                } else {
+                    console.log("Slide data received, but no effective changes detected after filtering.");
+                }
+
+             } catch (error) {
+                 handleCriticalError(error, "fetchAndRenderSlides");
+             }
+        }
+
+        /**
+         * Fetches and renders emergency slides by polling.
+         */
+        async function fetchAndRenderEmergencySlides() {
+            try {
+                console.log("Fetching emergency slides from Firestore...");
+                const emergencyQuery = query(
+                     collection(db, 'emergency_slides'),
+                    where('active', '==', true)
+                );
+                
+                const snapshot = await getDocs(emergencyQuery); // Use getDocs for one-time read
+
+                const previousLength = emergencySlides.length;
+                emergencySlides = snapshot.docs
+                                    .map(doc => ({ id: doc.id, ...doc.data() }))
+                                    .filter(slide => slide.active === true);
+                
+                if (previousLength !== emergencySlides.length) {
+                    console.log(`Emergency state changed: ${emergencySlides.length > 0 ? 'ACTIVE' : 'INACTIVE'}`);
+                    addDoc(collection(db, 'logs'), { eventType: "Havária állapot változás", details: `Havária ${emergencySlides.length > 0 ? 'aktiválva' : 'deaktiválva'} (${emergencySlides.length} dia). Eszköz: ${deviceId}`, user: "Rendszer", timestamp: serverTimestamp() }).catch(e => console.error("Failed to log emergency state change:", e));
+                }
+                renderEmergencyOverlay();
+
+            } catch (error) {
+                handleCriticalError(error, "fetchAndRenderEmergencySlides");
+            }
+        }
+
+        // --- Initialization ---
+
+        function initializeAppLogic() {
+            try {
+                console.log("Initializing InfoTV Slideshow App (v4.5 - Optimalizált)...");
                 console.log("Device ID:", deviceId);
 
                 // Start core functionalities
                 startDeviceMonitoring();
                 setupDeviceCommandsListener();
-                setupEmergencySlidesListener();
-                setupSlidesListener(); // This will trigger the initial DOM build
 
-                console.log("Initialization complete. Waiting for data from Firestore...");
-             } catch(error) {
-                 handleCriticalError(error, "initializeAppLogic"); // Catch errors during initialization
-             }
+                // Initial fetch and start polling
+                fetchAndRenderSlides();
+                setInterval(fetchAndRenderSlides, SLIDES_POLLING_INTERVAL);
+
+                fetchAndRenderEmergencySlides();
+                setInterval(fetchAndRenderEmergencySlides, EMERGENCY_POLLING_INTERVAL);
+
+                console.log("Initialization complete. Starting polling for data...");
+            } catch(error) {
+                handleCriticalError(error, "initializeAppLogic");
+            }
         }
 
         // Run initialization logic once the DOM is ready
@@ -856,8 +946,6 @@
         // Cleanup listeners when the page is about to unload
         window.addEventListener('beforeunload', () => {
             console.log("Unsubscribing Firestore listeners before unload.");
-            if (slidesListenerUnsubscribe) slidesListenerUnsubscribe();
-            if (emergencyListenerUnsubscribe) emergencyListenerUnsubscribe();
             if (deviceListenerUnsubscribe) deviceListenerUnsubscribe();
             stopSlideshowTimer();
         });
